@@ -305,13 +305,35 @@
       </div>
     </section>
 
-    <!-- 10b. STAT PUNCTUATION -->
+    <!-- 10b. STAT PUNCTUATION (hub & spoke) -->
     <section class="section section-stat" aria-labelledby="stat-heading">
       <div class="container">
-        <div class="stat-block" data-stat-target="3600">
-          <span class="stat-prefix">$</span><span class="stat-value" data-stat-value>0</span>
-          <p id="stat-heading" class="stat-caption">sponsors <strong>one intern</strong> for one full year.</p>
-          <p class="stat-sub">Five hours a week, paid at $20/hour. Mentorship, training, laptops, and a final community project — all included.</p>
+        <div class="hub-spoke stat-block" data-stat-target="3600" aria-labelledby="stat-heading">
+          <svg class="hub-lines" viewBox="0 0 1000 620" preserveAspectRatio="none" aria-hidden="true">
+            <line class="hub-line" x1="500" y1="310" x2="180" y2="110"/>
+            <line class="hub-line" x1="500" y1="310" x2="820" y2="110"/>
+            <line class="hub-line" x1="500" y1="310" x2="80"  y2="310"/>
+            <line class="hub-line" x1="500" y1="310" x2="920" y2="310"/>
+            <line class="hub-line" x1="500" y1="310" x2="180" y2="510"/>
+            <line class="hub-line" x1="500" y1="310" x2="820" y2="510"/>
+            <line class="hub-line hub-line-cta" x1="500" y1="310" x2="500" y2="600"/>
+          </svg>
+          <div class="hub">
+            <div class="hub-amount">
+              <span class="stat-prefix">$</span><span class="stat-value" data-stat-value>0</span>
+            </div>
+            <p id="stat-heading" class="hub-caption"><strong>One intern</strong> · one full year</p>
+          </div>
+          <div class="spoke spoke-1"><span class="spoke-num">5</span><span class="spoke-label">hours / week</span></div>
+          <div class="spoke spoke-2"><span class="spoke-num">$20</span><span class="spoke-label">per hour</span></div>
+          <div class="spoke spoke-3">Mentorship</div>
+          <div class="spoke spoke-4">Training &amp; tools</div>
+          <div class="spoke spoke-5">Laptops</div>
+          <div class="spoke spoke-6">Final community project</div>
+          <div class="spoke spoke-cta">
+            <span class="spoke-cta-eyebrow">or sustain the program</span>
+            <strong>$300 / month</strong>
+          </div>
         </div>
       </div>
     </section>

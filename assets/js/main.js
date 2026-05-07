@@ -50,26 +50,31 @@
     document.querySelectorAll('.modal:not([hidden])').forEach(closeModal);
   });
 
-  // Scroll-triggered counter on .stat-block
+  // Scroll-triggered hub & spoke + counter
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const stats = document.querySelectorAll('.stat-block[data-stat-target]');
+  const stats = document.querySelectorAll('[data-stat-target]');
   if (stats.length && 'IntersectionObserver' in window) {
     const fmt = new Intl.NumberFormat('en-US');
     function animateCount(block) {
+      block.classList.add('is-active');
       const target = parseInt(block.getAttribute('data-stat-target'), 10) || 0;
       const out = block.querySelector('[data-stat-value]');
       if (!out) return;
       if (reduced) { out.textContent = fmt.format(target); block.classList.add('is-counted'); return; }
+      // Wait for the hub to settle before counting (matches CSS hub transition delay)
+      const startDelay = block.classList.contains('hub-spoke') ? 600 : 0;
       const duration = 1400;
-      const t0 = performance.now();
-      function tick(now) {
-        const p = Math.min(1, (now - t0) / duration);
-        const eased = 1 - Math.pow(1 - p, 3);
-        out.textContent = fmt.format(Math.round(target * eased));
-        if (p < 1) requestAnimationFrame(tick);
-        else block.classList.add('is-counted');
-      }
-      requestAnimationFrame(tick);
+      setTimeout(() => {
+        const t0 = performance.now();
+        function tick(now) {
+          const p = Math.min(1, (now - t0) / duration);
+          const eased = 1 - Math.pow(1 - p, 3);
+          out.textContent = fmt.format(Math.round(target * eased));
+          if (p < 1) requestAnimationFrame(tick);
+          else block.classList.add('is-counted');
+        }
+        requestAnimationFrame(tick);
+      }, startDelay);
     }
     const io = new IntersectionObserver((entries, obs) => {
       entries.forEach(entry => {
@@ -78,7 +83,7 @@
           obs.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.4 });
+    }, { threshold: 0.35 });
     stats.forEach(s => io.observe(s));
   }
 })();
