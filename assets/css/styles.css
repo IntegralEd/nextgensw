@@ -757,6 +757,80 @@ ul, ol { margin: 0 0 1em; padding: 0 0 0 1.2em; }
 }
 .building-callout h2 { color: var(--brick); }
 
+/* Squiggle dividers */
+.squiggle-divider {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  line-height: 0;
+  background: var(--white);
+  border-top: 1px solid var(--gray-200);
+  border-bottom: 1px solid var(--gray-200);
+}
+.squiggle-divider svg {
+  width: 100%;
+  height: clamp(48px, 7vw, 96px);
+  display: block;
+}
+.squiggle-divider-yellow { background: var(--white); border-top-color: transparent; }
+.squiggle-divider-pink   { background: var(--gray-50);  border-top-color: transparent; }
+
+/* Stat punctuation */
+.section-stat {
+  position: relative;
+  background:
+    radial-gradient(circle at 12% 30%, rgba(254,208,29,0.15), transparent 45%),
+    radial-gradient(circle at 90% 70%, rgba(248,221,233,0.4), transparent 45%),
+    var(--white);
+  text-align: center;
+  overflow: hidden;
+}
+.stat-block {
+  display: inline-block;
+  position: relative;
+  padding: clamp(1rem, 3vw, 2rem) 0;
+}
+.stat-block .stat-prefix,
+.stat-block .stat-value {
+  display: inline-block;
+  font-size: clamp(3.75rem, 12vw, 8rem);
+  font-weight: 800;
+  color: var(--brick);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.stat-block .stat-prefix {
+  font-size: clamp(2.25rem, 8vw, 5rem);
+  vertical-align: top;
+  margin-top: 0.4em;
+  color: var(--leaf);
+}
+.stat-caption {
+  font-size: var(--step-2);
+  font-weight: 600;
+  color: var(--ink);
+  margin: 0.75rem 0 0.4rem;
+}
+.stat-caption strong { color: var(--brick); }
+.stat-sub {
+  font-size: var(--step-0);
+  color: var(--gray-500);
+  max-width: 52ch;
+  margin: 0 auto;
+}
+.stat-block.is-counted .stat-value {
+  animation: statPop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+@keyframes statPop {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .stat-block.is-counted .stat-value { animation: none; }
+}
+
 /* Three asks */
 .section-asks {
   background: var(--gray-50);
