@@ -182,6 +182,62 @@ Each is one Softr page filtered by role + a Netlify HTML shell with the embed.
 
 ---
 
+### Messages-table workaround formulas (interim)
+
+Softr's URL-parameter pre-fill of the form's `Section` and `URL` fields
+isn't catching, so the long landing URL of the form (with
+`?Section=…&URL=…` appended) lands in the `URL` field instead. Two
+formula fields parse the bits we need until the Softr-side mapping
+is sorted out.
+
+**`Section_Parsed`** — pulls the section anchor (`why`, `top`, …):
+
+```
+IFERROR(
+  SUBSTITUTE(
+    REGEX_EXTRACT({URL}, "Section=[^&]+"),
+    "Section=",
+    ""
+  ),
+  ""
+)
+```
+
+**`Page_URL_Parsed`** — pulls the embedded URL param and decodes the
+three URL-encoded chars our links use (`%3A → :`, `%2F → /`, `%23 → #`):
+
+```
+IFERROR(
+  SUBSTITUTE(
+    SUBSTITUTE(
+      SUBSTITUTE(
+        SUBSTITUTE(
+          REGEX_EXTRACT({URL}, "URL=[^&]+"),
+          "URL=", ""
+        ),
+        "%3A", ":"
+      ),
+      "%2F", "/"
+    ),
+    "%23", "#"
+  ),
+  ""
+)
+```
+
+Both return `""` when the parameter isn't present, so older or
+non-pill submissions don't break. To copy the parsed values into
+editable single-line fields, add an Airtable Automation on
+record-create that does `Section ← Section_Parsed` and
+`URL_Page ← Page_URL_Parsed`.
+
+The cleaner long-term fix: in Softr's form editor, set the Section
+field's **Default value** to the `Section` URL parameter token, and
+same for URL. Once that's wired the formulas become defensive
+backstop rather than load-bearing.
+
+---
+
 ## 7 · Forms inventory
 
 If you give the repo Airtable secrets (`AIRTABLE_BASE_ID` + write-scoped PAT), these are the forms worth wiring server-side via a Netlify Function. Anything that doesn't need server logic can be a Web3Forms or Softr form posting directly to Airtable.
