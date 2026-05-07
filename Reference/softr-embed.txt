@@ -2,7 +2,7 @@
 NextGen SW — Softr "Website Feedback Workspace" embed
 ==================================================================
 
-ONE custom-code block. Paste once on a Softr page (e.g. /website-feedback).
+ONE custom-code block. Paste once on a Softr page (e.g. /website-review).
 Renders an iframe of the live Netlify site with admin mode auto-enabled,
 so a small "💬 Suggest edit" pill appears on every section. Clicking a
 pill opens the Softr feedback form in a new tab with Section + URL
@@ -26,7 +26,7 @@ You already have the form page:
 
 You'll add ONE more page — the workspace that hosts the iframe:
 
-  /feedback-workspace       ← WORKSPACE page (new, paste embed here)
+  /website-review       ← WORKSPACE page (new, paste embed here)
                               One Custom Code block, that's it.
 
 ------------------------------------------------------------------
@@ -35,7 +35,7 @@ Where to paste in Softr
 
   1. Workspace → Pages → New page
        title:  Website Feedback Workspace
-       slug:   /feedback-workspace        (or any slug; just remember it)
+       slug:   /website-review        (or any slug; just remember it)
        layout: Blank (no nav, no footer if possible — full canvas)
        gating: User Group → Admins        (or "Anyone with the link"
                                            during early review)
@@ -56,7 +56,7 @@ In the form's field-mapping panel, confirm URL parameters are wired:
   User             ← {{Logged-in user}}            (auto from session)
   Is_Reply         ← false                         (only true on threaded replies)
 
-After-submit: thank-you toast OR redirect back to /feedback-workspace
+After-submit: thank-you toast OR redirect back to /website-review
 so the reviewer can immediately keep reviewing.
 
 ------------------------------------------------------------------
@@ -122,7 +122,7 @@ The embed code
 Two URLs to know
 ------------------------------------------------------------------
 
-  Reviewer entry:   https://NextGenSW.softr.app/feedback-workspace
+  Reviewer entry:   https://NextGenSW.softr.app/website-review
                     (the page that holds the iframe — paste embed here)
 
   Form receiver:    https://NextGenSW.softr.app/website-feedback
@@ -138,7 +138,7 @@ on Softr, edit that constant and redeploy.
 What the reviewer experiences
 ------------------------------------------------------------------
 
-  1. Logs into Softr, lands on /feedback-workspace
+  1. Logs into Softr, lands on /website-review
   2. Sees the live nextgensw.org page in an iframe, full bleed
   3. Hovers any section → dashed brick outline appears around it
   4. Clicks "💬 Suggest edit" pill in the bottom-right of that section
