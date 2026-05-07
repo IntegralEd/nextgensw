@@ -1,14 +1,22 @@
 (function () {
   document.getElementById('year').textContent = new Date().getFullYear();
 
-  // Admin-only "💬 Suggest edit" pill on every <section[id]>.
-  // Toggle with ?admin=1 in the URL; persists for the session via sessionStorage.
+  // "💬 Suggest edit" pill on every <section[id]>.
+  // Auto-enabled when the page is loaded inside an iframe (e.g. the
+  // gated Softr /website-review workspace). Manual overrides:
+  //   ?admin=1  → force-enable on direct visits (persists for session)
+  //   ?admin=0  → force-disable
   // Click → opens the Softr feedback form with Section + URL prefilled.
   const FEEDBACK_FORM_URL = 'https://NextGenSW.softr.app/website-feedback';
+  function inIframe() {
+    try { return window.self !== window.top; } catch (_e) { return true; }
+  }
   const adminQ = new URLSearchParams(location.search).get('admin');
   if (adminQ === '1') sessionStorage.setItem('ng_admin', '1');
   if (adminQ === '0') sessionStorage.removeItem('ng_admin');
-  if (sessionStorage.getItem('ng_admin') === '1') {
+  const adminMode =
+    sessionStorage.getItem('ng_admin') === '1' || inIframe();
+  if (adminMode) {
     document.body.classList.add('is-admin');
     document.querySelectorAll('main section[id]').forEach(sec => {
       if (sec.querySelector('.suggest-edit')) return;

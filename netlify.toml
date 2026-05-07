@@ -4,7 +4,11 @@
 [[headers]]
   for = "/*"
   [headers.values]
-    X-Frame-Options = "SAMEORIGIN"
+    # frame-ancestors replaces X-Frame-Options and supports allowlists.
+    # Allow self + Softr (workspace and admin domains) so the Softr
+    # /website-review page can iframe the live site for the admin
+    # review workflow. Block everything else.
+    Content-Security-Policy = "frame-ancestors 'self' https://*.softr.app https://*.softr.io https://*.softrapp.com"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "geolocation=(), camera=(), microphone=()"
