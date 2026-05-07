@@ -265,22 +265,39 @@ ul, ol { margin: 0 0 1em; padding: 0 0 0 1.2em; }
 
 /* Why NextGen SW (slide 3) */
 .section-why {
+  display: grid;
   background-color: var(--white);
-  padding-top: clamp(3.5rem, 7vw, 6rem);
+  padding: 0;
+  position: relative;
+}
+.section-why > .container {
+  grid-column: 1;
+  grid-row: 1;
+  align-self: start;
+  z-index: 2;
+  padding-top: clamp(3rem, 14vw, 10rem);
   padding-bottom: 0;
 }
 .why-copy {
   max-width: 70%;
-  margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
-}
-@media (max-width: 719px) {
-  .why-copy { max-width: 100%; }
+  margin-bottom: 0;
 }
 .why-image {
+  grid-column: 1;
+  grid-row: 1;
+  align-self: end;
+  z-index: 1;
   display: block;
   width: 100%;
   height: auto;
   margin: 0;
+  pointer-events: none;
+}
+@media (max-width: 719px) {
+  .section-why { display: block; }
+  .section-why > .container { padding-top: clamp(2.5rem, 6vw, 4rem); }
+  .why-copy { max-width: 100%; }
+  .why-image { margin-top: 1rem; }
 }
 .why-copy h2 { color: var(--ink); margin-bottom: 0.6rem; }
 .why-subhead {
