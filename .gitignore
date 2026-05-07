@@ -3,5 +3,10 @@
 node_modules/
 *.log
 
+# Secrets — never commit
+.env
+.env.*
+!.env.example
+
 # Local-only reference materials (large binaries, working drafts)
 /Reference/

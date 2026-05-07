@@ -34,12 +34,14 @@
 |---|---|---|---|---|
 | W1 | Upload team headshots (Thelma, Rhonda, Ava, Monique) | Ava | Open | Square crops, ≥400×400, JPG or PNG. Drop in `assets/img/team/`. |
 | W2 | Approve & publish intern application form | Ava | Open | Once published, drop the URL — David removes "Coming soon" pill. |
-| W3 | Confirm fiscal-sponsor language for donate card | Thelma | Open | Add "Tax-deductible through SWNA" line if accurate. |
-| W4 | Replace placeholder body photos w/ permissioned local images | Rhonda | Open | Need 2–3 community photos (waterfront, scholarship night, mentor mtg). |
-| W5 | Compile early supporter list for Three-Asks marquee | Thelma | Open | Org names + (optional) wordmarks for a quiet supporters strip. |
+| W3 | Confirm fiscal-sponsor language for donate card | Ava | Open | Add "Tax-deductible through SWNA" line if accurate. |
+| W4 | Replace placeholder body photos w/ permissioned local images | Ava | Open | Need 2–3 community photos (waterfront, scholarship night, mentor mtg). |
+| W5 | Compile early supporter list for Three-Asks marquee | Ava | Open | Org names + (optional) wordmarks for a quiet supporters strip. |
 | W6 | Decide on Donate vs. Apply hierarchy long-term | Team | Open | Currently Donate leads in hero. Revisit after launch event. |
 | W7 | OG social card (1200×630) for QR / SMS / social shares | David | Open | Logo + tagline + brick band. |
 | W8 | Add testimonial pull-quote block (alum or scholarship recipient) | Ava+David | Open | One named voice, 40–60 words, headshot. |
+
+**Convention**: all SW Village (SWNA YATF) program tasks route to **Ava** as program coordinator. Thelma and Rhonda are advisors / approvers — they confirm, but Ava drives the work and updates Workplan rows.
 
 ---
 
@@ -88,7 +90,7 @@ nextgensw.org/admin
 | # | Item | Owner | Status |
 |---|---|---|---|
 | A1 | Set up Softr workspace + connect Airtable base | David | Open |
-| A2 | Create Admin user group + invite client team | Thelma | Open |
+| A2 | Create Admin user group + invite client team | Ava | Open |
 | A3 | Build admin dashboard page in Softr | David | Open |
 | A4 | Build `admin/index.html` on Netlify with Softr embed | David | Open |
 | A5 | Document onboarding/login process for new admins | Ava | Open |
@@ -215,19 +217,50 @@ Drop these straight into the Airtable Workplan table. They'll mirror back into t
 |---|---|---|---|---|
 | W1 | Upload team headshots | Ava | High | TBD |
 | W2 | Share link to approved application form | Ava | High | TBD |
-| W3 | Confirm fiscal-sponsor language | Thelma | Med | TBD |
-| W4 | Permissioned local body photos | Rhonda | Med | TBD |
-| W5 | Early supporter list | Thelma | Med | TBD |
+| W3 | Confirm fiscal-sponsor language | Ava | Med | TBD |
+| W4 | Permissioned local body photos | Ava | Med | TBD |
+| W5 | Early supporter list | Ava | Med | TBD |
 | W7 | OG social card | David | Low | Pre-launch |
 | F1 | Build /feedback page | David | High | This week |
 | F2 | Confirm Softr feedback form URL | David | High | This week |
 | F4 | Add per-section "Suggest edit" buttons | David | High | This week |
 | A1 | Stand up Softr workspace | David | High | This week |
-| A2 | Invite client team to Admin user group | Thelma | High | This week |
+| A2 | Invite client team to Admin user group | Ava | High | This week |
 | A4 | Build /admin page on Netlify | David | Med | Post-launch |
 | M1 | Wire Web3Forms mailing list → Airtable | David | Med | Pre-launch |
 | M2 | Add mailing-list signup to footer + Three Asks | David | Med | Pre-launch |
 | INF1 | Add `AIRTABLE_BASE_ID` + `AIRTABLE_PAT` to Netlify env vars | David | Med | Once base is built |
+
+---
+
+## 8b · Airtable + secrets
+
+**Base**: [`appAWSOlM2P9kqgOV`](https://airtable.com/appAWSOlM2P9kqgOV)
+
+**Two PATs, two scopes — recommended split**
+
+| PAT | Scope | Lives in | Used for |
+|---|---|---|---|
+| `AIRTABLE_PAT_WRITE` | `data.records:read`, `data.records:write` on this base only | Netlify env vars | Server-side writes from Netlify Functions: contact form → Contacts, "Suggest edit" → Feedback, etc. |
+| `AIRTABLE_PAT_READ` | `data.records:read` on this base only | `.env.local` in repo (gitignored) | Local sessions: pull tasks, screenshots, and feedback so Claude can act on them between commits |
+
+**Netlify side** — when you've created the write PAT:
+```
+Netlify → Site configuration → Environment variables
+  AIRTABLE_BASE_ID  = appAWSOlM2P9kqgOV
+  AIRTABLE_PAT_WRITE = pat••••••••••••
+```
+A Netlify Function will read these and post to the Airtable REST API.
+
+**Local side** — drop a `.env.local` at the repo root:
+```bash
+# .env.local (gitignored)
+AIRTABLE_BASE_ID=appAWSOlM2P9kqgOV
+AIRTABLE_PAT_READ=pat••••••••••••
+```
+That lets a session pull the latest Workplan rows, fetch attached screenshots, and mirror new Feedback entries into action items without you having to paste them into chat.
+
+Suggested helper: `scripts/airtable-pull.sh` (TBD) — `source .env.local && curl https://api.airtable.com/v0/$AIRTABLE_BASE_ID/Workplan ...` to dump open tasks as JSON for review at the start of a session.
 
 ---
 
