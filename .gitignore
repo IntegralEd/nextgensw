@@ -12,4 +12,7 @@ env.txt
 secrets.txt
 
 # Local-only reference materials (large binaries, working drafts)
-/Reference/
+# Use a glob (not the dir itself) so we can selectively re-include files.
+Reference/*
+# …but keep intentionally-shared reference files
+!Reference/softr.txt

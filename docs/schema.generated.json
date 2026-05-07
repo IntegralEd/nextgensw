@@ -1,0 +1,642 @@
+{
+  "baseId": "appAWSOlM2P9kqgOV",
+  "tables": [
+    {
+      "id": "tblABreioRlQTyMVH",
+      "name": "User_Session",
+      "primaryFieldId": "fldmvfF8yGwnS6DJY",
+      "fields": [
+        {
+          "id": "fld0yUt5YVbwuWtMQ",
+          "name": "Visited",
+          "type": "formula",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fld2CiVLViqt6Mc4a",
+          "name": "Session_ID",
+          "type": "multipleRecordLinks",
+          "linkedTableId": "tblacwYdRuQwQGIHq",
+          "linkedTableName": "AirTable_API_Post"
+        },
+        {
+          "id": "fld2n1TaXjqYXYhat",
+          "name": "Lesson_Label from Materials ID",
+          "type": "multipleLookupValues",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldAAfu3LzFwt4P9B",
+          "name": "Full Name (from Application Users)",
+          "type": "multipleLookupValues",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldcYUYU0YHrn6qQD",
+          "name": "Page",
+          "type": "formula",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldczKF2Knj8GSRJI",
+          "name": "Page_Type",
+          "type": "multipleLookupValues",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldDqQb3lblbYJ9jT",
+          "name": "Edition_Name",
+          "type": "multipleLookupValues",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldg5bttphcM7AU3W",
+          "name": "Record_Created",
+          "type": "createdTime",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldHzzGzdo83FA5Gv",
+          "name": "Visit_Summary",
+          "type": "formula",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldjQY7sFNM8HLFtI",
+          "name": "Edition_ID",
+          "type": "singleLineText",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldjYFnZk8l9tx5H6",
+          "name": "Session Timestamp",
+          "type": "multipleLookupValues",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldm0h77JT0UmSJwu",
+          "name": "Title (from Application Users)",
+          "type": "multipleLookupValues",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldmlQSSdsP2T7NME",
+          "name": "Lesson_Name",
+          "type": "multipleLookupValues",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldmvfF8yGwnS6DJY",
+          "name": "User_Email",
+          "type": "singleLineText",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldNp5EB8JU92xaRj",
+          "name": "Organization (from Application Users)",
+          "type": "multipleLookupValues",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldoRBIUqgAAkPPgi",
+          "name": "Application Users",
+          "type": "multipleRecordLinks",
+          "linkedTableId": "tbldH5vECddqn4Tvv",
+          "linkedTableName": "Users"
+        },
+        {
+          "id": "fldQenEHcLTlwLahI",
+          "name": "Resource_Name",
+          "type": "multipleLookupValues",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldR8sfWWmSGQcQ1s",
+          "name": "Record_ID_TXT",
+          "type": "singleLineText",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldtqi7iWJbgYo5QE",
+          "name": "Edition_From_Lesson_ID",
+          "type": "multipleLookupValues",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldu8XXG9o1k4ddxe",
+          "name": "Aging_Hours",
+          "type": "formula",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "flduaxKFFxltTGbrn",
+          "name": "Lesson_Label from Lesson ID",
+          "type": "multipleLookupValues",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldVINrpojrz9SSoe",
+          "name": "Lesson_ID",
+          "type": "singleLineText",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldwziqUKCl4u7R2T",
+          "name": "Materials_ID",
+          "type": "singleLineText",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldyDXaUWQ1pDP0e6",
+          "name": "URL_Visited",
+          "type": "multipleLookupValues",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldYHO8J4ZCTzZkXb",
+          "name": "Lesson_From_Materials_ID",
+          "type": "multipleLookupValues",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldziS3ucDHGhwWWt",
+          "name": "Visit_Type",
+          "type": "multipleLookupValues",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldzsy9QOBVqLmp0o",
+          "name": "Visited_Orig",
+          "type": "formula",
+          "linkedTableId": null,
+          "linkedTableName": null
+        }
+      ]
+    },
+    {
+      "id": "tblacwYdRuQwQGIHq",
+      "name": "AirTable_API_Post",
+      "primaryFieldId": "fldVWmbUalxQTwXBf",
+      "fields": [
+        {
+          "id": "fldh72Nxph7oWXsMR",
+          "name": "Lesson_AT_ID",
+          "type": "singleLineText",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldMbXJeN0ajU2WnO",
+          "name": "Record_Created",
+          "type": "createdTime",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldoJFQ1D5GlYsfco",
+          "name": "Visit_Type",
+          "type": "formula",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldpASA1YeT9iBSBF",
+          "name": "Page_Type",
+          "type": "formula",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldsMYmJLBlhhHSbp",
+          "name": "User_Module_Session",
+          "type": "multipleRecordLinks",
+          "linkedTableId": "tblABreioRlQTyMVH",
+          "linkedTableName": "User_Session"
+        },
+        {
+          "id": "fldVWmbUalxQTwXBf",
+          "name": "AT_Session_ID",
+          "type": "formula",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldyGujZ3z1M3jiln",
+          "name": "URL_Visited",
+          "type": "singleLineText",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldypNWxLfcdgNmp8",
+          "name": "User_Email",
+          "type": "singleLineText",
+          "linkedTableId": null,
+          "linkedTableName": null
+        }
+      ]
+    },
+    {
+      "id": "tbldH5vECddqn4Tvv",
+      "name": "Users",
+      "primaryFieldId": "fldtyASy8WTn1nfg9",
+      "fields": [
+        {
+          "id": "fld0oFpDJu3SUnTar",
+          "name": "User_Module_Session",
+          "type": "multipleRecordLinks",
+          "linkedTableId": "tblABreioRlQTyMVH",
+          "linkedTableName": "User_Session"
+        },
+        {
+          "id": "fld3ExsJyB5nWMME5",
+          "name": "Assigned_Editions",
+          "type": "singleLineText",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fld4ucTQWeyJbooqo",
+          "name": "Last Modified",
+          "type": "lastModifiedTime",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fld5xMaP1iEpO121p",
+          "name": "Magic-Link-Reset",
+          "type": "lastModifiedTime",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fld62xYOQ7VRDt9MD",
+          "name": "Modules_Visited",
+          "type": "rollup",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fld6ihIuL8U7uuewv",
+          "name": "State",
+          "type": "singleLineText",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fld9lKEWHtDfLUV5U",
+          "name": "Organization",
+          "type": "singleSelect",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fld9Tjsep2j3ThWj5",
+          "name": "User_Role",
+          "type": "singleSelect",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldB6n3mkkogxJZCH",
+          "name": "Added_by",
+          "type": "multipleRecordLinks",
+          "linkedTableId": "tbldH5vECddqn4Tvv",
+          "linkedTableName": "Users"
+        },
+        {
+          "id": "fldbZumYzslgqGJ3k",
+          "name": "Lessons",
+          "type": "singleLineText",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldd4huOI5EicvMID",
+          "name": "Editions",
+          "type": "singleLineText",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "flddOYHnS6RvBxivC",
+          "name": "Visit_Count",
+          "type": "rollup",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "flddZmcnekKut1QYc",
+          "name": "Facilitator_Lessons_Link",
+          "type": "singleLineText",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "flde7MOGLMElMcwZa",
+          "name": "Latest_Visit",
+          "type": "rollup",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldeS6kgNpaYDpEk2",
+          "name": "Magic Link",
+          "type": "url",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldHTPbaTDlEUef34",
+          "name": "LinkedIn_URL",
+          "type": "url",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldigULSeTnAEMiSj",
+          "name": "Photo",
+          "type": "multipleAttachments",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldjHds9ws87SsBC7",
+          "name": "Title",
+          "type": "singleLineText",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldJqU4koDp1Pi6UO",
+          "name": "Full Name (from Added_by)",
+          "type": "multipleLookupValues",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldOrNzcp9Imqrrmy",
+          "name": "Lesson_Materials",
+          "type": "singleLineText",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldQnu7NRnIXccLCb",
+          "name": "City",
+          "type": "singleLineText",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldRcaIqGa5CTTl5m",
+          "name": "User Reset Message",
+          "type": "formula",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldTBlc7NKHHki7CN",
+          "name": "Softr_Created",
+          "type": "dateTime",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldtyASy8WTn1nfg9",
+          "name": "Email",
+          "type": "email",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldu8KS2uByiTdCKN",
+          "name": "Full Name",
+          "type": "multilineText",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "flduOVSBBTpOWT2P6",
+          "name": "SessionName_Facilitator",
+          "type": "multipleLookupValues",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldVMJzkLZsfipecg",
+          "name": "Created",
+          "type": "createdTime",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldvwSHyqfovnWcNG",
+          "name": "Email (from Added_by)",
+          "type": "multipleLookupValues",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldwp8rm8doQuQkQ6",
+          "name": "User_Org_Entry",
+          "type": "singleLineText",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldwYJM7cvgtPJZBk",
+          "name": "Messages",
+          "type": "multipleRecordLinks",
+          "linkedTableId": "tbllRFgUQ8oFjYieR",
+          "linkedTableName": "Messages"
+        },
+        {
+          "id": "fldwymUnz9IunPrDG",
+          "name": "Biography",
+          "type": "richText",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldYQ0oO2UU5dohxd",
+          "name": "Updated_By",
+          "type": "multipleRecordLinks",
+          "linkedTableId": "tbldH5vECddqn4Tvv",
+          "linkedTableName": "Users"
+        }
+      ]
+    },
+    {
+      "id": "tbllRFgUQ8oFjYieR",
+      "name": "Messages",
+      "primaryFieldId": "fldvywINmnYTe1LVk",
+      "fields": [
+        {
+          "id": "fldcJCpKIzMD2AdTE",
+          "name": "Created_Time",
+          "type": "createdTime",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldEJCGc81IXZLHzb",
+          "name": "From field: Reply_to_Message",
+          "type": "multipleRecordLinks",
+          "linkedTableId": "tbllRFgUQ8oFjYieR",
+          "linkedTableName": "Messages"
+        },
+        {
+          "id": "fldeLVCfBSGrdjf52",
+          "name": "Attachment",
+          "type": "multipleAttachments",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldl5MHINy5EX5pNJ",
+          "name": "URL",
+          "type": "singleLineText",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldNui5fypiuRKbjQ",
+          "name": "Section",
+          "type": "singleLineText",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldP94WbxcFq8JEMO",
+          "name": "Message_Content",
+          "type": "richText",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldR5hxJT28kc2SGN",
+          "name": "Reply_to_Message",
+          "type": "multipleRecordLinks",
+          "linkedTableId": "tbllRFgUQ8oFjYieR",
+          "linkedTableName": "Messages"
+        },
+        {
+          "id": "fldUtJ5ejCZqGKl1E",
+          "name": "Is_Reply",
+          "type": "checkbox",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldvywINmnYTe1LVk",
+          "name": "Message_ID",
+          "type": "formula",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldYK3jqW9QREI2kW",
+          "name": "User",
+          "type": "multipleRecordLinks",
+          "linkedTableId": "tbldH5vECddqn4Tvv",
+          "linkedTableName": "Users"
+        }
+      ]
+    },
+    {
+      "id": "tblZeCbkIR8BkC3DN",
+      "name": "Schema_Registry",
+      "primaryFieldId": "fld1hOAt9Ohj46riq",
+      "fields": [
+        {
+          "id": "fld1hOAt9Ohj46riq",
+          "name": "Schema_AT_ID",
+          "type": "formula",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fld7pvyD3Dm5IyXHR",
+          "name": "Table_Name",
+          "type": "singleLineText",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldc4vNOAg4GvdGYX",
+          "name": "Linked_Table_ID",
+          "type": "singleLineText",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "flddiwApKkp4XQ9y2",
+          "name": "Field_Type",
+          "type": "singleLineText",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldhfjlqGvJRIoEap",
+          "name": "Linked_Table",
+          "type": "singleLineText",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldm2TD6ScysrfB7M",
+          "name": "Table_ID",
+          "type": "singleLineText",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldRDy0m7IpxuP4ns",
+          "name": "Is_Linked_Field",
+          "type": "checkbox",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldTxtFmRbRynSrQV",
+          "name": "Field_Name",
+          "type": "singleLineText",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldvtmq2rWC5PJVWC",
+          "name": "Field_ID",
+          "type": "singleLineText",
+          "linkedTableId": null,
+          "linkedTableName": null
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,563 @@
+==================================================================
+NextGen SW — Softr custom-code snippets + tracking patterns
+==================================================================
+
+Drop these into Softr "Custom Code" blocks (per page or workspace-wide)
+and into the public Netlify site where noted.
+
+Base ID:    appAWSOlM2P9kqgOV
+Tables we touch:
+  - AirTable_API_Post  (event log: page views, clicks, anything)
+  - Messages           (feedback / comments — threaded, with attachments)
+  - Users              (Softr-synced; User link is the author)
+  - Contacts           (TBD — interest form lands here)
+
+------------------------------------------------------------------
+SECURITY NOTES — read first
+------------------------------------------------------------------
+
+  • Anything posted from a SOFTR page is behind Softr login; client-side
+    PATs in those scripts are visible only to logged-in users. That's
+    typically acceptable for a low-scope WRITE PAT (e.g. data.records:write
+    on AirTable_API_Post and Messages only). Still — prefer "least scope
+    you can stand."
+
+  • Anything posted from the PUBLIC NETLIFY SITE must NOT include a write
+    PAT in client code — anyone can scrape it. Use a Netlify Function as
+    a tiny proxy (snippets at the bottom). The function holds the PAT in
+    Netlify env vars and validates the request before forwarding.
+
+  • For all writes, use a write-scoped PAT with access to *only* the
+    NextGen SW base. Never reuse a PAT across bases.
+
+==================================================================
+BLOCK A — Page-view tracker (Softr custom code, workspace-wide)
+==================================================================
+
+Goal: log a row to AirTable_API_Post every time a logged-in Softr user
+opens a page. Captures URL, page id, and the user's email/session.
+
+Where to paste in Softr:
+  Workspace → Settings → Custom Code → Body bottom (so it runs on every page)
+
+Replace AT_PAT_WRITE with a write-scoped PAT (data.records:create on
+AirTable_API_Post only), pasted in the Softr custom code editor (visible
+to logged-in users only — see security notes).
+
+----- begin -----
+<script>
+(function () {
+  const AT_BASE = "appAWSOlM2P9kqgOV";
+  const AT_TABLE = "AirTable_API_Post";
+  const AT_PAT_WRITE = "REPLACE_WITH_SOFTR_WRITE_PAT";
+
+  // Softr exposes the logged-in user when the page is gated.
+  // window.logged_in_user is populated after auth completes.
+  function getUser() {
+    try {
+      return window.logged_in_user || {};
+    } catch (_e) { return {}; }
+  }
+
+  function pageId() {
+    // Use the path as a stable ID, e.g. "/admin/dashboard" -> "admin-dashboard".
+    const p = location.pathname.replace(/^\/+|\/+$/g, "") || "home";
+    return p.replace(/[^a-z0-9_-]+/gi, "-").toLowerCase().slice(0, 80);
+  }
+
+  function postEvent(fields) {
+    return fetch(`https://api.airtable.com/v0/${AT_BASE}/${AT_TABLE}`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${AT_PAT_WRITE}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ fields, typecast: true }),
+      keepalive: true,
+    }).catch(() => { /* silent; tracking must never break the page */ });
+  }
+
+  // Section_Visited convention:
+  //   real section anchor   → "why", "timeline", "hero"  (from location.hash or pageId fallback)
+  //   ad-hoc event           → "event:cta_donate_clicked"
+  //   leave blank             → empty string (use sparingly)
+  function sectionFromHash() {
+    return (location.hash || "").replace(/^#/, "").toLowerCase().slice(0, 80);
+  }
+
+  function logPageView() {
+    const u = getUser();
+    postEvent({
+      Section_Visited: sectionFromHash() || pageId(),
+      URL_Visited: location.href,
+      User_Email: u.email || "",
+    });
+  }
+
+  // Wait until Softr has had a chance to set window.logged_in_user
+  if (document.readyState === "complete") {
+    setTimeout(logPageView, 250);
+  } else {
+    window.addEventListener("load", () => setTimeout(logPageView, 250));
+  }
+
+  // Also re-log when the in-page hash changes (deep-link nav, anchor jumps)
+  window.addEventListener("hashchange", function () {
+    setTimeout(logPageView, 50);
+  });
+
+  // Expose for ad-hoc events from other scripts.
+  // Pass {section: "why"} to override; otherwise events get "event:<name>".
+  window.NGTrack = {
+    event: function (name, extra) {
+      const u = getUser();
+      const section = (extra && extra.section)
+        ? String(extra.section).slice(0, 80)
+        : "event:" + name;
+      postEvent({
+        Section_Visited: section,
+        URL_Visited: (extra && extra.url) || location.href,
+        User_Email: u.email || "",
+      });
+    }
+  };
+})();
+</script>
+----- end -----
+
+
+==================================================================
+BLOCK B — Click tracker (drop on any page)
+==================================================================
+
+Tag any element with `data-track="event-name"`. Optionally
+`data-track-url="https://..."` to override the URL field.
+
+Requires Block A to have run (uses window.NGTrack).
+
+----- begin -----
+<script>
+document.addEventListener("click", function (e) {
+  const el = e.target.closest("[data-track]");
+  if (!el || !window.NGTrack) return;
+  // If the element knows what section it belongs to, pass it through.
+  // Otherwise the event is logged as "event:<name>" in Section_Visited.
+  const section = el.dataset.section
+    || (el.closest("[id]") && el.closest("[id]").id)
+    || null;
+  window.NGTrack.event(el.dataset.track, {
+    url: el.dataset.trackUrl || el.href || location.href,
+    section: section || undefined,
+  });
+});
+</script>
+----- end -----
+
+Usage example (in Softr custom HTML or page content):
+  <button data-track="apply-link-clicked">Apply</button>
+  <a data-track="resource-pdf-opened" href="/flyer.pdf">Flyer</a>
+
+
+==================================================================
+BLOCK C — "Suggest edit" button → opens prefilled Softr feedback form
+==================================================================
+
+Drop this into the public NextGen SW site (or any Softr page).
+Each <button class="suggest-edit"> opens the Softr message form with
+Section + URL pre-populated. The form's User field is auto-set from
+the Softr logged-in user (no auth handling needed in this snippet).
+
+Replace SOFTR_FEEDBACK_URL with the published Softr form URL.
+
+The Softr form fields should match the Airtable Messages table:
+  Section, URL, Message_Content, Attachment, User (auto)
+
+URL params Softr accepts as prefills (configure in form settings):
+  ?Section=hero&URL=https://nextgensw.org/
+
+----- begin -----
+<script>
+(function () {
+  const SOFTR_FEEDBACK_URL = "https://YOUR-SOFTR-DOMAIN/feedback-form";
+  document.addEventListener("click", function (e) {
+    const btn = e.target.closest(".suggest-edit");
+    if (!btn) return;
+    const section = btn.dataset.section || "";
+    const url = encodeURIComponent(location.href);
+    const target = `${SOFTR_FEEDBACK_URL}?Section=${encodeURIComponent(section)}&URL=${url}`;
+    window.open(target, "_blank", "noopener");
+  });
+})();
+</script>
+----- end -----
+
+HTML pattern (one per section on the public site):
+  <button class="suggest-edit" data-section="why" type="button">
+    💬 Suggest edit
+  </button>
+
+
+==================================================================
+BLOCK D — /feedback page right rail (Netlify HTML, embeds Softr form)
+==================================================================
+
+This is the wrapper for nextgensw.org/feedback. Left = live public site
+in an iframe; right = Softr feedback form. Sticky right rail so the form
+stays in view while the user scrolls the public page on the left.
+
+----- begin -----
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>NextGen SW — Feedback</title>
+  <style>
+    html, body { height: 100%; margin: 0; font-family: Inter, sans-serif; }
+    .feedback-grid {
+      display: grid; height: 100vh;
+      grid-template-columns: minmax(0, 1.6fr) minmax(360px, 1fr);
+    }
+    .feedback-grid > iframe { width: 100%; height: 100%; border: 0; display: block; }
+    .feedback-rail { position: sticky; top: 0; height: 100vh; }
+    @media (max-width: 720px) {
+      .feedback-grid { grid-template-columns: 1fr; height: auto; }
+      .feedback-rail { position: static; height: 80vh; }
+    }
+  </style>
+</head>
+<body>
+  <div class="feedback-grid">
+    <iframe src="/" title="NextGen SW preview"></iframe>
+    <iframe class="feedback-rail" src="https://YOUR-SOFTR-DOMAIN/feedback-form" title="Send feedback"></iframe>
+  </div>
+</body>
+</html>
+----- end -----
+
+
+==================================================================
+BLOCK E — Public-site engagement tracking via Netlify Function (proxy)
+==================================================================
+
+For the PUBLIC site (no login), do NOT put a write PAT in client JS.
+Send events to a Netlify Function that holds the PAT server-side.
+
+Client-side (drop in assets/js/main.js):
+
+----- begin: client -----
+<script>
+(function () {
+  function nearestSectionId(el) {
+    if (!el) return null;
+    const s = el.closest("section[id], [data-section]");
+    return s ? (s.id || s.dataset.section || null) : null;
+  }
+  function track(name, extra) {
+    const body = JSON.stringify({
+      event: name,
+      url: location.href,
+      section:
+        (extra && extra.section) ||
+        (location.hash || "").replace(/^#/, "") ||
+        null,
+      referrer: document.referrer || "",
+      ts: new Date().toISOString(),
+      extra: extra || null,
+    });
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon("/.netlify/functions/track", body);
+    } else {
+      fetch("/.netlify/functions/track", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body, keepalive: true,
+      }).catch(() => {});
+    }
+  }
+  window.NGTrack = { event: track };
+
+  // 1) Page view
+  track("page_view");
+
+  // 2) Click tracker (data-track="event-name")
+  document.addEventListener("click", function (e) {
+    const el = e.target.closest("[data-track]");
+    if (!el) return;
+    track(el.dataset.track, {
+      href: el.href || null,
+      section: el.dataset.section || nearestSectionId(el),
+    });
+  });
+
+  // 3) Scroll-depth (25/50/75/100 once each)
+  const hits = new Set();
+  window.addEventListener("scroll", function () {
+    const h = document.documentElement;
+    const pct = Math.round(((h.scrollTop + window.innerHeight) / h.scrollHeight) * 100);
+    [25, 50, 75, 100].forEach(function (m) {
+      if (pct >= m && !hits.has(m)) {
+        hits.add(m);
+        track("scroll_depth", { pct: m });
+      }
+    });
+  }, { passive: true });
+})();
+</script>
+----- end: client -----
+
+Server-side — netlify/functions/track.js:
+
+----- begin: function -----
+// netlify/functions/track.js
+export async function handler(event) {
+  if (event.httpMethod !== "POST") return { statusCode: 405, body: "" };
+
+  // Origin gate (block easy abuse from off-domain pages)
+  const origin = event.headers.origin || event.headers.referer || "";
+  if (!/nextgensw\.org/.test(origin) && !/localhost/.test(origin)) {
+    return { statusCode: 204, body: "" };
+  }
+
+  let body;
+  try { body = JSON.parse(event.body || "{}"); }
+  catch { return { statusCode: 204, body: "" }; }
+
+  const name = String(body.event || "").slice(0, 80);
+  const url = String(body.url || "").slice(0, 500);
+  const section = body.section ? String(body.section).slice(0, 80) : "";
+  if (!name) return { statusCode: 204, body: "" };
+
+  // Real section anchors map to Section_Visited as-is ("why", "timeline").
+  // Non-section events get a stable prefix so formulas can split them.
+  const sectionField = section ? section : "event:" + name;
+
+  // Light bot filter — drop obvious crawlers
+  const ua = (event.headers["user-agent"] || "").toLowerCase();
+  if (/bot|spider|crawler|preview|monitor/.test(ua)) return { statusCode: 204, body: "" };
+
+  const AT = process.env.AIRTABLE_BASE_ID;
+  const PAT = process.env.AIRTABLE_PAT_WRITE;
+  if (!AT || !PAT) return { statusCode: 500, body: "" };
+
+  await fetch(`https://api.airtable.com/v0/${AT}/AirTable_API_Post`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${PAT}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      fields: {
+        Section_Visited: sectionField,
+        URL_Visited: url,
+        // anonymous public traffic — no User_Email / User_Module_Session
+      },
+      typecast: true,
+    }),
+  }).catch(() => {});
+
+  return { statusCode: 204, body: "" };
+}
+----- end: function -----
+
+
+==================================================================
+BLOCK F — Web3Forms → Contacts table (interest form)
+==================================================================
+
+Three-step flow:
+  1) Web3Forms HTML form on the public site
+  2) Web3Forms POSTs to email + a webhook (Netlify Function)
+  3) Function writes the record to a Contacts table in Airtable
+
+HTML (drop into footer or a /join page):
+
+----- begin: form -----
+<form id="interest-form" class="interest-form" autocomplete="on">
+  <input type="hidden" name="access_key" value="WEB3FORMS_ACCESS_KEY">
+  <input type="hidden" name="subject" value="NextGen SW — new interest signup">
+  <input type="hidden" name="from_name" value="NextGen SW website">
+  <input type="hidden" name="redirect" value="https://nextgensw.org/thanks.html">
+  <input type="text" name="botcheck" tabindex="-1" autocomplete="off" style="display:none">
+
+  <label>Name <input name="name" required></label>
+  <label>Email <input name="email" type="email" required></label>
+
+  <fieldset>
+    <legend>I'm interested in becoming a/an…</legend>
+    <label><input type="checkbox" name="interest" value="Intern"> Intern</label>
+    <label><input type="checkbox" name="interest" value="Sponsor"> Sponsor</label>
+    <label><input type="checkbox" name="interest" value="Employer"> Employer / Project host</label>
+    <label><input type="checkbox" name="interest" value="Volunteer"> Volunteer</label>
+    <label><input type="checkbox" name="interest" value="Mentor"> Mentor</label>
+    <label><input type="checkbox" name="interest" value="Other"> Other</label>
+  </fieldset>
+
+  <label>How did you hear about us?
+    <input name="referral_source" placeholder="Friend, event, social, news…">
+  </label>
+
+  <label>Notes / questions
+    <textarea name="notes" rows="3"></textarea>
+  </label>
+
+  <label class="consent">
+    <input type="checkbox" name="consent" value="yes" required>
+    OK to contact me about NextGen SW updates
+  </label>
+
+  <button type="submit">Stay in touch</button>
+</form>
+
+<script>
+document.getElementById("interest-form").addEventListener("submit", function (e) {
+  // Optional: also POST to our Netlify Function so we land in Airtable
+  // (Web3Forms handles the email side independently)
+  const f = e.target;
+  const data = new FormData(f);
+  const interests = data.getAll("interest");
+  const payload = {
+    name: data.get("name"),
+    email: data.get("email"),
+    interests,
+    referral_source: data.get("referral_source") || "",
+    notes: data.get("notes") || "",
+    consent: data.get("consent") === "yes",
+  };
+  fetch("/.netlify/functions/interest", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+    keepalive: true,
+  }).catch(() => {});
+  // Web3Forms handles the actual submission via the form's native action
+});
+</script>
+----- end: form -----
+
+Server-side — netlify/functions/interest.js:
+
+----- begin: function -----
+// netlify/functions/interest.js
+export async function handler(event) {
+  if (event.httpMethod !== "POST") return { statusCode: 405, body: "" };
+
+  let p;
+  try { p = JSON.parse(event.body || "{}"); }
+  catch { return { statusCode: 400, body: "bad json" }; }
+
+  // Honeypot + minimal validation
+  if (!p.email || !/.+@.+\..+/.test(p.email)) {
+    return { statusCode: 400, body: "invalid email" };
+  }
+  const name = String(p.name || "").slice(0, 200);
+  const email = String(p.email).slice(0, 200);
+  const interests = Array.isArray(p.interests)
+    ? p.interests.filter(i => ["Intern","Sponsor","Employer","Volunteer","Mentor","Other"].includes(i))
+    : [];
+
+  const AT = process.env.AIRTABLE_BASE_ID;
+  const PAT = process.env.AIRTABLE_PAT_WRITE;
+  if (!AT || !PAT) return { statusCode: 500, body: "" };
+
+  const res = await fetch(`https://api.airtable.com/v0/${AT}/Contacts`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${PAT}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      fields: {
+        Name: name,
+        Email: email,
+        Interests: interests,
+        Referral_Source: String(p.referral_source || "").slice(0, 500),
+        Notes: String(p.notes || "").slice(0, 2000),
+        Consent: !!p.consent,
+        Source: "Site",
+        Status: "New",
+      },
+      typecast: true,
+    }),
+  });
+
+  if (!res.ok) {
+    const text = await res.text();
+    return { statusCode: 502, body: `airtable: ${text}` };
+  }
+  return { statusCode: 201, body: "{}" };
+}
+----- end: function -----
+
+
+==================================================================
+APPENDIX — Suggested Contacts table fields (Airtable)
+==================================================================
+
+  Name              Single line text
+  Email             Email
+  Interests         Multiple select  (Intern / Sponsor / Employer /
+                                      Volunteer / Mentor / Other)
+  Referral_Source   Single line text (free text)
+  Notes             Long text
+  Consent           Checkbox          (default off)
+  Source            Single select     (Site / Event / Referral / QR /
+                                       Direct outreach)
+  Status            Single select     (New / Contacted / Active /
+                                       Converted / Archived)
+  Handled_by        Link → Users      (who's following up)
+  Created           Created time
+  Last_modified     Last modified time
+
+Optional:
+  Tag               Multi-select      (free-form labels for outreach)
+  Org               Single line text  (fill if Sponsor/Employer)
+  Reminder_at       Date              (next-touch date)
+
+
+==================================================================
+APPENDIX — Field convention for AirTable_API_Post
+==================================================================
+
+URL_Visited        full URL incl. hash, e.g. https://nextgensw.org/#why
+Section_Visited    one of:
+                     a)  bare section anchor   →  "why", "timeline", "hero"
+                     b)  page id (when there is no anchor)  →  "home", "feedback"
+                     c)  ad-hoc event           →  "event:cta_donate_clicked"
+User_Email         set on Softr (logged-in); blank on public traffic
+User_Module_Session  Softr-only (link → User_Session)
+
+A simple Visit_Type formula can split by SEARCH/LEFT on Section_Visited:
+
+  IF(LEFT({Section_Visited},6)="event:", "Event",
+     IF({Section_Visited}="", "Unknown",
+        "Page view"))
+
+Or pull just the event name:
+
+  IF(LEFT({Section_Visited},6)="event:",
+     MID({Section_Visited},7,80),
+     "")
+
+
+==================================================================
+APPENDIX — Suggested event names (encoded as event:<name>)
+==================================================================
+
+  scroll_depth                      with extra.pct = 25 / 50 / 75 / 100
+  cta_donate_clicked                hero + Three Asks Donate buttons
+  cta_apply_clicked                 hero + Three Asks Apply (currently coming-soon)
+  cta_partner_clicked               hero + Three Asks Partner
+  modal_slides_opened               Learn More slides preview
+  modal_flyer_opened                Learn More flyer preview
+  video_played                      YouTube launch video first play
+  hub_in_view                       $3,600 hub-spoke entered viewport
+  resource_link_clicked             with extra.label = "intern_jd" / "partner_survey" / etc.
+  interest_form_submitted           interest signup
+  suggest_edit_opened               with extra.section = "why" / "timeline" / etc.
+
+Real page views (not events) just write the section anchor or page id —
+no prefix needed. That keeps "page traffic by section" rollups clean
+without filtering out events.
+
+==================================================================
