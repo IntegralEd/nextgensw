@@ -1,0 +1,31 @@
+name: Airtable schema drift
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  verify-schema:
+    name: Verify committed schema matches Airtable
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Verify schema snapshot
+        env:
+          # AIRTABLE_PAT_READ — repo secret. PAT scoped to:
+          #   schema.bases:read   on the NextGen SW base
+          # (data.records:read is not required for the schema check.)
+          AIRTABLE_PAT_READ: ${{ secrets.AIRTABLE_PAT_READ }}
+          # Override with a repo variable AIRTABLE_BASE_ID to point at a
+          # different base; defaults to the constant in sync-schema.mjs.
+          AIRTABLE_BASE_ID: ${{ vars.AIRTABLE_BASE_ID }}
+        run: node scripts/verify-schema.mjs

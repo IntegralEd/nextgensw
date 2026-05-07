@@ -1,0 +1,14 @@
+{
+  "name": "nextgensw",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Static site for nextgensw.org. Node tooling here is for Airtable schema drift checks only — the public site has no build step.",
+  "type": "module",
+  "scripts": {
+    "schema:sync": "node scripts/sync-schema.mjs",
+    "schema:verify": "node scripts/verify-schema.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

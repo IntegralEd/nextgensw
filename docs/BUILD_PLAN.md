@@ -264,6 +264,30 @@ Suggested helper: `scripts/airtable-pull.sh` (TBD) — `source .env.local && cur
 
 ---
 
+## 8c · Schema drift CI (adapted from `IntegralEd/workbase`)
+
+A two-script + one-workflow pattern catches the moment Airtable diverges from what the code expects.
+
+```
+scripts/sync-schema.mjs     pulls live schema → docs/schema.generated.{json,csv}
+scripts/verify-schema.mjs   re-syncs in CI, fails on git diff
+.github/workflows/schema-drift.yml   runs verify on every PR + push to main
+```
+
+**One-time setup**
+1. Add GitHub repo secret `AIRTABLE_PAT_READ` (PAT with `schema.bases:read` on this base)
+2. (Optional) Add repo variable `AIRTABLE_BASE_ID` if you ever fork to a different base
+3. Once the initial base config is finished, run `npm run schema:sync` locally and commit `docs/schema.generated.{json,csv}` — that snapshot is the baseline
+
+**Day-to-day**
+- Field renamed, table added, type changed in Airtable? → CI fails on the next PR with a colored diff
+- Change is intentional? → `npm run schema:sync` locally, commit the updated snapshot, CI passes
+- Bootstrap mode: until the first snapshot is committed, the workflow runs but cleanly no-ops
+
+**Optional safety net**: list table IDs in `REQUIRED_TABLE_IDS` inside `sync-schema.mjs` and the sync fails loudly if any are deleted/recreated. (Names rename freely; IDs are stable.)
+
+---
+
 ## 9 · How this doc stays in sync
 
 - **Source of truth = the Airtable Workplan table.**
