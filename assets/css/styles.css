@@ -569,6 +569,36 @@ ul, ol { margin: 0 0 1em; padding: 0 0 0 1.2em; }
   position: absolute; inset: 0;
   width: 100%; height: 100%; border: 0;
 }
+.slides-embed {
+  position: relative;
+  aspect-ratio: 960/569;
+  width: 100%;
+  max-width: 720px;
+  background: var(--gray-200);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin: 1.5rem auto 0.75rem;
+  box-shadow: var(--shadow-sm);
+}
+.slides-embed iframe {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%; border: 0;
+}
+.slides-link {
+  text-align: center;
+  margin: 0 0 1.5rem;
+  font-weight: 600;
+}
+.slides-link a {
+  color: var(--brick);
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  padding-bottom: 2px;
+}
+.slides-link a:hover {
+  color: var(--brick-dark);
+  border-bottom-color: var(--brick-dark);
+}
 .video-placeholder {
   position: absolute; inset: 0;
   display: flex; align-items: center; justify-content: center;
