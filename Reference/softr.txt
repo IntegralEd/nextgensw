@@ -178,7 +178,7 @@ URL params Softr accepts as prefills (configure in form settings):
 ----- begin -----
 <script>
 (function () {
-  const SOFTR_FEEDBACK_URL = "https://YOUR-SOFTR-DOMAIN/feedback-form";
+  const SOFTR_FEEDBACK_URL = "https://NextGenSW.softr.app/website-feedback";
   document.addEventListener("click", function (e) {
     const btn = e.target.closest(".suggest-edit");
     if (!btn) return;
@@ -229,7 +229,7 @@ stays in view while the user scrolls the public page on the left.
 <body>
   <div class="feedback-grid">
     <iframe src="/" title="NextGen SW preview"></iframe>
-    <iframe class="feedback-rail" src="https://YOUR-SOFTR-DOMAIN/feedback-form" title="Send feedback"></iframe>
+    <iframe class="feedback-rail" src="https://NextGenSW.softr.app/website-feedback" title="Send feedback"></iframe>
   </div>
 </body>
 </html>

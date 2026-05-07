@@ -1238,6 +1238,34 @@ body.modal-open { overflow: hidden; }
 .footer-credits a { color: #B5B5B5; text-decoration: underline; }
 .footer-credits a:hover { color: var(--white); }
 
+/* ---------- Admin Suggest-Edit pill ---------- */
+.is-admin main section[id] {
+  position: relative;
+}
+.is-admin main section[id]:hover { outline: 2px dashed rgba(217,54,33,0.35); outline-offset: -2px; }
+.suggest-edit {
+  position: absolute;
+  bottom: 14px; right: 14px;
+  z-index: 20;
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.5rem 0.85rem;
+  background: rgba(217,54,33,0.95);
+  color: var(--white);
+  border: 0; border-radius: 999px;
+  font: 600 0.78rem/1 var(--font-sans);
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+  opacity: 0.55;
+  transition: opacity 0.15s ease, transform 0.05s ease, background 0.15s ease;
+}
+.suggest-edit:hover { opacity: 1; background: var(--brick-dark); }
+.suggest-edit:active { transform: translateY(1px); }
+.suggest-edit .se-label { white-space: nowrap; }
+@media (max-width: 540px) {
+  .suggest-edit { bottom: 10px; right: 10px; padding: 0.4rem 0.6rem; }
+  .suggest-edit .se-label { display: none; }
+}
+
 /* ---------- A11y / motion ---------- */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }

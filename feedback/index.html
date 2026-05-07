@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>NextGen SW — Feedback</title>
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/Favicon.svg">
+  <style>
+    :root {
+      --brick: #D93621;
+      --gray-200: #E7E3E2;
+      --ink: #1B1B1B;
+      --rail-w: clamp(360px, 38%, 520px);
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; }
+    body {
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: var(--ink);
+      background: #fff;
+    }
+    .feedback {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) var(--rail-w);
+      grid-template-rows: 56px 1fr;
+      grid-template-areas:
+        "bar  bar"
+        "main rail";
+      height: 100vh;
+    }
+    .fb-bar {
+      grid-area: bar;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem;
+      padding: 0 1rem;
+      background: var(--ink);
+      color: #fff;
+      font-size: 0.85rem;
+    }
+    .fb-bar a { color: #fff; }
+    .fb-brand { display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 700; }
+    .fb-brand img { height: 28px; width: auto; display: block; background: #fff; padding: 3px 6px; border-radius: 6px; }
+    .fb-meta { color: #B5B5B5; font-size: 0.78rem; }
+    .fb-meta .open-public {
+      color: #fff; text-decoration: underline; margin-left: 0.5rem;
+    }
+    .fb-main {
+      grid-area: main;
+      position: relative;
+      background: #fafafa;
+      overflow: hidden;
+    }
+    .fb-main iframe { width: 100%; height: 100%; border: 0; display: block; }
+    .fb-rail {
+      grid-area: rail;
+      border-left: 1px solid var(--gray-200);
+      background: #fff;
+      overflow: hidden;
+    }
+    .fb-rail iframe { width: 100%; height: 100%; border: 0; display: block; }
+
+    @media (max-width: 720px) {
+      .feedback {
+        grid-template-columns: 1fr;
+        grid-template-rows: 56px 60vh 40vh;
+        grid-template-areas:
+          "bar"
+          "main"
+          "rail";
+        height: 100vh;
+      }
+      .fb-rail { border-left: 0; border-top: 1px solid var(--gray-200); }
+      .fb-meta { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="feedback">
+    <header class="fb-bar">
+      <a class="fb-brand" href="/">
+        <img src="/assets/img/lockup.svg" alt="NextGen SW">
+        <span>Feedback workspace</span>
+      </a>
+      <div class="fb-meta">
+        Comment on the live site on the right →
+        <a class="open-public" href="/" target="_blank" rel="noopener">Open public site in new tab</a>
+      </div>
+    </header>
+
+    <main class="fb-main">
+      <iframe src="/?admin=1" title="NextGen SW preview"></iframe>
+    </main>
+
+    <aside class="fb-rail">
+      <iframe
+        src="https://NextGenSW.softr.app/website-feedback"
+        title="Send feedback"
+        allow="clipboard-write"
+        loading="lazy"></iframe>
+    </aside>
+  </div>
+</body>
+</html>
