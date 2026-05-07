@@ -264,15 +264,22 @@ ul, ol { margin: 0 0 1em; padding: 0 0 0 1.2em; }
 .bullets-tight li { margin-bottom: 0.35em; }
 
 /* Why NextGen SW (slide 3) */
-.section-why { background: var(--white); }
-.why-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: clamp(1.5rem, 3vw, 2.5rem);
-  align-items: center;
+.section-why {
+  background-color: var(--white);
+  background-image: url("/assets/img/team-arrow-v2.png");
+  background-repeat: no-repeat;
+  background-position: bottom center;
+  background-size: 100% auto;
+  padding-bottom: clamp(2rem, 12vw, 6rem);
 }
-@media (min-width: 720px) {
-  .why-grid { grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); }
+@media (min-width: 1100px) {
+  .section-why { background-size: 100% auto; }
+}
+.why-copy {
+  max-width: 70%;
+}
+@media (max-width: 719px) {
+  .why-copy { max-width: 100%; }
 }
 .why-copy h2 { color: var(--ink); margin-bottom: 0.6rem; }
 .why-subhead {
@@ -290,23 +297,6 @@ ul, ol { margin: 0 0 1em; padding: 0 0 0 1.2em; }
   font-size: var(--step-0);
 }
 .why-bullets li { margin-bottom: 0.55em; }
-.why-arrow {
-  justify-self: stretch;
-  width: 100%;
-  max-width: 520px;
-  margin-left: auto;
-}
-.why-arrow img {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-@media (min-width: 720px) {
-  .why-grid { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); }
-}
-@media (max-width: 719px) {
-  .why-arrow { max-width: 100%; }
-}
 
 /* Pathway */
 .pathway { list-style: none; padding: 0; counter-reset: pathway; max-width: 720px; }
