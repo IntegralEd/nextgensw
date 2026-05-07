@@ -319,40 +319,27 @@ ul, ol { margin: 0 0 1em; padding: 0 0 0 1.2em; }
 
 /* Legacy */
 .section-legacy {
-  position: relative;
   background: var(--gray-50);
+}
+.legacy-visual {
+  position: relative;
+  margin: 0;
+  aspect-ratio: 4/3;
+  border-radius: var(--radius);
   overflow: hidden;
+  box-shadow: var(--shadow-md);
+  background:
+    linear-gradient(180deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.45) 100%),
+    url("/assets/img/photos/mock-wedding-n-street-sw.jpg") center/cover no-repeat;
   isolation: isolate;
 }
-.legacy-map {
-  position: absolute; inset: 0; z-index: 0;
-  background: url("/assets/img/photos/mock-wedding-n-street-sw.jpg") center/cover no-repeat;
-  pointer-events: none;
-}
-.section-legacy::after {
-  content: "";
-  position: absolute; inset: 0; z-index: 0;
-  background: linear-gradient(180deg, rgba(247,247,247,0.55), rgba(247,247,247,0.78));
-  pointer-events: none;
-}
-.section-legacy > .container { position: relative; z-index: 1; }
-.legacy-visual {
-  aspect-ratio: 4/3;
-  background:
-    linear-gradient(135deg, rgba(217,54,33,0.15), rgba(56,164,96,0.18)),
-    rgba(231,227,226,0.55);
-  border: 1px solid rgba(255,255,255,0.6);
-  backdrop-filter: blur(2px);
-  border-radius: var(--radius);
-  display: flex; align-items: center; justify-content: center;
-  position: relative; overflow: hidden;
-  box-shadow: var(--shadow-md);
-}
 .legacy-frame {
-  text-align: center; padding: 2rem;
-  font-weight: 800; color: var(--ink); line-height: 1.15;
+  position: absolute; inset: 0; z-index: 1;
+  text-align: center; padding: 1.5rem;
+  font-weight: 800; color: var(--white); line-height: 1.15;
   display: flex; flex-direction: column; gap: 0.25em;
   align-items: center; justify-content: center;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.55);
 }
 .legacy-line { display: inline-block; }
 .legacy-line-1 {
@@ -360,7 +347,7 @@ ul, ol { margin: 0 0 1em; padding: 0 0 0 1.2em; }
 }
 .legacy-line-2 {
   font-size: var(--step-3);
-  color: var(--brick);
+  color: var(--yellow);
   transform: scale(0.4);
   opacity: 0;
   transform-origin: center;
@@ -373,6 +360,34 @@ ul, ol { margin: 0 0 1em; padding: 0 0 0 1.2em; }
 }
 @media (prefers-reduced-motion: reduce) {
   .legacy-line-2 { animation: none; transform: none; opacity: 1; }
+}
+
+.legacy-attribution {
+  position: absolute; right: 0.5rem; bottom: 0.5rem; z-index: 2;
+  font-size: 0.72rem;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+.legacy-visual:hover .legacy-attribution,
+.legacy-visual:focus-within .legacy-attribution {
+  opacity: 1;
+  pointer-events: auto;
+}
+.legacy-attribution a {
+  display: inline-block;
+  background: rgba(0,0,0,0.65);
+  color: var(--white);
+  padding: 0.3rem 0.6rem;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.legacy-attribution a:hover { background: rgba(0,0,0,0.85); }
+.legacy-attribution a:focus-visible {
+  outline: 2px solid var(--white);
+  outline-offset: 2px;
 }
 
 /* How it works (photo + ticker) */
