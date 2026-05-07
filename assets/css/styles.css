@@ -256,6 +256,42 @@ ul, ol { margin: 0 0 1em; padding: 0 0 0 1.2em; }
 .bullets li { margin-bottom: 0.5em; }
 .bullets-tight li { margin-bottom: 0.35em; }
 
+/* Why NextGen SW (slide 3) */
+.section-why { background: var(--white); }
+.why-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+  align-items: center;
+}
+@media (min-width: 720px) {
+  .why-grid { grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); }
+}
+.why-copy h2 { color: var(--ink); margin-bottom: 0.6rem; }
+.why-subhead {
+  color: var(--potomac-dark);
+  font-size: var(--step-1);
+  font-weight: 600;
+  line-height: 1.35;
+  margin: 0 0 1.25rem;
+  max-width: 36ch;
+}
+.why-bullets {
+  list-style: disc;
+  padding-left: 1.2em;
+  margin: 0;
+  font-size: var(--step-0);
+}
+.why-bullets li { margin-bottom: 0.55em; }
+.why-arrow {
+  justify-self: center;
+  width: clamp(120px, 22vw, 220px);
+}
+.why-arrow svg { width: 100%; height: auto; display: block; }
+@media (max-width: 719px) {
+  .why-arrow { width: 90px; justify-self: end; margin-top: -0.5rem; }
+}
+
 /* Pathway */
 .pathway { list-style: none; padding: 0; counter-reset: pathway; max-width: 720px; }
 .pathway li {
