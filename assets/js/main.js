@@ -1,38 +1,25 @@
 (function () {
   document.getElementById('year').textContent = new Date().getFullYear();
 
-  // "💬 Suggest edit" pill + feedback modal on every <section[id]>.
+  // "💬 Suggest edit" pill on every <section[id]>.
   // ACCESS CONTROL:
   //   Enabled ONLY when the page is loaded inside an iframe — i.e. via
   //   the gated Softr /website-review workspace. Direct visitors to
-  //   nextgensw.org never see the pills or the modal.
+  //   nextgensw.org never see the pills.
   //   No query-param backdoor. Access is whatever Softr's user-group
   //   gating allows on the workspace page.
-  // Click → opens the Softr feedback form in a modal with prefilled
-  // Section + URL params. Falls back to a new tab if the modal isn't
-  // available (defensive — the modal markup ships with index.html).
-  const FEEDBACK_EMBED_URL =
-    'https://NextGenSW.softr.app/embed/pages/1b098330-d473-415c-87ef-024c777add82/blocks/website-feedback';
+  // Click → opens the Softr feedback form in a NEW TAB with prefilled
+  // Section + URL params. We tried an in-page iframe modal but Softr's
+  // session cookies are third-party there and most browsers block them,
+  // forcing a sign-in loop. New-tab keeps the existing Softr session.
   const FEEDBACK_PAGE_URL = 'https://NextGenSW.softr.app/website-feedback';
 
   function inIframe() {
     try { return window.self !== window.top; } catch (_e) { return true; }
   }
-  function buildFeedbackUrl(base, section) {
+  function buildFeedbackUrl(section) {
     const url = location.origin + location.pathname + '#' + section;
-    return `${base}?Section=${encodeURIComponent(section)}&URL=${encodeURIComponent(url)}`;
-  }
-  function openFeedbackModal(section) {
-    const modal = document.getElementById('modal-feedback');
-    if (!modal) return false;
-    const iframe = modal.querySelector('iframe[data-src]');
-    const tabLink = modal.querySelector('[data-feedback-open-tab]');
-    if (!iframe) return false;
-    iframe.setAttribute('data-src', buildFeedbackUrl(FEEDBACK_EMBED_URL, section));
-    if (tabLink) tabLink.href = buildFeedbackUrl(FEEDBACK_PAGE_URL, section);
-    // openModal (defined below) reads data-src and sets iframe.src.
-    openModal('modal-feedback');
-    return true;
+    return `${FEEDBACK_PAGE_URL}?Section=${encodeURIComponent(section)}&URL=${encodeURIComponent(url)}`;
   }
 
   if (inIframe()) {
@@ -52,10 +39,7 @@
       if (!b) return;
       e.preventDefault();
       const section = b.dataset.section || '';
-      if (!openFeedbackModal(section)) {
-        // Fallback: open the full Softr page in a new tab
-        window.open(buildFeedbackUrl(FEEDBACK_PAGE_URL, section), '_blank', 'noopener');
-      }
+      window.open(buildFeedbackUrl(section), '_blank', 'noopener');
     });
   }
 

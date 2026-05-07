@@ -1196,21 +1196,6 @@ ul, ol { margin: 0 0 1em; padding: 0 0 0 1.2em; }
 }
 .modal-dialog:not(.modal-dialog-wide) .modal-body-iframe { aspect-ratio: 8.5/11; }
 
-/* Feedback modal — Softr form embed */
-.modal-dialog-feedback { max-width: 640px; }
-.modal-body-feedback {
-  background: var(--gray-100);
-  height: clamp(520px, 80vh, 820px);
-  display: flex;
-}
-.modal-body-feedback iframe {
-  border: 0;
-  width: 100%;
-  height: 100%;
-  flex: 1;
-  display: block;
-}
-
 body.modal-open { overflow: hidden; }
 .video-placeholder {
   position: absolute; inset: 0;
