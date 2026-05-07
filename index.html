@@ -41,26 +41,23 @@
 
     <!-- 1. HERO -->
     <section id="top" class="hero">
-      <div class="hero-bg" aria-hidden="true">
-        <svg viewBox="0 0 1200 600" preserveAspectRatio="xMidYMid slice">
-          <defs>
-            <pattern id="dots" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
-              <circle cx="6" cy="6" r="3" fill="#D93621" opacity="0.18"/>
-            </pattern>
-          </defs>
-          <rect width="1200" height="600" fill="url(#dots)"/>
-        </svg>
-      </div>
+      <div class="hero-photo" aria-hidden="true"></div>
+      <div class="hero-overlay" aria-hidden="true"></div>
+      <span class="hero-blob hero-blob-yellow" aria-hidden="true"></span>
+      <span class="hero-blob hero-blob-pink" aria-hidden="true"></span>
       <div class="hero-inner">
         <img class="hero-logo" src="/assets/img/logo.svg" alt="NextGen SW logo" width="240" height="320">
         <p class="lede">A paid youth internship and mentorship program rooted in Southwest DC.</p>
         <h1 class="visually-hidden">NextGen SW</h1>
         <div class="hero-actions">
-          <a href="https://docs.google.com/forms/d/e/1FAIpQLScjURkZPeIH-EqGDPLH7Q-qcSS33O0dptqfK00TIbyJ06b-UA/viewform?usp=header" target="_blank" rel="noopener" class="btn btn-primary">Apply / Refer a Young Person</a>
-          <a href="https://form.jotform.com/252113228540143" target="_blank" rel="noopener" class="btn btn-secondary">Donate or Sponsor an Intern</a>
-          <a href="https://docs.google.com/forms/d/e/1FAIpQLSfVVKb1MTkX2bRNKJs_AFp3WhDQ88ont_lWqak5aSTTn3xDlw/viewform" target="_blank" rel="noopener" class="btn btn-outline">Become a Partner or Mentor</a>
+          <a href="https://form.jotform.com/252113228540143" target="_blank" rel="noopener" class="btn btn-primary btn-shine">Donate or Sponsor an Intern</a>
+          <a href="https://docs.google.com/forms/d/e/1FAIpQLScjURkZPeIH-EqGDPLH7Q-qcSS33O0dptqfK00TIbyJ06b-UA/viewform?usp=header" target="_blank" rel="noopener" class="btn btn-secondary">Apply / Refer a Young Person</a>
+          <a href="https://docs.google.com/forms/d/e/1FAIpQLSfVVKb1MTkX2bRNKJs_AFp3WhDQ88ont_lWqak5aSTTn3xDlw/viewform" target="_blank" rel="noopener" class="btn btn-outline btn-outline-light">Become a Partner or Mentor</a>
         </div>
       </div>
+      <svg class="hero-squiggle" viewBox="0 0 1200 60" aria-hidden="true" preserveAspectRatio="none">
+        <path d="M0,30 C150,5 300,55 450,30 C600,5 750,55 900,30 C1050,5 1200,55 1200,30" fill="none" stroke="#FED01D" stroke-width="4" stroke-linecap="round"/>
+      </svg>
     </section>
 
     <!-- 2. WHY NEXTGEN SW -->
@@ -171,7 +168,7 @@
         <h2>Program timeline</h2>
         <ol class="timeline">
           <li class="timeline-item">
-            <div class="timeline-marker">1</div>
+            <div class="timeline-marker"><span class="tm-month">May</span><span class="tm-year">'26</span></div>
             <div class="timeline-content">
               <h3>Application opens</h3>
               <p>Young adults connected to Southwest can apply or be referred.</p>
@@ -179,7 +176,7 @@
             <div class="timeline-when-col"><span class="timeline-when">May 2026</span></div>
           </li>
           <li class="timeline-item">
-            <div class="timeline-marker">2</div>
+            <div class="timeline-marker"><span class="tm-month">Jul</span><span class="tm-year">'26</span></div>
             <div class="timeline-content">
               <h3>Interviews and matching</h3>
               <p>Cohort selection and pairing with mentors and partner organizations.</p>
@@ -187,7 +184,7 @@
             <div class="timeline-when-col"><span class="timeline-when">June – July</span></div>
           </li>
           <li class="timeline-item">
-            <div class="timeline-marker">3</div>
+            <div class="timeline-marker"><span class="tm-month">Sep</span><span class="tm-year">'26</span></div>
             <div class="timeline-content">
               <h3>Orientation, training, and internship start</h3>
               <p>Cohort kickoff, onboarding, laptops and tools, weekly meetings begin.</p>
@@ -195,7 +192,7 @@
             <div class="timeline-when-col"><span class="timeline-when">September 2026</span></div>
           </li>
           <li class="timeline-item">
-            <div class="timeline-marker">4</div>
+            <div class="timeline-marker"><span class="tm-month">All</span><span class="tm-year">Year</span></div>
             <div class="timeline-content">
               <h3>Internship period</h3>
               <p>Five hours/week paid work, mentorship, and cohort learning across the year.</p>
@@ -203,7 +200,7 @@
             <div class="timeline-when-col"><span class="timeline-when">Sept 2026 – June 2027</span></div>
           </li>
           <li class="timeline-item">
-            <div class="timeline-marker">5</div>
+            <div class="timeline-marker"><span class="tm-month">Jun</span><span class="tm-year">'27</span></div>
             <div class="timeline-content">
               <h3>Final project presentations and reflection</h3>
               <p>Interns share innovation projects with the Southwest community.</p>
