@@ -291,12 +291,21 @@ ul, ol { margin: 0 0 1em; padding: 0 0 0 1.2em; }
 }
 .why-bullets li { margin-bottom: 0.55em; }
 .why-arrow {
-  justify-self: center;
-  width: clamp(120px, 22vw, 220px);
+  justify-self: stretch;
+  width: 100%;
+  max-width: 520px;
+  margin-left: auto;
 }
-.why-arrow svg { width: 100%; height: auto; display: block; }
+.why-arrow img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+@media (min-width: 720px) {
+  .why-grid { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); }
+}
 @media (max-width: 719px) {
-  .why-arrow { width: 90px; justify-self: end; margin-top: -0.5rem; }
+  .why-arrow { max-width: 100%; }
 }
 
 /* Pathway */
@@ -327,15 +336,13 @@ ul, ol { margin: 0 0 1em; padding: 0 0 0 1.2em; }
 }
 .legacy-map {
   position: absolute; inset: 0; z-index: 0;
-  background: url("/assets/img/sw-waterfront-map.svg") center/cover no-repeat;
-  opacity: 0.18;
-  filter: saturate(0.85);
+  background: url("/assets/img/photos/mock-wedding-n-street-sw.jpg") center/cover no-repeat;
   pointer-events: none;
 }
 .section-legacy::after {
   content: "";
   position: absolute; inset: 0; z-index: 0;
-  background: linear-gradient(180deg, rgba(247,247,247,0.7), rgba(247,247,247,0.92));
+  background: linear-gradient(180deg, rgba(247,247,247,0.55), rgba(247,247,247,0.78));
   pointer-events: none;
 }
 .section-legacy > .container { position: relative; z-index: 1; }
@@ -353,9 +360,30 @@ ul, ol { margin: 0 0 1em; padding: 0 0 0 1.2em; }
 }
 .legacy-frame {
   text-align: center; padding: 2rem;
-  font-weight: 800; font-size: var(--step-2); color: var(--ink); line-height: 1.2;
+  font-weight: 800; color: var(--ink); line-height: 1.15;
+  display: flex; flex-direction: column; gap: 0.25em;
+  align-items: center; justify-content: center;
 }
-.legacy-label { display: block; }
+.legacy-line { display: inline-block; }
+.legacy-line-1 {
+  font-size: var(--step-2);
+}
+.legacy-line-2 {
+  font-size: var(--step-3);
+  color: var(--brick);
+  transform: scale(0.4);
+  opacity: 0;
+  transform-origin: center;
+  animation: legacyGrow 3s cubic-bezier(0.22, 1, 0.36, 1) 0.4s forwards;
+}
+@keyframes legacyGrow {
+  0%   { transform: scale(0.4); opacity: 0; }
+  60%  { opacity: 1; }
+  100% { transform: scale(1);   opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .legacy-line-2 { animation: none; transform: none; opacity: 1; }
+}
 
 /* How it works (photo + ticker) */
 .section-how {
