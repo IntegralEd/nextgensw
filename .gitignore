@@ -16,3 +16,4 @@ secrets.txt
 Reference/*
 # …but keep intentionally-shared reference files
 !Reference/softr.txt
+!Reference/softr-embed.txt

@@ -1,0 +1,161 @@
+==================================================================
+NextGen SW — Softr "Website Feedback Workspace" embed
+==================================================================
+
+ONE custom-code block. Paste once on a Softr page (e.g. /website-feedback).
+Renders an iframe of the live Netlify site with admin mode auto-enabled,
+so a small "💬 Suggest edit" pill appears on every section. Clicking a
+pill opens the Softr feedback form in a new tab with Section + URL
+prefilled — that form is a SEPARATE Softr page you build once.
+
+  Softr page                    →  embeds this code block (one iframe)
+  Inside the iframe             →  nextgensw.org/?admin=1
+  Click a pill in the iframe    →  new tab to your Softr feedback form
+                                   with ?Section=…&URL=… prefilled
+
+------------------------------------------------------------------
+Two Softr pages — what each one is
+------------------------------------------------------------------
+
+You already have the form page:
+
+  /website-feedback         ← FORM page (built; URL given by client)
+                              Softr "Form to Airtable" block,
+                              target = Messages table.
+                              Accepts URL params: ?Section=…&URL=…
+
+You'll add ONE more page — the workspace that hosts the iframe:
+
+  /feedback-workspace       ← WORKSPACE page (new, paste embed here)
+                              One Custom Code block, that's it.
+
+------------------------------------------------------------------
+Where to paste in Softr
+------------------------------------------------------------------
+
+  1. Workspace → Pages → New page
+       title:  Website Feedback Workspace
+       slug:   /feedback-workspace        (or any slug; just remember it)
+       layout: Blank (no nav, no footer if possible — full canvas)
+       gating: User Group → Admins        (or "Anyone with the link"
+                                           during early review)
+  2. On that page, add a "Custom Code" block — full width, full height
+  3. Paste everything between the ----- begin / end ----- markers below
+  4. Save & publish
+
+------------------------------------------------------------------
+On the existing /website-feedback form page — verify these mappings
+------------------------------------------------------------------
+
+In the form's field-mapping panel, confirm URL parameters are wired:
+
+  Section          ← URL param "Section"           (singleLineText)
+  URL              ← URL param "URL"               (singleLineText)
+  Message_Content  ← user input                    (richText)
+  Attachment       ← user input, multi-file        (multipleAttachments)
+  User             ← {{Logged-in user}}            (auto from session)
+  Is_Reply         ← false                         (only true on threaded replies)
+
+After-submit: thank-you toast OR redirect back to /feedback-workspace
+so the reviewer can immediately keep reviewing.
+
+------------------------------------------------------------------
+The embed code
+------------------------------------------------------------------
+
+----- begin -----
+<style>
+  .ng-fb-shell {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    background: #1B1B1B;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  .ng-fb-bar {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 8px 14px;
+    background: #1B1B1B;
+    color: #fff;
+    font-size: 13px;
+    line-height: 1.4;
+  }
+  .ng-fb-bar strong { color: #FED01D; font-weight: 700; }
+  .ng-fb-bar .hint { color: #B5B5B5; }
+  .ng-fb-bar a {
+    color: #fff; text-decoration: underline;
+    margin-left: 0.5rem; white-space: nowrap;
+  }
+  .ng-fb-frame {
+    flex: 1 1 auto;
+    width: 100%;
+    border: 0;
+    display: block;
+    background: #fff;
+  }
+</style>
+<div class="ng-fb-shell">
+  <div class="ng-fb-bar">
+    <span>
+      <strong>Website feedback workspace</strong>
+      <span class="hint"> — hover any section, click 💬 to comment</span>
+    </span>
+    <span class="hint">
+      <a href="https://nextgensw.org/" target="_blank" rel="noopener">Open public site ↗</a>
+    </span>
+  </div>
+  <iframe
+    class="ng-fb-frame"
+    src="https://nextgensw.org/?admin=1"
+    title="NextGen SW — review"
+    allow="clipboard-write"
+    loading="lazy"></iframe>
+</div>
+----- end -----
+
+------------------------------------------------------------------
+Two URLs to know
+------------------------------------------------------------------
+
+  Reviewer entry:   https://NextGenSW.softr.app/feedback-workspace
+                    (the page that holds the iframe — paste embed here)
+
+  Form receiver:    https://NextGenSW.softr.app/website-feedback
+                    (already built — the actual form page; gets opened
+                    in a new tab when a 💬 pill is clicked)
+
+The pill-click handler in the public site posts to the form URL above.
+That URL is hardcoded once as FEEDBACK_FORM_URL near the top of
+assets/js/main.js in the Netlify repo. If you change the form's slug
+on Softr, edit that constant and redeploy.
+
+------------------------------------------------------------------
+What the reviewer experiences
+------------------------------------------------------------------
+
+  1. Logs into Softr, lands on /feedback-workspace
+  2. Sees the live nextgensw.org page in an iframe, full bleed
+  3. Hovers any section → dashed brick outline appears around it
+  4. Clicks "💬 Suggest edit" pill in the bottom-right of that section
+  5. New tab opens to /website-feedback?Section=why&URL=… with
+     Section + URL already filled in
+  6. They type their note, optionally drag in a screenshot, submit
+  7. Record lands in Airtable Messages table, with their email/User
+     link populated automatically from their Softr session
+  8. Close the form tab, back to the workspace tab, keep reviewing
+
+------------------------------------------------------------------
+Threaded replies (no extra setup)
+------------------------------------------------------------------
+
+The Messages table already has Reply_to_Message + Is_Reply fields, so
+admins responding to a message via a separate Softr "Conversation" or
+"Inbox" page can thread their replies. That admin-side view is a
+later build — for now the workspace + form pair is what's needed.
+
+==================================================================
