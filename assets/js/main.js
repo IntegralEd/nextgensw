@@ -1,22 +1,41 @@
 (function () {
   document.getElementById('year').textContent = new Date().getFullYear();
 
-  // "💬 Suggest edit" pill on every <section[id]>.
-  // Auto-enabled when the page is loaded inside an iframe (e.g. the
-  // gated Softr /website-review workspace). Manual overrides:
-  //   ?admin=1  → force-enable on direct visits (persists for session)
-  //   ?admin=0  → force-disable
-  // Click → opens the Softr feedback form with Section + URL prefilled.
-  const FEEDBACK_FORM_URL = 'https://NextGenSW.softr.app/website-feedback';
+  // "💬 Suggest edit" pill + feedback modal on every <section[id]>.
+  // ACCESS CONTROL:
+  //   Enabled ONLY when the page is loaded inside an iframe — i.e. via
+  //   the gated Softr /website-review workspace. Direct visitors to
+  //   nextgensw.org never see the pills or the modal.
+  //   No query-param backdoor. Access is whatever Softr's user-group
+  //   gating allows on the workspace page.
+  // Click → opens the Softr feedback form in a modal with prefilled
+  // Section + URL params. Falls back to a new tab if the modal isn't
+  // available (defensive — the modal markup ships with index.html).
+  const FEEDBACK_EMBED_URL =
+    'https://NextGenSW.softr.app/embed/pages/1b098330-d473-415c-87ef-024c777add82/blocks/website-feedback';
+  const FEEDBACK_PAGE_URL = 'https://NextGenSW.softr.app/website-feedback';
+
   function inIframe() {
     try { return window.self !== window.top; } catch (_e) { return true; }
   }
-  const adminQ = new URLSearchParams(location.search).get('admin');
-  if (adminQ === '1') sessionStorage.setItem('ng_admin', '1');
-  if (adminQ === '0') sessionStorage.removeItem('ng_admin');
-  const adminMode =
-    sessionStorage.getItem('ng_admin') === '1' || inIframe();
-  if (adminMode) {
+  function buildFeedbackUrl(base, section) {
+    const url = location.origin + location.pathname + '#' + section;
+    return `${base}?Section=${encodeURIComponent(section)}&URL=${encodeURIComponent(url)}`;
+  }
+  function openFeedbackModal(section) {
+    const modal = document.getElementById('modal-feedback');
+    if (!modal) return false;
+    const iframe = modal.querySelector('iframe[data-src]');
+    const tabLink = modal.querySelector('[data-feedback-open-tab]');
+    if (!iframe) return false;
+    iframe.setAttribute('data-src', buildFeedbackUrl(FEEDBACK_EMBED_URL, section));
+    if (tabLink) tabLink.href = buildFeedbackUrl(FEEDBACK_PAGE_URL, section);
+    // openModal (defined below) reads data-src and sets iframe.src.
+    openModal('modal-feedback');
+    return true;
+  }
+
+  if (inIframe()) {
     document.body.classList.add('is-admin');
     document.querySelectorAll('main section[id]').forEach(sec => {
       if (sec.querySelector('.suggest-edit')) return;
@@ -31,10 +50,12 @@
     document.addEventListener('click', e => {
       const b = e.target.closest('.suggest-edit');
       if (!b) return;
+      e.preventDefault();
       const section = b.dataset.section || '';
-      const url = encodeURIComponent(location.origin + location.pathname + '#' + section);
-      const target = `${FEEDBACK_FORM_URL}?Section=${encodeURIComponent(section)}&URL=${url}`;
-      window.open(target, '_blank', 'noopener');
+      if (!openFeedbackModal(section)) {
+        // Fallback: open the full Softr page in a new tab
+        window.open(buildFeedbackUrl(FEEDBACK_PAGE_URL, section), '_blank', 'noopener');
+      }
     });
   }
 

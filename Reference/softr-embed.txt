@@ -111,7 +111,7 @@ The embed code
   </div>
   <iframe
     class="ng-fb-frame"
-    src="https://nextgensw.org/?admin=1"
+    src="https://nextgensw.org/"
     title="NextGen SW — review"
     allow="clipboard-write"
     loading="lazy"></iframe>
