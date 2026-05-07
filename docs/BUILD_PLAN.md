@@ -1,0 +1,254 @@
+# NextGen SW — Build Plan & Workplan
+
+> Living document. Owners listed beside each task; status updates flow from
+> the Airtable **Workplan** table (this doc mirrors it for at-a-glance review).
+> Source: `docs/BUILD_PLAN.md` in the [GitHub repo](https://github.com/IntegralEd/nextgensw).
+
+---
+
+## 1 · Where things stand
+
+**Public site** — [nextgensw.org](https://nextgensw.org) is live on Netlify, custom domain configured, deploys auto-trigger on push to `main`. All twelve sections from the original guidance doc are built. Brand palette extracted from launch deck slide 19 and applied as CSS tokens. Logo + horizontal lockup are SVGs. Photo of mentor + interns is the hero. Hub-and-spoke donation viz at $3,600 is animated on scroll. Squiggle motif and yellow hand-drawn underlines are the connective brand tissue.
+
+**Working CTAs**
+- Donate / Sponsor → Jotform `252113228540143`
+- Partner Interest Survey → Google Form `1FAIpQLSfV...DxDlw`
+- Apply / Refer → marked **Coming soon** (form `1FAIpQLScj...A` is drafted but not published)
+
+**Live integrations**
+- YouTube launch video embedded in Learn More
+- Google Slides modal (preview + open-in-new-tab)
+- Program flyer modal (preview + download)
+
+**Not yet wired**
+- Team headshots (placeholder initials in cards)
+- Live early-supporter wordmarks
+- Mailing-list capture
+- Feedback / admin / stakeholder pages
+
+---
+
+## 2 · Outstanding website items
+
+| # | Item | Owner | Status | Notes |
+|---|---|---|---|---|
+| W1 | Upload team headshots (Thelma, Rhonda, Ava, Monique) | Ava | Open | Square crops, ≥400×400, JPG or PNG. Drop in `assets/img/team/`. |
+| W2 | Approve & publish intern application form | Ava | Open | Once published, drop the URL — David removes "Coming soon" pill. |
+| W3 | Confirm fiscal-sponsor language for donate card | Thelma | Open | Add "Tax-deductible through SWNA" line if accurate. |
+| W4 | Replace placeholder body photos w/ permissioned local images | Rhonda | Open | Need 2–3 community photos (waterfront, scholarship night, mentor mtg). |
+| W5 | Compile early supporter list for Three-Asks marquee | Thelma | Open | Org names + (optional) wordmarks for a quiet supporters strip. |
+| W6 | Decide on Donate vs. Apply hierarchy long-term | Team | Open | Currently Donate leads in hero. Revisit after launch event. |
+| W7 | OG social card (1200×630) for QR / SMS / social shares | David | Open | Logo + tagline + brick band. |
+| W8 | Add testimonial pull-quote block (alum or scholarship recipient) | Ava+David | Open | One named voice, 40–60 words, headshot. |
+
+---
+
+## 3 · /feedback page (Phase 1 — this week)
+
+**Goal:** mirror the public page on the left, with a Softr-powered comment + screenshot + file-upload form on the right rail. Anyone with the URL can submit; entries land in the Airtable **Feedback** table.
+
+**Architecture**
+```
+nextgensw.org/feedback
+├── Left  ~62%  → iframe of the public site (no chrome changes)
+└── Right ~38%  → iframe of Softr feedback page
+                  (form posts to Airtable "Feedback" table)
+```
+
+**Build steps**
+
+| # | Item | Owner | Status |
+|---|---|---|---|
+| F1 | Build `feedback/index.html` on Netlify with two-column iframe layout (sticky right rail) | David | Open |
+| F2 | Confirm Softr feedback form URL (Airtable-connected) | David | Open |
+| F3 | Wire `?section=…` query param so each section's "Suggest edit" button pre-fills the Softr form | David | Open |
+| F4 | Add small "💬 Suggest edit" floating button per section on the public site, gated by `?admin=1` query param | David | Open |
+| F5 | Test screenshot upload flow (Softr's native file field → Airtable attachments) | Ava | Open |
+
+**No auth required at first.** The URL is unguessable enough for friendly review. Add Softr login gating in Phase 2.
+
+---
+
+## 4 · /admin page (Phase 2 — post-launch)
+
+**Goal:** Logged-in admin dashboard for managing applications, calendars, content updates, and the workplan itself.
+
+```
+nextgensw.org/admin
+└── iframe of Softr admin app (single-page, role-gated)
+    ├── Dashboard (active feedback, open tasks, applications waiting review)
+    ├── Workplan (this doc's mirror)
+    ├── Applications inbox (interns, sponsors, employers)
+    ├── Contacts (mailing list, with interest checkboxes)
+    └── Section-by-section feedback log
+```
+
+**Auth model**: Softr User Groups → only `Admin` users see the admin app. Embed appears as `<iframe>` on the Netlify page; if the user isn't logged in, the iframe shows the Softr login screen, which redirects back after auth.
+
+| # | Item | Owner | Status |
+|---|---|---|---|
+| A1 | Set up Softr workspace + connect Airtable base | David | Open |
+| A2 | Create Admin user group + invite client team | Thelma | Open |
+| A3 | Build admin dashboard page in Softr | David | Open |
+| A4 | Build `admin/index.html` on Netlify with Softr embed | David | Open |
+| A5 | Document onboarding/login process for new admins | Ava | Open |
+
+---
+
+## 5 · Stakeholder pages (Phase 3 — over time)
+
+Same pattern as `/admin`: Netlify shell, Softr embed, role-gated.
+
+| Path | Audience | Initial purpose |
+|---|---|---|
+| `/interns` | Accepted cohort members | Weekly check-ins, mentor info, payment confirmations, project board |
+| `/sponsors` | Donors at any level | Tax receipts, impact updates, sustainer milestones, photos from cohort |
+| `/employers` | Partner organizations | Intern matching info, project briefs, weekly hour logs, evaluation forms |
+| `/mentors` | 1:1 mentors | Cohort matching, meeting notes, training resources |
+
+Each is one Softr page filtered by role + a Netlify HTML shell with the embed.
+
+---
+
+## 6 · Airtable schema (starting point)
+
+> You have prototype DBs for this — bring those over. Below is a minimal
+> reference shape for the tables this site will touch.
+
+### Users
+| Field | Type | Notes |
+|---|---|---|
+| name | Single line | |
+| email | Email | Synced from Softr |
+| role | Single select | Admin / Intern / Sponsor / Employer / Mentor / Partner |
+| softr_user_id | Single line | Used for filtered views |
+| status | Single select | Active / Pending / Archived |
+
+### Feedback (used by `/feedback`)
+| Field | Type | Notes |
+|---|---|---|
+| section | Link → Sections | "hero", "why", "timeline", etc. |
+| author | Link → Users | Optional for anonymous submitters |
+| note | Long text | |
+| screenshot | Attachment | Native Airtable upload |
+| files | Attachment | Multi-file |
+| priority | Single select | Low / Med / High |
+| status | Single select | New / Triaged / In progress / Done / Won't do |
+| page_url | URL | Which page they were on |
+| created | Created time | |
+| handled_by | Link → Users | Who's resolving it |
+
+### Sections (seed once)
+| Field | Type | Notes |
+|---|---|---|
+| id | Single line | Anchor: `hero`, `why`, `why-now`, `pathway`, `legacy`, `how`, `timeline`, `gains`, `team`, `building`, `stat`, `asks`, `learn-more` |
+| title | Single line | Display name |
+| anchor | Formula | `"#" & {id}` |
+| current_screenshot | Attachment | Periodically refreshed |
+
+### Workplan (this doc, mirrored)
+| Field | Type | Notes |
+|---|---|---|
+| ref | Single line | W1, W2, F1, A1… (matches doc) |
+| title | Single line | |
+| description | Long text | |
+| owner | Link → Users | |
+| status | Single select | Open / In progress / Blocked / Done |
+| priority | Single select | Low / Med / High |
+| due_date | Date | |
+| related_section | Link → Sections | If task is section-specific |
+| related_form | Single select | Donate / Apply / Partner / Mailing / Sponsor pledge / Mentor / Story |
+| attachments | Attachment | |
+| notes | Long text | |
+| updated | Last modified time | |
+
+### Contacts (mailing list — fed by Web3Forms)
+| Field | Type | Notes |
+|---|---|---|
+| name | Single line | |
+| email | Email | |
+| zip | Single line | Optional |
+| interested_in_sponsor | Checkbox | |
+| interested_in_intern | Checkbox | |
+| interested_in_employer | Checkbox | |
+| interested_in_mentor | Checkbox | |
+| source | Single select | Site / Event / Referral / QR code |
+| consent | Checkbox | "OK to contact about NextGen SW updates" |
+| created | Created time | |
+
+### Applications, Sponsorships, Stories — sketched, build out as forms come online (Phase 3).
+
+---
+
+## 7 · Forms inventory
+
+If you give the repo Airtable secrets (`AIRTABLE_BASE_ID` + write-scoped PAT), these are the forms worth wiring server-side via a Netlify Function. Anything that doesn't need server logic can be a Web3Forms or Softr form posting directly to Airtable.
+
+| # | Form | Lands in | Recommended channel | Notes |
+|---|---|---|---|---|
+| 1 | **Mailing list / Stay in touch** | Contacts | Web3Forms → Netlify Function → Airtable | Footer + thank-you page after every CTA. Checkboxes for sponsor / intern / employer / mentor interest. |
+| 2 | **Suggest edit (per section)** | Feedback | Softr embedded form | Pre-filled with section ID via URL param. |
+| 3 | **General contact / Question** | Feedback (or new "Inquiries") | Web3Forms | Simple "got a question?" link in footer. |
+| 4 | **Sponsor pledge / Multi-year commitment** | Sponsorships | Softr (auth) | Multi-step form, captures org details, pledge amount, pay schedule. |
+| 5 | **Mentor signup** | Users + new "MentorApplications" | Softr (auth optional) | Background, availability, area of expertise. |
+| 6 | **Employer / Project intake** | Employers | Softr (auth optional) | Project briefs, hours offered, supervision capacity. |
+| 7 | **Story / Testimonial submission** | Stories | Web3Forms | Alum, mentor, supporter quotes — easy stream of social-proof content. |
+| 8 | **Event RSVP / Launch event signup** | Contacts (with `source: Event`) | Web3Forms or Softr | One-off, but useful for the launch meeting and community open houses. |
+| 9 | **Speaker / press inquiry** | Inquiries | Web3Forms | Less urgent; nice to have. |
+| 10 | **Volunteer for one-time event** | Contacts (with checkbox) | Web3Forms | Lower-commitment than mentor; broadens funnel. |
+
+**Mailing list flow (recommended for launch):**
+
+1. Visitor enters email + checks any/all interest boxes
+2. Web3Forms posts to a Netlify Function (`/.netlify/functions/contact`)
+3. Function validates + writes to Airtable Contacts table via PAT
+4. (Optional) Tags `interested_in_sponsor=true` triggers a Softr automation that drops them into a "Sponsor outreach" view for follow-up
+5. Confirmation page: "Thanks — we'll be in touch when [intern apps / sponsor briefings / etc.] open."
+
+---
+
+## 8 · Workplan table — initial seed
+
+Drop these straight into the Airtable Workplan table. They'll mirror back into this doc as we hit them.
+
+| Ref | Title | Owner | Priority | Due |
+|---|---|---|---|---|
+| W1 | Upload team headshots | Ava | High | TBD |
+| W2 | Share link to approved application form | Ava | High | TBD |
+| W3 | Confirm fiscal-sponsor language | Thelma | Med | TBD |
+| W4 | Permissioned local body photos | Rhonda | Med | TBD |
+| W5 | Early supporter list | Thelma | Med | TBD |
+| W7 | OG social card | David | Low | Pre-launch |
+| F1 | Build /feedback page | David | High | This week |
+| F2 | Confirm Softr feedback form URL | David | High | This week |
+| F4 | Add per-section "Suggest edit" buttons | David | High | This week |
+| A1 | Stand up Softr workspace | David | High | This week |
+| A2 | Invite client team to Admin user group | Thelma | High | This week |
+| A4 | Build /admin page on Netlify | David | Med | Post-launch |
+| M1 | Wire Web3Forms mailing list → Airtable | David | Med | Pre-launch |
+| M2 | Add mailing-list signup to footer + Three Asks | David | Med | Pre-launch |
+| INF1 | Add `AIRTABLE_BASE_ID` + `AIRTABLE_PAT` to Netlify env vars | David | Med | Once base is built |
+
+---
+
+## 9 · How this doc stays in sync
+
+- **Source of truth = the Airtable Workplan table.**
+- This MD file is the human-readable mirror for skim-reading and embedding.
+- A short Softr automation (or weekly manual sync) regenerates section 8 from the Workplan view filtered to "Active".
+- Owners can update their own rows in Softr; status flips here on the next sync.
+
+If we want it iframe-ready inside Softr, we add `/plan.html` to the Netlify site — a 30-line renderer that fetches this MD via `fetch('/docs/BUILD_PLAN.md')` and pipes it through a tiny markdown library (e.g. `marked` from a CDN). That gives Softr a clean URL to embed.
+
+---
+
+## 10 · Open questions
+
+- Custom subdomain or path? `nextgensw.org/admin` (Netlify rewrite to Softr) vs. `admin.nextgensw.org` (CNAME). Lean toward the path-based version so all stakeholder URLs share the brand domain.
+- Auth on `/feedback` Phase 1 — gate with `?admin=1` query token, or leave fully open during early review window? (Default: open, switch to gated after launch.)
+- Donation flow — keep Jotform, or move into Softr too once admin pane is live? Jotform's payment integration is mature; not worth changing pre-launch.
+- Application form rollout date drives W2 — can we get an indicative date from Ava?
+
+---
+
+*Last updated: see git log on this file.*
