@@ -1,6 +1,15 @@
 [build]
   publish = "."
 
+  # Netlify's secrets scanner sees AIRTABLE_BASE_ID set as an env var
+  # AND appearing in committed files (the schema snapshot, scripts,
+  # docs) and assumes a leak. Base IDs are NOT secrets — they're
+  # public identifiers visible in any Airtable share URL. Only the
+  # PAT is sensitive, and that's never committed. So we whitelist
+  # the base ID for scanning.
+  [build.environment]
+    SECRETS_SCAN_OMIT_KEYS = "AIRTABLE_BASE_ID"
+
 [functions]
   directory = "netlify/functions"
   node_bundler = "esbuild"
