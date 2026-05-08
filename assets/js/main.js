@@ -92,6 +92,57 @@
     document.querySelectorAll('.modal:not([hidden])').forEach(closeModal);
   });
 
+  // "Notify me when applications open" form (Apply CTA → Contact_List)
+  const applyForm = document.getElementById('apply-notify-form');
+  if (applyForm) {
+    const status = applyForm.querySelector('[data-status]');
+    const submit = applyForm.querySelector('.ng-submit');
+    function setStatus(msg, kind) {
+      if (!status) return;
+      status.textContent = msg;
+      status.dataset.kind = kind || '';
+      status.hidden = !msg;
+    }
+    applyForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      // Honeypot trip
+      if (applyForm.querySelector('.ng-honeypot').value) return;
+      const data = new FormData(applyForm);
+      const email = String(data.get('email') || '').trim();
+      const name = String(data.get('name') || '').trim();
+      if (!name || !/.+@.+\..+/.test(email)) {
+        setStatus('Please enter a name and a valid email.', 'err');
+        return;
+      }
+      submit.disabled = true;
+      setStatus('Sending…', '');
+      try {
+        const res = await fetch('/.netlify/functions/interest', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name,
+            email,
+            notes: String(data.get('notes') || ''),
+            interests: ['Intern/Applicant'],
+            referral_source: 'Apply CTA — application waitlist',
+            consent: true,
+          }),
+        });
+        if (!res.ok) throw new Error(`status ${res.status}`);
+        applyForm.classList.add('is-submitted');
+        applyForm.innerHTML =
+          '<div class="ng-success">' +
+          '<h4>You\'re on the list. ✨</h4>' +
+          '<p>We\'ll email you the moment the 2026 cohort application opens.</p>' +
+          '</div>';
+      } catch (err) {
+        submit.disabled = false;
+        setStatus('Something went wrong. Try again, or email hello@nextgensw.org.', 'err');
+      }
+    });
+  }
+
   // Scroll-triggered hub & spoke + counter
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const stats = document.querySelectorAll('[data-stat-target]');

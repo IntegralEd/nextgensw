@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=20261107b">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=20261107c">
 </head>
 <body>
   <a href="#main" class="skip-link">Skip to main content</a>
@@ -50,7 +50,7 @@
         <h1 class="visually-hidden">NextGen SW</h1>
         <div class="hero-actions hero-actions-stack">
           <a href="https://form.jotform.com/252113228540143" target="_blank" rel="noopener" class="btn btn-primary btn-shine">Donate or Sponsor an Intern</a>
-          <a href="#" class="btn btn-secondary btn-coming-soon" aria-disabled="true" onclick="return false;">Apply / Refer<span class="btn-soon">Coming soon</span></a>
+          <button type="button" class="btn btn-secondary btn-coming-soon" data-modal-open="modal-apply-notify">Apply / Refer<span class="btn-soon">Notify me</span></button>
           <a href="https://docs.google.com/forms/d/e/1FAIpQLSfVVKb1MTkX2bRNKJs_AFp3WhDQ88ont_lWqak5aSTTn3xDlw/viewform" target="_blank" rel="noopener" class="btn btn-outline btn-outline-light">Become a Partner or Mentor</a>
         </div>
       </div>
@@ -359,7 +359,7 @@
             <div class="card-icon" aria-hidden="true">★</div>
             <h3>Help recruit young people</h3>
             <p>Help us reach SWNA Scholarship recipients and young adults connected to Southwest.</p>
-            <a href="#" class="btn btn-outline btn-coming-soon" aria-disabled="true" onclick="return false;">Apply / Refer<span class="btn-soon">Coming soon</span></a>
+            <button type="button" class="btn btn-outline btn-coming-soon" data-modal-open="modal-apply-notify">Apply / Refer<span class="btn-soon">Notify me</span></button>
           </article>
         </div>
       </div>
@@ -405,6 +405,42 @@
   </main>
 
   <!-- Modals -->
+  <div id="modal-apply-notify" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-apply-notify-title" hidden>
+    <div class="modal-backdrop" data-modal-close></div>
+    <div class="modal-dialog modal-dialog-form">
+      <header class="modal-header">
+        <h3 id="modal-apply-notify-title">Get notified when applications open</h3>
+        <button type="button" class="modal-close" data-modal-close aria-label="Close">&times;</button>
+      </header>
+      <div class="modal-body modal-body-form">
+        <p class="modal-intro">
+          The 2026 cohort application form is being finalized. Drop your name and email and we'll let you know the moment it's live — no spam, just one email when it opens.
+        </p>
+        <form id="apply-notify-form" class="ng-form" novalidate>
+          <input type="text" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true" class="ng-honeypot">
+
+          <label class="ng-field">
+            <span class="ng-label">Name</span>
+            <input name="name" type="text" autocomplete="name" required>
+          </label>
+
+          <label class="ng-field">
+            <span class="ng-label">Email</span>
+            <input name="email" type="email" autocomplete="email" required>
+          </label>
+
+          <label class="ng-field">
+            <span class="ng-label">Anything you want us to know? <span class="ng-optional">(optional)</span></span>
+            <textarea name="notes" rows="3" placeholder="Connection to Southwest, school, what kind of internship you're hoping for…"></textarea>
+          </label>
+
+          <button type="submit" class="btn btn-primary ng-submit">Notify me when it opens</button>
+          <p class="ng-form-status" data-status hidden></p>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <div id="modal-slides" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-slides-title" hidden>
     <div class="modal-backdrop" data-modal-close></div>
     <div class="modal-dialog modal-dialog-wide">
@@ -449,6 +485,6 @@
     </div>
   </footer>
 
-  <script src="/assets/js/main.js?v=20261107b" defer></script>
+  <script src="/assets/js/main.js?v=20261107c" defer></script>
 </body>
 </html>

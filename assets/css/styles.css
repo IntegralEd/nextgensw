@@ -1196,6 +1196,60 @@ ul, ol { margin: 0 0 1em; padding: 0 0 0 1.2em; }
 }
 .modal-dialog:not(.modal-dialog-wide) .modal-body-iframe { aspect-ratio: 8.5/11; }
 
+/* In-page form inside a modal (Apply CTA → "notify me" waitlist) */
+.modal-dialog-form { max-width: 500px; }
+.modal-body-form {
+  padding: clamp(1.25rem, 3vw, 1.75rem);
+  background: var(--white);
+}
+.modal-intro {
+  margin: 0 0 1.25rem;
+  color: var(--gray-500);
+  font-size: var(--step-0);
+  line-height: 1.5;
+}
+.ng-form { display: flex; flex-direction: column; gap: 0.9rem; }
+.ng-honeypot { position: absolute; left: -9999px; opacity: 0; width: 1px; height: 1px; }
+.ng-field { display: flex; flex-direction: column; gap: 0.35rem; }
+.ng-label { font-weight: 600; font-size: var(--step--1); color: var(--ink); }
+.ng-optional { color: var(--gray-500); font-weight: 400; }
+.ng-form input[type="text"],
+.ng-form input[type="email"],
+.ng-form textarea {
+  font: inherit;
+  padding: 0.65rem 0.85rem;
+  border: 1.5px solid var(--gray-200);
+  border-radius: 10px;
+  background: var(--gray-50);
+  color: var(--ink);
+  transition: border-color 0.15s ease, background 0.15s ease;
+  width: 100%;
+}
+.ng-form textarea { resize: vertical; min-height: 76px; line-height: 1.5; }
+.ng-form input:focus,
+.ng-form textarea:focus {
+  outline: none;
+  border-color: var(--brick);
+  background: var(--white);
+}
+.ng-submit { margin-top: 0.4rem; }
+.ng-form-status {
+  margin: 0.5rem 0 0;
+  font-size: var(--step--1);
+  font-weight: 600;
+}
+.ng-form-status[data-kind="err"] { color: var(--brick-dark); }
+.ng-success {
+  text-align: center;
+  padding: 1rem 0.5rem;
+}
+.ng-success h4 {
+  margin: 0 0 0.5rem;
+  color: var(--brick);
+  font-size: var(--step-2);
+}
+.ng-success p { margin: 0; color: var(--gray-500); }
+
 body.modal-open { overflow: hidden; }
 .video-placeholder {
   position: absolute; inset: 0;
