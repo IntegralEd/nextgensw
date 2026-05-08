@@ -204,7 +204,7 @@
       "fields": [
         {
           "id": "fldh72Nxph7oWXsMR",
-          "name": "Lesson_AT_ID",
+          "name": "Section_Visited",
           "type": "singleLineText",
           "linkedTableId": null,
           "linkedTableName": null
@@ -273,13 +273,6 @@
           "linkedTableName": "User_Session"
         },
         {
-          "id": "fld3ExsJyB5nWMME5",
-          "name": "Assigned_Editions",
-          "type": "singleLineText",
-          "linkedTableId": null,
-          "linkedTableName": null
-        },
-        {
           "id": "fld4ucTQWeyJbooqo",
           "name": "Last Modified",
           "type": "lastModifiedTime",
@@ -290,20 +283,6 @@
           "id": "fld5xMaP1iEpO121p",
           "name": "Magic-Link-Reset",
           "type": "lastModifiedTime",
-          "linkedTableId": null,
-          "linkedTableName": null
-        },
-        {
-          "id": "fld62xYOQ7VRDt9MD",
-          "name": "Modules_Visited",
-          "type": "rollup",
-          "linkedTableId": null,
-          "linkedTableName": null
-        },
-        {
-          "id": "fld6ihIuL8U7uuewv",
-          "name": "State",
-          "type": "singleLineText",
           "linkedTableId": null,
           "linkedTableName": null
         },
@@ -329,30 +308,9 @@
           "linkedTableName": "Users"
         },
         {
-          "id": "fldbZumYzslgqGJ3k",
-          "name": "Lessons",
-          "type": "singleLineText",
-          "linkedTableId": null,
-          "linkedTableName": null
-        },
-        {
-          "id": "fldd4huOI5EicvMID",
-          "name": "Editions",
-          "type": "singleLineText",
-          "linkedTableId": null,
-          "linkedTableName": null
-        },
-        {
           "id": "flddOYHnS6RvBxivC",
           "name": "Visit_Count",
           "type": "rollup",
-          "linkedTableId": null,
-          "linkedTableName": null
-        },
-        {
-          "id": "flddZmcnekKut1QYc",
-          "name": "Facilitator_Lessons_Link",
-          "type": "singleLineText",
           "linkedTableId": null,
           "linkedTableName": null
         },
@@ -366,13 +324,6 @@
         {
           "id": "fldeS6kgNpaYDpEk2",
           "name": "Magic Link",
-          "type": "url",
-          "linkedTableId": null,
-          "linkedTableName": null
-        },
-        {
-          "id": "fldHTPbaTDlEUef34",
-          "name": "LinkedIn_URL",
           "type": "url",
           "linkedTableId": null,
           "linkedTableName": null
@@ -399,23 +350,9 @@
           "linkedTableName": null
         },
         {
-          "id": "fldOrNzcp9Imqrrmy",
-          "name": "Lesson_Materials",
-          "type": "singleLineText",
-          "linkedTableId": null,
-          "linkedTableName": null
-        },
-        {
-          "id": "fldQnu7NRnIXccLCb",
-          "name": "City",
-          "type": "singleLineText",
-          "linkedTableId": null,
-          "linkedTableName": null
-        },
-        {
-          "id": "fldRcaIqGa5CTTl5m",
-          "name": "User Reset Message",
-          "type": "formula",
+          "id": "fldJZUG3IEVrxaqA4",
+          "name": "Latest_Softr_Visit",
+          "type": "dateTime",
           "linkedTableId": null,
           "linkedTableName": null
         },
@@ -437,13 +374,6 @@
           "id": "fldu8KS2uByiTdCKN",
           "name": "Full Name",
           "type": "multilineText",
-          "linkedTableId": null,
-          "linkedTableName": null
-        },
-        {
-          "id": "flduOVSBBTpOWT2P6",
-          "name": "SessionName_Facilitator",
-          "type": "multipleLookupValues",
           "linkedTableId": null,
           "linkedTableName": null
         },
@@ -474,20 +404,6 @@
           "type": "multipleRecordLinks",
           "linkedTableId": "tbllRFgUQ8oFjYieR",
           "linkedTableName": "Messages"
-        },
-        {
-          "id": "fldwymUnz9IunPrDG",
-          "name": "Biography",
-          "type": "richText",
-          "linkedTableId": null,
-          "linkedTableName": null
-        },
-        {
-          "id": "fldYQ0oO2UU5dohxd",
-          "name": "Updated_By",
-          "type": "multipleRecordLinks",
-          "linkedTableId": "tbldH5vECddqn4Tvv",
-          "linkedTableName": "Users"
         }
       ]
     },
@@ -500,6 +416,13 @@
           "id": "fldcJCpKIzMD2AdTE",
           "name": "Created_Time",
           "type": "createdTime",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldDWy0CUWB12jABO",
+          "name": "Section_Formula",
+          "type": "formula",
           "linkedTableId": null,
           "linkedTableName": null
         },
@@ -565,6 +488,41 @@
           "type": "multipleRecordLinks",
           "linkedTableId": "tbldH5vECddqn4Tvv",
           "linkedTableName": "Users"
+        }
+      ]
+    },
+    {
+      "id": "tblw5iX3qNcrcAogn",
+      "name": "Contact_List",
+      "primaryFieldId": "fldNyObbPLML9Zo9h",
+      "fields": [
+        {
+          "id": "fldiP3lKmgHsmHbU5",
+          "name": "Phone_Number",
+          "type": "phoneNumber",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldmiktTFCMW8hZ8n",
+          "name": "Notes",
+          "type": "multilineText",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldNyObbPLML9Zo9h",
+          "name": "Email",
+          "type": "email",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldZ4foOxTl4NM3s4",
+          "name": "Interested_Role",
+          "type": "multipleSelects",
+          "linkedTableId": null,
+          "linkedTableName": null
         }
       ]
     },

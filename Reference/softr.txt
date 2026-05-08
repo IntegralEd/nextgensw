@@ -362,13 +362,22 @@ export async function handler(event) {
 
 
 ==================================================================
-BLOCK F — Web3Forms → Contacts table (interest form)
+BLOCK F — Web3Forms → Contact_List table (interest form)
 ==================================================================
+
+Confirmed Airtable schema (Contact_List, tblw5iX3qNcrcAogn):
+  Email             email
+  Notes             multilineText
+  Phone_Number      phoneNumber
+  Interested_Role   multipleSelects
+
+Multi-select options (must match exactly — case + slashes):
+  Donor/Sponsor · Intern/Applicant · Employer · Volunteer · Other
 
 Three-step flow:
   1) Web3Forms HTML form on the public site
   2) Web3Forms POSTs to email + a webhook (Netlify Function)
-  3) Function writes the record to a Contacts table in Airtable
+  3) Function writes the record to Contact_List in Airtable
 
 HTML (drop into footer or a /join page):
 
@@ -380,30 +389,20 @@ HTML (drop into footer or a /join page):
   <input type="hidden" name="redirect" value="https://nextgensw.org/thanks.html">
   <input type="text" name="botcheck" tabindex="-1" autocomplete="off" style="display:none">
 
-  <label>Name <input name="name" required></label>
   <label>Email <input name="email" type="email" required></label>
+  <label>Phone (optional) <input name="phone_number" type="tel" autocomplete="tel"></label>
 
   <fieldset>
     <legend>I'm interested in becoming a/an…</legend>
-    <label><input type="checkbox" name="interest" value="Intern"> Intern</label>
-    <label><input type="checkbox" name="interest" value="Sponsor"> Sponsor</label>
-    <label><input type="checkbox" name="interest" value="Employer"> Employer / Project host</label>
+    <label><input type="checkbox" name="interest" value="Donor/Sponsor"> Donor / Sponsor</label>
+    <label><input type="checkbox" name="interest" value="Intern/Applicant"> Intern / Applicant</label>
+    <label><input type="checkbox" name="interest" value="Employer"> Employer</label>
     <label><input type="checkbox" name="interest" value="Volunteer"> Volunteer</label>
-    <label><input type="checkbox" name="interest" value="Mentor"> Mentor</label>
     <label><input type="checkbox" name="interest" value="Other"> Other</label>
   </fieldset>
 
-  <label>How did you hear about us?
-    <input name="referral_source" placeholder="Friend, event, social, news…">
-  </label>
-
-  <label>Notes / questions
+  <label>Notes / questions / how you heard about us
     <textarea name="notes" rows="3"></textarea>
-  </label>
-
-  <label class="consent">
-    <input type="checkbox" name="consent" value="yes" required>
-    OK to contact me about NextGen SW updates
   </label>
 
   <button type="submit">Stay in touch</button>
@@ -411,18 +410,16 @@ HTML (drop into footer or a /join page):
 
 <script>
 document.getElementById("interest-form").addEventListener("submit", function (e) {
-  // Optional: also POST to our Netlify Function so we land in Airtable
-  // (Web3Forms handles the email side independently)
+  // Web3Forms handles the email side via native form submission.
+  // We also POST a JSON payload to a Netlify Function so the record
+  // lands in Airtable Contact_List with the correct field shapes.
   const f = e.target;
   const data = new FormData(f);
-  const interests = data.getAll("interest");
   const payload = {
-    name: data.get("name"),
     email: data.get("email"),
-    interests,
-    referral_source: data.get("referral_source") || "",
+    phone_number: data.get("phone_number") || "",
+    interests: data.getAll("interest"),
     notes: data.get("notes") || "",
-    consent: data.get("consent") === "yes",
   };
   fetch("/.netlify/functions/interest", {
     method: "POST",
@@ -430,7 +427,6 @@ document.getElementById("interest-form").addEventListener("submit", function (e)
     body: JSON.stringify(payload),
     keepalive: true,
   }).catch(() => {});
-  // Web3Forms handles the actual submission via the form's native action
 });
 </script>
 ----- end: form -----
@@ -439,6 +435,8 @@ Server-side — netlify/functions/interest.js:
 
 ----- begin: function -----
 // netlify/functions/interest.js
+const VALID_ROLES = ["Donor/Sponsor","Intern/Applicant","Employer","Volunteer","Other"];
+
 export async function handler(event) {
   if (event.httpMethod !== "POST") return { statusCode: 405, body: "" };
 
@@ -446,21 +444,22 @@ export async function handler(event) {
   try { p = JSON.parse(event.body || "{}"); }
   catch { return { statusCode: 400, body: "bad json" }; }
 
-  // Honeypot + minimal validation
+  // Minimal validation
   if (!p.email || !/.+@.+\..+/.test(p.email)) {
     return { statusCode: 400, body: "invalid email" };
   }
-  const name = String(p.name || "").slice(0, 200);
   const email = String(p.email).slice(0, 200);
+  const phone = String(p.phone_number || "").slice(0, 40);
+  const notes = String(p.notes || "").slice(0, 2000);
   const interests = Array.isArray(p.interests)
-    ? p.interests.filter(i => ["Intern","Sponsor","Employer","Volunteer","Mentor","Other"].includes(i))
+    ? p.interests.filter(i => VALID_ROLES.includes(i))
     : [];
 
   const AT = process.env.AIRTABLE_BASE_ID;
   const PAT = process.env.AIRTABLE_PAT_WRITE;
   if (!AT || !PAT) return { statusCode: 500, body: "" };
 
-  const res = await fetch(`https://api.airtable.com/v0/${AT}/Contacts`, {
+  const res = await fetch(`https://api.airtable.com/v0/${AT}/Contact_List`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${PAT}`,
@@ -468,14 +467,10 @@ export async function handler(event) {
     },
     body: JSON.stringify({
       fields: {
-        Name: name,
         Email: email,
-        Interests: interests,
-        Referral_Source: String(p.referral_source || "").slice(0, 500),
-        Notes: String(p.notes || "").slice(0, 2000),
-        Consent: !!p.consent,
-        Source: "Site",
-        Status: "New",
+        Phone_Number: phone,
+        Notes: notes,
+        Interested_Role: interests,
       },
       typecast: true,
     }),
@@ -488,6 +483,29 @@ export async function handler(event) {
   return { statusCode: 201, body: "{}" };
 }
 ----- end: function -----
+
+------------------------------------------------------------------
+Suggested additions to Contact_List
+------------------------------------------------------------------
+
+Current schema is intentionally minimal. Worth considering for the
+follow-up flow:
+
+  Name              Single line text   — first/last for personalized outreach
+  Referral_Source   Single line text   — "How did you hear about us?"
+                                         (currently rolled into Notes)
+  Consent           Checkbox           — explicit "OK to contact me"
+                                         opt-in for future mailings
+  Source            Single select      — Site / Event / Referral / QR
+                                         so reports can split by entry point
+  Status            Single select      — New / Contacted / Active /
+                                         Converted / Archived
+  Handled_by        Link → Users       — who's following up
+  Created           Created time       — auto-stamp on insert
+
+If/when those land, the form snippet + function above gain matching
+fields. Until then, leaving them out is fine — the four-field shape
+captures the essential signal.
 
 
 ==================================================================
