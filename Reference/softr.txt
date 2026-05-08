@@ -366,21 +366,29 @@ BLOCK F — Web3Forms → Contact_List table (interest form)
 ==================================================================
 
 Confirmed Airtable schema (Contact_List, tblw5iX3qNcrcAogn):
-  Name              singleLineText
-  Email             email
-  Phone_Number      phoneNumber
-  Interested_Role   multipleSelects
-  Referral_Source   singleLineText
-  Notes             multilineText
-  Consent           checkbox
-  Status            singleSelect    (auto-set to "New" on insert)
-  Handled_by        multipleRecordLinks → Users (admin-side, blank on insert)
-  Created           createdTime     (auto)
+
+  Visible to the submitter on any public form:
+    Name              singleLineText
+    Email             email
+    Phone_Number      phoneNumber
+    Interested_Role   multipleSelects
+    Referral_Source   singleLineText
+    Notes             multilineText
+    Consent           checkbox
+
+  Admin-only — NEVER expose on a public form:
+    Status            singleSelect    (server sets to "New" on insert)
+    Handled_by        multipleRecordLinks → Users  (admin assigns)
+    Created           createdTime     (auto-stamped by Airtable)
+
+If you build a Softr or Airtable native form against this table, hide
+Status / Handled_by / Created from the form block — they are write-side
+fields managed by the Netlify Function and the admin team.
 
 Interested_Role options (must match exactly — case + slashes):
   Donor/Sponsor · Intern/Applicant · Employer · Volunteer · Other
 
-Status options:
+Status options (admin-side only):
   New · Contacted · Active · Archived · Converted
 
 Three-step flow:
