@@ -378,6 +378,13 @@
           "linkedTableName": null
         },
         {
+          "id": "fldVEAQzT4mwjMpWW",
+          "name": "Contact_List",
+          "type": "multipleRecordLinks",
+          "linkedTableId": "tblw5iX3qNcrcAogn",
+          "linkedTableName": "Contact_List"
+        },
+        {
           "id": "fldVMJzkLZsfipecg",
           "name": "Created",
           "type": "createdTime",
@@ -497,11 +504,46 @@
       "primaryFieldId": "fldNyObbPLML9Zo9h",
       "fields": [
         {
+          "id": "fldBGuCubqDli4Tho",
+          "name": "Status",
+          "type": "singleSelect",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldfjai1tIYy3ur8U",
+          "name": "Created",
+          "type": "createdTime",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldG7S1I4uLN2o0xx",
+          "name": "Name",
+          "type": "singleLineText",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldHiFrKskIFh6C0k",
+          "name": "Consent",
+          "type": "checkbox",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
           "id": "fldiP3lKmgHsmHbU5",
           "name": "Phone_Number",
           "type": "phoneNumber",
           "linkedTableId": null,
           "linkedTableName": null
+        },
+        {
+          "id": "fldlE7WgD3b0ochcd",
+          "name": "Handled_by",
+          "type": "multipleRecordLinks",
+          "linkedTableId": "tbldH5vECddqn4Tvv",
+          "linkedTableName": "Users"
         },
         {
           "id": "fldmiktTFCMW8hZ8n",
@@ -514,6 +556,13 @@
           "id": "fldNyObbPLML9Zo9h",
           "name": "Email",
           "type": "email",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldToiqXhzSKA3TWN",
+          "name": "Referral_Source",
+          "type": "singleLineText",
           "linkedTableId": null,
           "linkedTableName": null
         },

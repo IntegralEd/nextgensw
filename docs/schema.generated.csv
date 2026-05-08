@@ -50,6 +50,7 @@ Users,tbldH5vECddqn4Tvv,fldJZUG3IEVrxaqA4,Latest_Softr_Visit,dateTime,,,
 Users,tbldH5vECddqn4Tvv,fldTBlc7NKHHki7CN,Softr_Created,dateTime,,,
 Users,tbldH5vECddqn4Tvv,fldtyASy8WTn1nfg9,Email,email,,,
 Users,tbldH5vECddqn4Tvv,fldu8KS2uByiTdCKN,Full Name,multilineText,,,
+Users,tbldH5vECddqn4Tvv,fldVEAQzT4mwjMpWW,Contact_List,multipleRecordLinks,checked,tblw5iX3qNcrcAogn,Contact_List
 Users,tbldH5vECddqn4Tvv,fldVMJzkLZsfipecg,Created,createdTime,,,
 Users,tbldH5vECddqn4Tvv,fldvwSHyqfovnWcNG,Email (from Added_by),multipleLookupValues,,,
 Users,tbldH5vECddqn4Tvv,fldwp8rm8doQuQkQ6,User_Org_Entry,singleLineText,,,
@@ -65,9 +66,15 @@ Messages,tbllRFgUQ8oFjYieR,fldR5hxJT28kc2SGN,Reply_to_Message,multipleRecordLink
 Messages,tbllRFgUQ8oFjYieR,fldUtJ5ejCZqGKl1E,Is_Reply,checkbox,,,
 Messages,tbllRFgUQ8oFjYieR,fldvywINmnYTe1LVk,Message_ID,formula,,,
 Messages,tbllRFgUQ8oFjYieR,fldYK3jqW9QREI2kW,User,multipleRecordLinks,checked,tbldH5vECddqn4Tvv,Users
+Contact_List,tblw5iX3qNcrcAogn,fldBGuCubqDli4Tho,Status,singleSelect,,,
+Contact_List,tblw5iX3qNcrcAogn,fldfjai1tIYy3ur8U,Created,createdTime,,,
+Contact_List,tblw5iX3qNcrcAogn,fldG7S1I4uLN2o0xx,Name,singleLineText,,,
+Contact_List,tblw5iX3qNcrcAogn,fldHiFrKskIFh6C0k,Consent,checkbox,,,
 Contact_List,tblw5iX3qNcrcAogn,fldiP3lKmgHsmHbU5,Phone_Number,phoneNumber,,,
+Contact_List,tblw5iX3qNcrcAogn,fldlE7WgD3b0ochcd,Handled_by,multipleRecordLinks,checked,tbldH5vECddqn4Tvv,Users
 Contact_List,tblw5iX3qNcrcAogn,fldmiktTFCMW8hZ8n,Notes,multilineText,,,
 Contact_List,tblw5iX3qNcrcAogn,fldNyObbPLML9Zo9h,Email,email,,,
+Contact_List,tblw5iX3qNcrcAogn,fldToiqXhzSKA3TWN,Referral_Source,singleLineText,,,
 Contact_List,tblw5iX3qNcrcAogn,fldZ4foOxTl4NM3s4,Interested_Role,multipleSelects,,,
 Schema_Registry,tblZeCbkIR8BkC3DN,fld1hOAt9Ohj46riq,Schema_AT_ID,formula,,,
 Schema_Registry,tblZeCbkIR8BkC3DN,fld7pvyD3Dm5IyXHR,Table_Name,singleLineText,,,

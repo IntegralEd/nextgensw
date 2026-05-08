@@ -366,13 +366,22 @@ BLOCK F — Web3Forms → Contact_List table (interest form)
 ==================================================================
 
 Confirmed Airtable schema (Contact_List, tblw5iX3qNcrcAogn):
+  Name              singleLineText
   Email             email
-  Notes             multilineText
   Phone_Number      phoneNumber
   Interested_Role   multipleSelects
+  Referral_Source   singleLineText
+  Notes             multilineText
+  Consent           checkbox
+  Status            singleSelect    (auto-set to "New" on insert)
+  Handled_by        multipleRecordLinks → Users (admin-side, blank on insert)
+  Created           createdTime     (auto)
 
-Multi-select options (must match exactly — case + slashes):
+Interested_Role options (must match exactly — case + slashes):
   Donor/Sponsor · Intern/Applicant · Employer · Volunteer · Other
+
+Status options:
+  New · Contacted · Active · Archived · Converted
 
 Three-step flow:
   1) Web3Forms HTML form on the public site
@@ -389,7 +398,8 @@ HTML (drop into footer or a /join page):
   <input type="hidden" name="redirect" value="https://nextgensw.org/thanks.html">
   <input type="text" name="botcheck" tabindex="-1" autocomplete="off" style="display:none">
 
-  <label>Email <input name="email" type="email" required></label>
+  <label>Name <input name="name" required autocomplete="name"></label>
+  <label>Email <input name="email" type="email" required autocomplete="email"></label>
   <label>Phone (optional) <input name="phone_number" type="tel" autocomplete="tel"></label>
 
   <fieldset>
@@ -401,8 +411,17 @@ HTML (drop into footer or a /join page):
     <label><input type="checkbox" name="interest" value="Other"> Other</label>
   </fieldset>
 
-  <label>Notes / questions / how you heard about us
+  <label>How did you hear about us?
+    <input name="referral_source" placeholder="Friend, event, social, news…">
+  </label>
+
+  <label>Notes / questions
     <textarea name="notes" rows="3"></textarea>
+  </label>
+
+  <label class="consent">
+    <input type="checkbox" name="consent" value="yes" required>
+    OK to contact me about NextGen SW updates
   </label>
 
   <button type="submit">Stay in touch</button>
@@ -416,10 +435,13 @@ document.getElementById("interest-form").addEventListener("submit", function (e)
   const f = e.target;
   const data = new FormData(f);
   const payload = {
+    name: data.get("name"),
     email: data.get("email"),
     phone_number: data.get("phone_number") || "",
     interests: data.getAll("interest"),
+    referral_source: data.get("referral_source") || "",
     notes: data.get("notes") || "",
+    consent: data.get("consent") === "yes",
   };
   fetch("/.netlify/functions/interest", {
     method: "POST",
@@ -448,8 +470,10 @@ export async function handler(event) {
   if (!p.email || !/.+@.+\..+/.test(p.email)) {
     return { statusCode: 400, body: "invalid email" };
   }
+  const name  = String(p.name  || "").slice(0, 200);
   const email = String(p.email).slice(0, 200);
   const phone = String(p.phone_number || "").slice(0, 40);
+  const referral = String(p.referral_source || "").slice(0, 500);
   const notes = String(p.notes || "").slice(0, 2000);
   const interests = Array.isArray(p.interests)
     ? p.interests.filter(i => VALID_ROLES.includes(i))
@@ -467,10 +491,16 @@ export async function handler(event) {
     },
     body: JSON.stringify({
       fields: {
+        Name: name,
         Email: email,
         Phone_Number: phone,
-        Notes: notes,
         Interested_Role: interests,
+        Referral_Source: referral,
+        Notes: notes,
+        Consent: !!p.consent,
+        Status: "New",
+        // Created   ← auto (createdTime)
+        // Handled_by ← admin-side, blank on insert
       },
       typecast: true,
     }),
@@ -484,28 +514,6 @@ export async function handler(event) {
 }
 ----- end: function -----
 
-------------------------------------------------------------------
-Suggested additions to Contact_List
-------------------------------------------------------------------
-
-Current schema is intentionally minimal. Worth considering for the
-follow-up flow:
-
-  Name              Single line text   — first/last for personalized outreach
-  Referral_Source   Single line text   — "How did you hear about us?"
-                                         (currently rolled into Notes)
-  Consent           Checkbox           — explicit "OK to contact me"
-                                         opt-in for future mailings
-  Source            Single select      — Site / Event / Referral / QR
-                                         so reports can split by entry point
-  Status            Single select      — New / Contacted / Active /
-                                         Converted / Archived
-  Handled_by        Link → Users       — who's following up
-  Created           Created time       — auto-stamp on insert
-
-If/when those land, the form snippet + function above gain matching
-fields. Until then, leaving them out is fine — the four-field shape
-captures the essential signal.
 
 
 ==================================================================
