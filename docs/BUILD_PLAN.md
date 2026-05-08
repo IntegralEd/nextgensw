@@ -33,7 +33,7 @@
 | # | Item | Owner | Status | Notes |
 |---|---|---|---|---|
 | W1 | Upload team headshots (Thelma, Rhonda, Ava, Monique) | Ava | Open | Square crops, ≥400×400, JPG or PNG. Drop in `assets/img/team/`. |
-| W2 | Approve & publish intern application form | Ava | Open | Once published, drop the URL — David removes "Coming soon" pill. |
+| W2 | Approve & publish intern application form | Ava | Open | Once published, set `APPLY_URL` (top of `assets/js/main.js`) to the live form URL. Both Apply CTAs auto-flip from "Notify me" modal to opening the real form in a new tab; the "Notify me" pill disappears automatically. No HTML edits needed. |
 | W3 | Confirm fiscal-sponsor language for donate card | Ava | Open | Add "Tax-deductible through SWNA" line if accurate. |
 | W4 | Replace placeholder body photos w/ permissioned local images | Ava | Open | Need 2–3 community photos (waterfront, scholarship night, mentor mtg). |
 | W5 | Compile early supporter list for Three-Asks marquee | Ava | Open | Org names + (optional) wordmarks for a quiet supporters strip. |

@@ -1,5 +1,35 @@
 (function () {
+  // When the live intern application is published, paste its URL here.
+  // Set to null while the form is unpublished — the Apply CTAs then
+  // open the "notify me when applications open" modal instead.
+  const APPLY_URL = null;
+  // Example once live:
+  //   const APPLY_URL = 'https://docs.google.com/forms/d/e/.../viewform';
+
   document.getElementById('year').textContent = new Date().getFullYear();
+
+  // Apply CTA router — single source of truth for what "Apply" does.
+  // Intercepts clicks before the generic data-modal-open handler so
+  // the same buttons work whether APPLY_URL is set or null.
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-modal-open="modal-apply-notify"]');
+    if (!btn) return;
+    if (APPLY_URL) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      window.open(APPLY_URL, '_blank', 'noopener');
+    }
+    // else: fall through to the generic modal handler below
+  }, true);
+
+  // When APPLY_URL is set, drop the "Notify me" pill + coming-soon
+  // styling on the Apply buttons so they look like normal CTAs.
+  if (APPLY_URL) {
+    document.querySelectorAll('[data-modal-open="modal-apply-notify"]').forEach(btn => {
+      btn.querySelectorAll('.btn-soon').forEach(s => s.remove());
+      btn.classList.remove('btn-coming-soon');
+    });
+  }
 
   // "💬 Suggest edit" pill on every <section[id]>.
   // ACCESS CONTROL:
