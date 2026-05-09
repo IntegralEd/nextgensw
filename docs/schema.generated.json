@@ -483,6 +483,13 @@
           "linkedTableName": "Messages"
         },
         {
+          "id": "flduiz5DHyScOFTxQ",
+          "name": "Replies",
+          "type": "rollup",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
           "id": "fldUtJ5ejCZqGKl1E",
           "name": "Is_Reply",
           "type": "checkbox",

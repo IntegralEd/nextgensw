@@ -64,6 +64,7 @@ Messages,tbllRFgUQ8oFjYieR,fldl5MHINy5EX5pNJ,URL,singleLineText,,,
 Messages,tbllRFgUQ8oFjYieR,fldNui5fypiuRKbjQ,Section,singleLineText,,,
 Messages,tbllRFgUQ8oFjYieR,fldP94WbxcFq8JEMO,Message_Content,richText,,,
 Messages,tbllRFgUQ8oFjYieR,fldR5hxJT28kc2SGN,Reply_to_Message,multipleRecordLinks,checked,tbllRFgUQ8oFjYieR,Messages
+Messages,tbllRFgUQ8oFjYieR,flduiz5DHyScOFTxQ,Replies,rollup,,,
 Messages,tbllRFgUQ8oFjYieR,fldUtJ5ejCZqGKl1E,Is_Reply,checkbox,,,
 Messages,tbllRFgUQ8oFjYieR,fldvywINmnYTe1LVk,Message_ID,formula,,,
 Messages,tbllRFgUQ8oFjYieR,fldy10fxlYCx6gyKy,Message_Summary,formula,,,
