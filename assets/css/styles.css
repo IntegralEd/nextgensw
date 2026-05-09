@@ -342,9 +342,7 @@ ul, ol { margin: 0 0 1em; padding: 0 0 0 1.2em; }
 /* Coming-soon button: looks like a button but isn't clickable, with a subtle pill */
 .btn-coming-soon {
   position: relative;
-  cursor: default;
-  opacity: 0.85;
-  pointer-events: none;
+  opacity: 0.92;
 }
 .btn-coming-soon .btn-soon {
   display: inline-block;
