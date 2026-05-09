@@ -448,6 +448,13 @@
           "linkedTableName": null
         },
         {
+          "id": "fldHcgpUDKzmo29LI",
+          "name": "Message_Responses",
+          "type": "multipleLookupValues",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
           "id": "fldl5MHINy5EX5pNJ",
           "name": "URL",
           "type": "singleLineText",
@@ -486,6 +493,20 @@
           "id": "fldvywINmnYTe1LVk",
           "name": "Message_ID",
           "type": "formula",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldy10fxlYCx6gyKy",
+          "name": "Message_Summary",
+          "type": "formula",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldy8lFseUVJ6mOWg",
+          "name": "Message_Status",
+          "type": "singleSelect",
           "linkedTableId": null,
           "linkedTableName": null
         },

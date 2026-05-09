@@ -59,12 +59,15 @@ Messages,tbllRFgUQ8oFjYieR,fldcJCpKIzMD2AdTE,Created_Time,createdTime,,,
 Messages,tbllRFgUQ8oFjYieR,fldDWy0CUWB12jABO,Section_Formula,formula,,,
 Messages,tbllRFgUQ8oFjYieR,fldEJCGc81IXZLHzb,From field: Reply_to_Message,multipleRecordLinks,checked,tbllRFgUQ8oFjYieR,Messages
 Messages,tbllRFgUQ8oFjYieR,fldeLVCfBSGrdjf52,Attachment,multipleAttachments,,,
+Messages,tbllRFgUQ8oFjYieR,fldHcgpUDKzmo29LI,Message_Responses,multipleLookupValues,,,
 Messages,tbllRFgUQ8oFjYieR,fldl5MHINy5EX5pNJ,URL,singleLineText,,,
 Messages,tbllRFgUQ8oFjYieR,fldNui5fypiuRKbjQ,Section,singleLineText,,,
 Messages,tbllRFgUQ8oFjYieR,fldP94WbxcFq8JEMO,Message_Content,richText,,,
 Messages,tbllRFgUQ8oFjYieR,fldR5hxJT28kc2SGN,Reply_to_Message,multipleRecordLinks,checked,tbllRFgUQ8oFjYieR,Messages
 Messages,tbllRFgUQ8oFjYieR,fldUtJ5ejCZqGKl1E,Is_Reply,checkbox,,,
 Messages,tbllRFgUQ8oFjYieR,fldvywINmnYTe1LVk,Message_ID,formula,,,
+Messages,tbllRFgUQ8oFjYieR,fldy10fxlYCx6gyKy,Message_Summary,formula,,,
+Messages,tbllRFgUQ8oFjYieR,fldy8lFseUVJ6mOWg,Message_Status,singleSelect,,,
 Messages,tbllRFgUQ8oFjYieR,fldYK3jqW9QREI2kW,User,multipleRecordLinks,checked,tbldH5vECddqn4Tvv,Users
 Contact_List,tblw5iX3qNcrcAogn,fldBGuCubqDli4Tho,Status,singleSelect,,,
 Contact_List,tblw5iX3qNcrcAogn,fldfjai1tIYy3ur8U,Created,createdTime,,,
