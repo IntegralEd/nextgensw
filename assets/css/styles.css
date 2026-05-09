@@ -436,41 +436,29 @@ ul, ol { margin: 0 0 1em; padding: 0 0 0 1.2em; }
 .bullets li { margin-bottom: 0.5em; }
 .bullets-tight li { margin-bottom: 0.35em; }
 
-/* Why NextGen SW (slide 3) */
+/* Why NextGen SW (slide 3) — clean stacked layout at all sizes.
+   Earlier we used a grid stack to overlay text on the image's
+   upper white space, but as viewport narrowed the image shrank
+   vertically and bullets ended up on the people. The compact
+   why-arrow image leaves no usable white space to overlay anyway,
+   so stacked block flow gives predictable results everywhere. */
 .section-why {
-  display: grid;
   background-color: var(--white);
-  padding: 0;
-  position: relative;
+  padding: clamp(2.5rem, 6vw, 4.5rem) 0 0;
 }
 .section-why > .container {
-  grid-column: 1;
-  grid-row: 1;
-  align-self: start;
-  z-index: 2;
-  padding-top: clamp(3rem, 14vw, 10rem);
-  padding-bottom: 0;
+  padding-bottom: clamp(1rem, 2vw, 1.75rem);
 }
 .why-copy {
-  max-width: 70%;
-  margin-bottom: 0;
+  max-width: 56ch;
+  margin: 0;
 }
 .why-image {
-  grid-column: 1;
-  grid-row: 1;
-  align-self: end;
-  z-index: 1;
   display: block;
   width: 100%;
   height: auto;
   margin: 0;
   pointer-events: none;
-}
-@media (max-width: 719px) {
-  .section-why { display: block; }
-  .section-why > .container { padding-top: clamp(2.5rem, 6vw, 4rem); }
-  .why-copy { max-width: 100%; }
-  .why-image { margin-top: 1rem; }
 }
 .why-copy h2 { color: var(--ink); margin-bottom: 0.6rem; }
 .why-subhead {
