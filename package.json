@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "schema:sync": "node scripts/sync-schema.mjs",
-    "schema:verify": "node scripts/verify-schema.mjs"
+    "schema:verify": "node scripts/verify-schema.mjs",
+    "reply": "node scripts/post-reply.mjs"
   },
   "engines": {
     "node": ">=20"

@@ -1,0 +1,19 @@
+{
+  "_comment": "NextGen SW reply config for scripts/post-reply.mjs. Merges over the script's built-in defaults; other projects copy this file and adjust table/field/status names to taste.",
+  "table": "Messages",
+  "fields": {
+    "content": "Message_Content",
+    "isReply": "Is_Reply",
+    "replyTo": "Reply_to_Message",
+    "user": "User",
+    "url": "URL",
+    "status": "Message_Status"
+  },
+  "status": {
+    "reply": "Developer Response",
+    "resolved": "Addressed"
+  },
+  "defaults": {
+    "user": "rechLl5blPx2at2Tw"
+  }
+}

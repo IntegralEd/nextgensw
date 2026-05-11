@@ -149,6 +149,42 @@ curl -s -G "https://api.airtable.com/v0/$AIRTABLE_BASE_ID/Messages" \
 # 6. Flip the root message's Message_Status → Addressed
 ```
 
+### Posting replies via the helper
+
+`scripts/post-reply.mjs` is a generic Airtable threaded-reply poster — designed to be portable so other projects can drop it in by copying the script + adjusting `scripts/reply-config.json`. It:
+
+1. Fetches the parent record to mirror the `URL` field
+2. POSTs a new row with `Is_Reply=true`, `Reply_to_Message=[parent]`, attributed `User`, and `Message_Status=Developer Response`
+3. PATCHes the parent's `Message_Status` to `Addressed` (skip with `--keep-open`)
+
+```sh
+# Default — posts reply, resolves parent
+npm run reply -- --parent recPaWa1K4WK7Rw2u --text "Live in 329f54e. Thanks!"
+
+# Leave parent open (e.g. when reply is a clarifying question)
+npm run reply -- --parent rec... --text-file reply.md --keep-open
+
+# Dry run: build payload, don't POST
+npm run reply -- --parent rec... --text "..." --dry-run
+
+# Attribute to a different user
+npm run reply -- --parent rec... --text "..." --user recABC123
+
+# Machine-readable output for CI / automation
+npm run reply -- --parent rec... --text "..." --json
+```
+
+Conventions live in [`scripts/reply-config.json`](scripts/reply-config.json) — change `table`, field names, or `status.reply / status.resolved` strings without touching the script. The same script + a different config file works on any Airtable base with a parent/reply linked-records table.
+
+The script can also be `import`ed:
+
+```js
+import { postReply } from './scripts/post-reply.mjs';
+const { reply, parentUpdate } = await postReply({
+  baseId, pat, parentId, text, /* …config… */
+});
+```
+
 ### `Message_Status` convention
 
 | Status | Who sets it | Meaning |
