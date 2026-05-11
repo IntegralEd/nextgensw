@@ -34,7 +34,7 @@ AirTable_API_Post,tblacwYdRuQwQGIHq,fldsMYmJLBlhhHSbp,User_Module_Session,multip
 AirTable_API_Post,tblacwYdRuQwQGIHq,fldVWmbUalxQTwXBf,AT_Session_ID,formula,,,
 AirTable_API_Post,tblacwYdRuQwQGIHq,fldyGujZ3z1M3jiln,URL_Visited,singleLineText,,,
 AirTable_API_Post,tblacwYdRuQwQGIHq,fldypNWxLfcdgNmp8,User_Email,singleLineText,,,
-Users,tbldH5vECddqn4Tvv,fld0oFpDJu3SUnTar,User_Module_Session,multipleRecordLinks,checked,tblABreioRlQTyMVH,User_Session
+Users,tbldH5vECddqn4Tvv,fld0oFpDJu3SUnTar,User_Session,multipleRecordLinks,checked,tblABreioRlQTyMVH,User_Session
 Users,tbldH5vECddqn4Tvv,fld4ucTQWeyJbooqo,Last Modified,lastModifiedTime,,,
 Users,tbldH5vECddqn4Tvv,fld5xMaP1iEpO121p,Magic-Link-Reset,lastModifiedTime,,,
 Users,tbldH5vECddqn4Tvv,fld9lKEWHtDfLUV5U,Organization,singleSelect,,,

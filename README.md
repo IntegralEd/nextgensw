@@ -122,7 +122,7 @@ The site has a CRM-style feedback loop wired through Airtable's `Messages` table
 2. **The page iframes** `https://nextgensw.org/` — the public site loads with a small **💬 Suggest edit** pill in the bottom-right of every section (auto-enabled because we detect we're inside an iframe; never visible on direct visits to the public site)
 3. **Click a pill** → new tab opens to `https://NextGenSW.softr.app/website-feedback?Section=<id>&URL=<page>`
 4. **Fill in the form**, attach a screenshot, submit
-5. **Lands in `Messages`** with `Section`, `URL`, `Message_Content`, `Attachment`, `User` (auto from Softr session), `Message_Status: Draft` (set by hidden form field)
+5. **Lands in `Messages`** with `Section`, `URL`, `Message_Content`, `Attachment`, `User` (auto from Softr session), `Message_Status: Draft` (set by hidden form field — so new submissions consistently arrive as `Draft`)
 
 ### How a dev addresses an item
 
@@ -138,10 +138,28 @@ curl -s -G "https://api.airtable.com/v0/$AIRTABLE_BASE_ID/Messages" \
 # 2. Reproduce in browser; agree on fix approach with the team
 # 3. Implement, commit, push to main; capture the commit hash
 # 4. Draft a short reply linking the commit
-# 5. Paste reply into the Softr message thread (sets Is_Reply=true,
-#    Reply_to_Message=<root>, Message_Status=Draft on the reply)
+# 5. Post reply (via Softr UI or via API with the write PAT — see
+#    scripts/post-reply.mjs pattern below). Reply row has:
+#      Is_Reply=true
+#      Reply_to_Message=[<root id>]
+#      User=[<replying user id>]
+#      URL=<mirrored from parent>
+#      Message_Status="Developer Response"   ← marks it as ours,
+#                                              not a new incoming
 # 6. Flip the root message's Message_Status → Addressed
 ```
+
+### `Message_Status` convention
+
+| Status | Who sets it | Meaning |
+|---|---|---|
+| `Draft` | Hidden field on the Softr submission form | New incoming feedback, not yet triaged |
+| `In Progress` | Admin in the inbox view | Reviewer is actively working on it |
+| `Developer Response` | API call from `post-reply.mjs` (or admin) | Row is a reply we posted — distinguishes ours from theirs |
+| `Addressed` | Admin after the reply is posted | Root issue resolved, falls off active queue |
+| `No Action` | Admin | Closed without change (won't-fix, out of scope, duplicate) |
+
+Active queue filter: `Message_Status IN ("Draft", "In Progress")`.
 
 ### Threading display fields
 

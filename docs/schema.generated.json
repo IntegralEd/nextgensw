@@ -267,7 +267,7 @@
       "fields": [
         {
           "id": "fld0oFpDJu3SUnTar",
-          "name": "User_Module_Session",
+          "name": "User_Session",
           "type": "multipleRecordLinks",
           "linkedTableId": "tblABreioRlQTyMVH",
           "linkedTableName": "User_Session"
@@ -291,14 +291,27 @@
           "name": "Organization",
           "type": "singleSelect",
           "linkedTableId": null,
-          "linkedTableName": null
+          "linkedTableName": null,
+          "choices": [
+            "Integral Ed",
+            "NextGen SW"
+          ]
         },
         {
           "id": "fld9Tjsep2j3ThWj5",
           "name": "User_Role",
           "type": "singleSelect",
           "linkedTableId": null,
-          "linkedTableName": null
+          "linkedTableName": null,
+          "choices": [
+            "Admin",
+            "Applicant",
+            "Employer",
+            "Inactive",
+            "Intern",
+            "Sponsor",
+            "SuperAdmin"
+          ]
         },
         {
           "id": "fldB6n3mkkogxJZCH",
@@ -515,7 +528,14 @@
           "name": "Message_Status",
           "type": "singleSelect",
           "linkedTableId": null,
-          "linkedTableName": null
+          "linkedTableName": null,
+          "choices": [
+            "Addressed",
+            "Developer Response",
+            "Draft",
+            "In Progress",
+            "No Action"
+          ]
         },
         {
           "id": "fldYK3jqW9QREI2kW",
@@ -536,7 +556,14 @@
           "name": "Status",
           "type": "singleSelect",
           "linkedTableId": null,
-          "linkedTableName": null
+          "linkedTableName": null,
+          "choices": [
+            "Active",
+            "Archived",
+            "Contacted",
+            "Converted",
+            "New"
+          ]
         },
         {
           "id": "fldfjai1tIYy3ur8U",
@@ -599,7 +626,14 @@
           "name": "Interested_Role",
           "type": "multipleSelects",
           "linkedTableId": null,
-          "linkedTableName": null
+          "linkedTableName": null,
+          "choices": [
+            "Donor/Sponsor",
+            "Employer",
+            "Intern/Applicant",
+            "Other",
+            "Volunteer"
+          ]
         }
       ]
     },

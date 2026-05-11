@@ -84,6 +84,21 @@ function normalize(schema) {
       fields: [...t.fields]
         .map((f) => {
           const linkedTableId = f.options?.linkedTableId ?? null;
+          // Select options are semantically meaningful — code & forms
+          // reference them as string literals, so a rename or removal
+          // is real drift. Capture sorted choice names so it shows up
+          // in the snapshot diff.
+          let choices = null;
+          if (
+            (f.type === 'singleSelect' || f.type === 'multipleSelects') &&
+            Array.isArray(f.options?.choices)
+          ) {
+            choices = f.options.choices
+              .map((c) => c.name)
+              .filter(Boolean)
+              .slice()
+              .sort();
+          }
           return {
             id: f.id,
             name: f.name,
@@ -92,6 +107,7 @@ function normalize(schema) {
             linkedTableName: linkedTableId
               ? tablesById.get(linkedTableId)?.name ?? null
               : null,
+            ...(choices ? { choices } : {}),
           };
         })
         .sort((a, b) => a.id.localeCompare(b.id)),
