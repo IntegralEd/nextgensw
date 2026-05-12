@@ -821,14 +821,11 @@ ul, ol { margin: 0 0 1em; padding: 0 0 0 1.2em; }
   position: absolute;
   display: block;
 }
-.squiggle-overlay-vertical svg {
-  width: clamp(110px, 12vw, 180px);
-  height: clamp(180px, 22vw, 280px);
-  right: clamp(2vw, 6%, 8%);
-  /* Tucks into Why's bottom-right corner above the green arrow base
-     instead of descending into Why-Now's right text column. */
-  top: -85%;
-}
+/* Horizontal divider squiggles sit centered on the section break.
+   Note: parent .squiggle-overlay has height:0 so we cannot use
+   percentage `top` (it resolves to 0 of 0). Use `translate(-50%, -50%)`
+   instead — that percentage references the SVG's own size, not the
+   parent's, which gives a true center-on-the-line result. */
 .squiggle-overlay-horizontal {
   margin: 0 auto;
 }
@@ -836,11 +833,8 @@ ul, ol { margin: 0 0 1em; padding: 0 0 0 1.2em; }
   width: min(76%, 900px);
   height: clamp(60px, 9vw, 110px);
   left: 50%;
-  transform: translateX(-50%);
-  top: -50%;
-}
-@media (max-width: 720px) {
-  .squiggle-overlay-vertical svg { right: 4%; }
+  top: 0;
+  transform: translate(-50%, -50%);
 }
 
 /* Stat punctuation: hub & spoke */
