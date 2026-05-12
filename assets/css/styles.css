@@ -836,6 +836,13 @@ ul, ol { margin: 0 0 1em; padding: 0 0 0 1.2em; }
   top: 0;
   transform: translate(-50%, -50%);
 }
+/* Modifier — biases the squiggle upward so most of it sits in the
+   previous section and only a sliver descends past the boundary.
+   Used at Pathway → Legacy so the squiggle doesn't crowd "Our
+   Foundation" in the next section's right column. */
+.squiggle-overlay-lift svg {
+  transform: translate(-50%, -85%);
+}
 
 /* Stat punctuation: hub & spoke */
 .section-stat {
