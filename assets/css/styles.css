@@ -825,7 +825,9 @@ ul, ol { margin: 0 0 1em; padding: 0 0 0 1.2em; }
   width: clamp(110px, 12vw, 180px);
   height: clamp(180px, 22vw, 280px);
   right: clamp(2vw, 6%, 8%);
-  top: -55%;
+  /* Tucks into Why's bottom-right corner above the green arrow base
+     instead of descending into Why-Now's right text column. */
+  top: -85%;
 }
 .squiggle-overlay-horizontal {
   margin: 0 auto;
