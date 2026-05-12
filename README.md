@@ -114,6 +114,8 @@ Bootstrap mode: until the first snapshot is committed, verify-schema cleanly no-
 
 ## Feedback workflow (calibrated 2026-05)
 
+> **Porting to another project?** The full pattern — public-site JS/CSS, Softr workspace + form setup, Airtable schema, dev-side helper, and the per-app config swaps — is documented as a standalone integration spec at [`docs/PILL_COMMENT_INTEGRATION.md`](docs/PILL_COMMENT_INTEGRATION.md). The notes below describe how it's running here; that doc tells you how to install it elsewhere.
+
 The site has a CRM-style feedback loop wired through Airtable's `Messages` table. Reviewers go through a gated **Softr workspace**, which iframes the public site with admin pills auto-enabled. Pills open a prefilled Softr form. Submissions land in Airtable. The dev addresses them, replies, marks them resolved.
 
 ### How an admin reviewer leaves feedback
