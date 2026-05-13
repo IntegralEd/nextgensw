@@ -2,9 +2,9 @@
   // When the live intern application is published, paste its URL here.
   // Set to null while the form is unpublished — the Apply CTAs then
   // open the "notify me when applications open" modal instead.
-  const APPLY_URL = null;
-  // Example once live:
-  //   const APPLY_URL = 'https://docs.google.com/forms/d/e/.../viewform';
+  // Use the direct Google Form viewform URL (not the bit.ly), since
+  // bit.ly wraps with an interstitial ad.
+  const APPLY_URL = 'https://docs.google.com/forms/d/e/1FAIpQLScjURkZPeIH-EqGDPLH7Q-qcSS33O0dptqfK00TIbyJ06b-UA/viewform';
 
   document.getElementById('year').textContent = new Date().getFullYear();
 
