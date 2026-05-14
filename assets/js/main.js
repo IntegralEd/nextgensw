@@ -4,6 +4,16 @@
   // open the "notify me when applications open" modal instead.
   // Use the direct Google Form viewform URL (not the bit.ly), since
   // bit.ly wraps with an interstitial ad.
+  //
+  // NOTE: anonymous curl on this URL returns 401 → ServiceLogin.
+  // That's not a misconfiguration — Google Forms requires a signed-in
+  // Google account whenever ANY question is a file upload, and the
+  // application has a resume upload. Real browser visits with a
+  // signed-in user resolve normally. The sign-in barrier is the
+  // price of accepting resume attachments through Forms; if drop-off
+  // ever shows it's the gate, the alternative is moving resume
+  // collection to a separate tool (Typeform, Tally, Jotform) or
+  // asking for a drive-share link instead of a direct upload.
   const APPLY_URL = 'https://docs.google.com/forms/d/e/1FAIpQLScjURkZPeIH-EqGDPLH7Q-qcSS33O0dptqfK00TIbyJ06b-UA/viewform';
 
   document.getElementById('year').textContent = new Date().getFullYear();
