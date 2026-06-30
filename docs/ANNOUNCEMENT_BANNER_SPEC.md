@@ -43,12 +43,12 @@ archived.
 |---|---|---|---|
 | `Name` | Single line (primary) | `July 15 priority deadline` | Internal label only, never shown to visitors. |
 | `Status` | Single select | `Published` | `Draft` / `Published` / `Archived`. Only `Published` can render. |
-| `Preset` | Single select | `Deadline` | `Deadline` / `Funding match` / `Info session`. Seeds default copy + CTA in the form; see §3. |
+| `Preset` | Single select | `Application Deadline` | V1: `Application Deadline`. Later: `Funding Match` / `Info Session`. Seeds default copy + button in the form; see §3. |
 | `Eyebrow` | Single line | `Priority deadline` | Small uppercase kicker. |
 | `Headline` | Single line | `Apply by end of day Wed, July 15` | The main line. Keep under ~48 chars so the banner stays one row on desktop. |
 | `Subtext` | Long text | `Submit by this date for priority consideration…` | Shown in the modal only. |
-| `Cta_Label` | Single line | `Apply now` | Button text. |
-| `Cta_Href` | URL | `#apply` or full URL | Anchor on the page or external form URL. |
+| `Button_Text` | Single line | `Apply now` | Button text. |
+| `Anchor` | Single line text | `#apply` or full URL | Anchor on the page or external form URL. (Single-line text so `#apply` works; URL type validates too strictly.) |
 | `Deadline_Date` | Date | `2026-07-15` | Drives the countdown. Treated as end-of-day in `America/New_York`. |
 | `Show_Countdown` | Checkbox | ✅ | When off, the days pill / chip is hidden. |
 | `Show_Banner` | Checkbox | ✅ | Render the top banner. |
@@ -66,12 +66,12 @@ edge / built at deploy, or read live from a lightweight endpoint):
 ```json
 {
   "version": 3,
-  "preset": "Deadline",
+  "preset": "Application Deadline",
   "eyebrow": "Priority deadline",
   "headline": "Apply by end of day Wed, July 15",
   "subtext": "Submit by this date for priority consideration. Applications are reviewed on a rolling basis, with more cohort spots opening after.",
-  "ctaLabel": "Apply now",
-  "ctaHref": "#apply",
+  "buttonText": "Apply now",
+  "anchor": "#apply",
   "deadlineDate": "2026-07-15",
   "showCountdown": true,
   "showBanner": true,
@@ -93,16 +93,16 @@ nothing and skips all DOM injection.
 field can be overridden after picking a preset. Presets do **not** change colors
 — every announcement uses the brick + yellow brand treatment.
 
-| Preset | Eyebrow | Headline | CTA | Href | Countdown |
+| Preset | Eyebrow | Headline | Button_Text | Anchor | Countdown |
 |---|---|---|---|---|---|
-| Deadline | Priority deadline | Apply by end of day Wed, July 15 | Apply now | `#apply` | on |
-| Funding match | Matching gift, limited time | Every dollar doubled through July 15 | Donate now | `#donate` | on |
-| Info session | Employer info session | Meet the team, Tuesday July 15 | Reserve a spot | `#rsvp` | optional |
+| Application Deadline | Priority deadline | Apply by end of day Wed, July 15 | Apply now | `#apply` | on |
+| Funding Match | Matching gift, limited time | Every dollar doubled through July 15 | Donate now | `#donate` | on |
+| Info Session | Employer info session | Meet the team, Tuesday July 15 | Reserve a spot | `#rsvp` | optional |
 
 Subtext defaults (modal):
-- **Deadline** — "Submit by this date for priority consideration. Applications are reviewed on a rolling basis, with more cohort spots opening after."
-- **Funding match** — "A local sponsor will match all gifts up to $10,000 toward intern stipends."
-- **Info session** — "A 30 minute virtual session for partners and mentors, 6:00 to 6:30pm ET."
+- **Application Deadline** — "Submit by this date for priority consideration. Applications are reviewed on a rolling basis, with more cohort spots opening after."
+- **Funding Match** — "A local sponsor will match all gifts up to $10,000 toward intern stipends."
+- **Info Session** — "A 30 minute virtual session for partners and mentors, 6:00 to 6:30pm ET."
 
 ---
 

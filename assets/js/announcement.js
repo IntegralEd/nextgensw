@@ -78,8 +78,8 @@
         (showDays
           ? '<span class="announcement-days" data-days-pill>' + escapeHtml(countdownText(days)) + '</span>'
           : '') +
-        '<a href="' + escapeHtml(data.ctaHref) + '" class="announcement-cta">' +
-          escapeHtml(data.ctaLabel) + ' →' +
+        '<a href="' + escapeHtml(data.anchor) + '" class="announcement-cta">' +
+          escapeHtml(data.buttonText) + ' →' +
         '</a>' +
         '<button type="button" class="announcement-dismiss" aria-label="Dismiss announcement">×</button>' +
       '</div>';
@@ -124,8 +124,8 @@
         '</h2>' +
         daysPill +
         '<p class="announcement-modal-subtext">' + escapeHtml(data.subtext) + '</p>' +
-        '<a href="' + escapeHtml(data.ctaHref) + '" class="announcement-modal-cta" data-ann-cta>' +
-          escapeHtml(data.ctaLabel) +
+        '<a href="' + escapeHtml(data.anchor) + '" class="announcement-modal-cta" data-ann-cta>' +
+          escapeHtml(data.buttonText) +
         '</a>' +
         '<button type="button" class="announcement-modal-maybe" data-ann-close>Maybe later</button>' +
       '</div>';
