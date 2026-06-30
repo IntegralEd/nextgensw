@@ -19,13 +19,15 @@
     font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
                   Roboto, Helvetica, Arial, sans-serif;
     color: #1B1B1B;
-    max-width: 880px;
+    width: 100%;
+    max-width: 1280px;
     margin: 0 auto 1.25rem;
-    padding: 1.5rem clamp(1rem, 3vw, 1.75rem);
+    padding: 1.5rem clamp(1rem, 3vw, 2.25rem);
     background: #FFFFFF;
     border-radius: 18px;
     border: 1px solid #E7E3E2;
     box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+    box-sizing: border-box;
   }
   .ngsw-admin h2 {
     margin: 0 0 0.35rem;
@@ -203,7 +205,8 @@
       <li>Wait for the green confirmation message to appear below the
         button. The public site will reflect your edits in about
         45 seconds.</li>
-      <li>When the deadline date passes, the announcement disappears
+      <li>When the Deadline_Date passes (or, for non-deadline
+        announcements, the Ends_At date), the announcement disappears
         from the site automatically — you don't need to come back and
         change anything.</li>
     </ol>
@@ -248,8 +251,11 @@
 
       <dt>Deadline_Date</dt>
       <dd>The date the announcement counts down to. Treated as
-        end-of-day Eastern Time. After this date passes the
-        announcement automatically stops appearing on the site.</dd>
+        end-of-day Eastern Time. For an application deadline this is
+        the field that drives the "N days left" countdown <em>and</em>
+        the auto-hide after the date passes. For non-deadline
+        announcements (e.g., an info session), you can leave this
+        blank and use Ends_At instead.</dd>
 
       <dt>Show_Countdown</dt>
       <dd>Turn this on to show the <em>"N days left"</em> chip next to
@@ -271,14 +277,20 @@
         take-everything-down.</dd>
 
       <dt>Starts_At</dt>
-      <dd>Optional. The earliest moment the announcement should appear.
-        Leave blank to start immediately on publish. Use this to stage
-        the next announcement ahead of time without it showing up
-        early.</dd>
+      <dd>Optional. The earliest moment the announcement should appear
+        on the site. Leave blank and the announcement appears as soon
+        as you publish it. Set a future date/time to stage the next
+        announcement ahead of time — it will sit hidden until that
+        moment arrives. (You can edit and Publish a future-dated
+        announcement now; the site won't show it until Starts_At.)</dd>
 
       <dt>Ends_At</dt>
       <dd>Optional. The latest moment the announcement should appear.
-        Leave blank to rely on Deadline_Date for the auto-stop.</dd>
+        Use this for announcements that aren't tied to an application
+        deadline (e.g., an info session or limited-time fundraising
+        match). If Deadline_Date is blank, Ends_At is what keeps the
+        announcement alive — once it passes, the announcement
+        auto-hides.</dd>
 
       <dt>Version</dt>
       <dd>A whole number. Each time you want returning visitors to see

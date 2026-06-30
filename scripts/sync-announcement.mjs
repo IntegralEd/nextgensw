@@ -4,10 +4,20 @@
  *
  * Read the top record from the Airtable Announcement table's
  * `Active_Announcements` view and write it into
- * `assets/data/announcement.json`. The view itself does the filtering
- * (Status=Published AND Deadline_Date is on or after today), so this
- * script stays dumb: take the first row, map fields → JSON keys,
- * write the file.
+ * `assets/data/announcement.json`. The view itself does the filtering:
+ *
+ *   Status = Published
+ *   AND ( Deadline_Date is on or after today
+ *         OR Ends_At is on or after today )
+ *   AND ( Starts_At is on or before today
+ *         OR Starts_At is empty )
+ *
+ * This lets Deadline_Date drive deadline-style announcements (with
+ * countdown), Ends_At keep non-deadline announcements (info session,
+ * matching gift) alive, and Starts_At stage the next announcement
+ * ahead of time without it appearing too early. This script stays
+ * dumb: take the first row of whatever the view returns, map fields
+ * → JSON keys, write the file.
  *
  * Run paths:
  *   - locally:  `npm run announcement:sync`
