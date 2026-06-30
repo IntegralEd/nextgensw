@@ -4,15 +4,14 @@
   Paste this entire block into Softr → /website-announcements page →
   Custom Code (Header, before the Airtable form block).
 
-  ⚠ Schema reference: field names + types must match the Announcement
-  table snapshot at docs/schema.generated.json. If the schema changes
-  (e.g. new Preset option, new field), update the cheat sheet below in
-  the same PR so admins see accurate instructions. Schema-drift CI
-  catches the underlying table change; PR review catches the doc drift.
+  Schema reference: field names + types must match the Announcement
+  table snapshot at docs/schema.generated.json. When the schema
+  changes (new field, new option), update the plain-English
+  explanations below in the same PR so admins see accurate
+  instructions.
 
-  Last reviewed against schema: Announcement v19 fields incl.
-  Created_Time / Last_Modified_Time / Updated_By (commit 4803f48 +
-  follow-up UI fields).
+  Last reviewed against schema: Announcement table with 19 fields
+  incl. Created_Time / Last_Modified_Time / Updated_By.
 -->
 
 <style>
@@ -75,10 +74,10 @@
     margin: 0;
     font-size: 0.82rem;
     color: #6B6B6B;
-    flex: 1 1 12rem;
+    flex: 1 1 14rem;
   }
 
-  .ngsw-toast {
+  .ngsw-status {
     margin: 0 0 1rem;
     padding: 0.75rem 1rem;
     border-radius: 10px;
@@ -86,10 +85,10 @@
     font-weight: 600;
     line-height: 1.45;
   }
-  .ngsw-toast[hidden] { display: none; }
-  .ngsw-toast-info    { background: #F3F3F3; color: #1B1B1B; border-left: 4px solid #50AAE1; }
-  .ngsw-toast-success { background: #E9F8EF; color: #1B5E36; border-left: 4px solid #38A460; }
-  .ngsw-toast-error   { background: #FBEEEC; color: #B02818; border-left: 4px solid #D93621; }
+  .ngsw-status[hidden] { display: none; }
+  .ngsw-status-info    { background: #F3F3F3; color: #1B1B1B; border-left: 4px solid #50AAE1; }
+  .ngsw-status-success { background: #E9F8EF; color: #1B5E36; border-left: 4px solid #38A460; }
+  .ngsw-status-error   { background: #FBEEEC; color: #B02818; border-left: 4px solid #D93621; }
 
   .ngsw-help {
     margin: 0;
@@ -111,43 +110,66 @@
     display: inline-block;
   }
   .ngsw-help[open] summary::before { content: "▾ "; }
-  .ngsw-help ol {
-    margin: 0.75rem 0 0;
-    padding-left: 1.25rem;
-    color: #1B1B1B;
-    font-size: 0.92rem;
-    line-height: 1.55;
-  }
-  .ngsw-help ol li { margin-bottom: 0.4rem; }
+
   .ngsw-help h3 {
-    margin: 1rem 0 0.5rem;
-    font-size: 0.8rem;
+    margin: 1.25rem 0 0.5rem;
+    font-size: 0.78rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.06em;
     color: #6B6B6B;
   }
-  .ngsw-help dl {
+  .ngsw-help ol,
+  .ngsw-help ul {
+    margin: 0;
+    padding-left: 1.25rem;
+    color: #1B1B1B;
+    font-size: 0.92rem;
+    line-height: 1.6;
+  }
+  .ngsw-help ol li,
+  .ngsw-help ul li { margin-bottom: 0.45rem; }
+  .ngsw-help p {
+    margin: 0.5rem 0;
+    color: #1B1B1B;
+    font-size: 0.92rem;
+    line-height: 1.55;
+  }
+  .ngsw-help code {
+    background: #F3F3F3;
+    padding: 0.05rem 0.35rem;
+    border-radius: 4px;
+    font-size: 0.86em;
+  }
+  .ngsw-help strong { color: #B02818; }
+
+  .ngsw-fields {
     display: grid;
     grid-template-columns: max-content 1fr;
-    gap: 0.35rem 0.85rem;
-    margin: 0;
-    font-size: 0.88rem;
+    gap: 0.5rem 0.85rem;
+    margin: 0.25rem 0 0;
+    font-size: 0.92rem;
   }
-  .ngsw-help dt {
+  .ngsw-fields dt {
     font-weight: 700;
     color: #B02818;
     white-space: nowrap;
+    padding-top: 0.1rem;
   }
-  .ngsw-help dd { margin: 0; color: #1B1B1B; }
+  .ngsw-fields dd {
+    margin: 0;
+    color: #1B1B1B;
+    line-height: 1.55;
+  }
+  .ngsw-fields dd b { color: #1B1B1B; }
 </style>
 
 <section class="ngsw-admin" aria-label="Announcement admin">
   <h2>Announcement control</h2>
   <p class="ngsw-lede">
-    Edit the live announcement (top banner + first-visit modal). Changes
-    publish to the public site when you click <strong>Publish to live
-    site</strong>; the rebuild takes about 45 seconds.
+    This page edits the message that appears at the top of nextgensw.org
+    (the strip across every page, and the popup that appears on first
+    visit). Changes go live when you click the red button below.
   </p>
 
   <div class="ngsw-publish-row">
@@ -155,120 +177,196 @@
       Publish to live site
     </button>
     <p class="ngsw-publish-hint">
-      Pulls the current <em>Status&nbsp;=&nbsp;Published</em> record into
-      <code>nextgensw.org</code>. Bump <strong>Version</strong> before
-      publishing if you want returning visitors to see the new
-      announcement even if they dismissed the previous one.
+      After editing the row below, click this. The site rebuilds in
+      about 45 seconds. You'll see a notification right below this box
+      letting you know it worked.
     </p>
   </div>
 
-  <p class="ngsw-toast" id="ngsw-toast" role="status" aria-live="polite" hidden></p>
+  <p class="ngsw-status" id="ngsw-status" role="status" aria-live="polite" hidden></p>
 
   <details class="ngsw-help">
-    <summary>How this works (and what each field controls)</summary>
+    <summary>How to use this page (open for instructions)</summary>
 
+    <h3>Step by step</h3>
     <ol>
-      <li>Edit the row below. <strong>Status&nbsp;=&nbsp;Published</strong>
-        is what goes live; <strong>Draft</strong> and
-        <strong>Archived</strong> are ignored.</li>
-      <li>For a brand-new announcement, bump <strong>Version</strong> by
-        1. The site uses Version as a dismissal key, so a returning
-        visitor who dismissed v1 will see v2 again.</li>
-      <li>Click <strong>Publish to live site</strong>. Watch this toast
-        for confirmation, then refresh nextgensw.org in about a minute.</li>
-      <li>After the deadline passes (the day after
-        <strong>Deadline_Date</strong>), the
-        <em>Active_Announcements</em> view drops the record automatically
-        and the banner disappears next time the site rebuilds. No manual
-        cleanup needed.</li>
+      <li>Find the row you want to edit in the table below. <strong>Status</strong>
+        is what controls whether a row is live: only rows set to
+        <em>Published</em> appear on the public site.</li>
+      <li>Edit any field you want to change.</li>
+      <li>If you want returning visitors to see the new message even if
+        they already dismissed the previous one, increase the
+        <strong>Version</strong> number by 1 (so if it's at 1, make it 2).
+        Skip this step if you're just fixing a small typo.</li>
+      <li>Click the red <strong>Publish to live site</strong> button at
+        the top of this page.</li>
+      <li>Wait for the green confirmation message to appear below the
+        button. The public site will reflect your edits in about
+        45 seconds.</li>
+      <li>When the deadline date passes, the announcement disappears
+        from the site automatically — you don't need to come back and
+        change anything.</li>
     </ol>
 
-    <h3>Field cheat sheet</h3>
-    <dl>
-      <dt>Visible</dt>
-      <dd>Master kill switch. Off = nothing renders on the public site,
-        regardless of the two flags below.</dd>
+    <h3>What each field does</h3>
+    <dl class="ngsw-fields">
+      <dt>Name</dt>
+      <dd>An internal label for you and the team. Visitors never see
+        this. Use something memorable like <em>"July 15 priority
+        deadline"</em>.</dd>
 
-      <dt>Show_Banner</dt>
-      <dd>Top strip across every page. Dismissible by visitors;
-        re-appears when Version bumps.</dd>
-
-      <dt>Show_Modal</dt>
-      <dd>First-visit popup. Once per visitor per Version.</dd>
-
-      <dt>Show_Countdown</dt>
-      <dd>Off hides the "N days left" chip / pill on both placements.</dd>
+      <dt>Status</dt>
+      <dd><b>Draft</b> = still working on it, not live.
+        <b>Published</b> = live on the site.
+        <b>Archived</b> = old, kept for history but not live.</dd>
 
       <dt>Preset</dt>
-      <dd>V1 supports <strong>Application Deadline</strong>. Add
-        <em>Funding Match</em> / <em>Info Session</em> as a new singleSelect
-        option when those announcement types are needed.</dd>
+      <dd>What kind of announcement this is. Right now there's only one
+        option (<em>Application Deadline</em>); we'll add others when we
+        want to publish different kinds of announcements (e.g., a
+        donation matching event or an info session).</dd>
 
-      <dt>Deadline_Date</dt>
-      <dd>Date only. Treated as end-of-day America/New_York. Drives the
-        countdown and the auto-archive behavior.</dd>
+      <dt>Eyebrow</dt>
+      <dd>The small line of bold all-caps text above the main message.
+        In the current banner it reads <em>"PRIORITY DEADLINE"</em>.
+        Keep it short (one to three words).</dd>
+
+      <dt>Headline</dt>
+      <dd>The main message. Keep it short enough that it fits on one
+        line on a desktop browser (around 48 characters).</dd>
+
+      <dt>Subtext</dt>
+      <dd>Longer explanation. Only shown in the first-visit popup, not
+        on the strip across the top.</dd>
+
+      <dt>Button_Text</dt>
+      <dd>The words shown on the button (e.g., <em>"Apply now"</em>).</dd>
 
       <dt>Anchor</dt>
-      <dd>Where the CTA button goes. Accepts a page anchor
-        (<code>#apply</code>) or a full URL.</dd>
+      <dd>Where the button takes the visitor when clicked. See the
+        next section below for how to get one.</dd>
 
-      <dt>Starts_At · Ends_At</dt>
-      <dd>Optional. Use to stage the next deadline in advance — site
-        won't render the announcement before Starts_At or after Ends_At.</dd>
+      <dt>Deadline_Date</dt>
+      <dd>The date the announcement counts down to. Treated as
+        end-of-day Eastern Time. After this date passes the
+        announcement automatically stops appearing on the site.</dd>
+
+      <dt>Show_Countdown</dt>
+      <dd>Turn this on to show the <em>"N days left"</em> chip next to
+        the headline. Turn off to hide it (useful for non-deadline
+        announcements).</dd>
+
+      <dt>Show_Banner</dt>
+      <dd>Turn on to show the strip across the top of every page. Turn
+        off if you only want the popup.</dd>
+
+      <dt>Show_Modal</dt>
+      <dd>Turn on to show the popup on the first visit of the day. Turn
+        off if you only want the strip.</dd>
+
+      <dt>Visible</dt>
+      <dd>Master on/off switch for the whole announcement. Turn this
+        off and <em>nothing</em> appears on the public site, no matter
+        what the other settings say. Use this for an emergency
+        take-everything-down.</dd>
+
+      <dt>Starts_At</dt>
+      <dd>Optional. The earliest moment the announcement should appear.
+        Leave blank to start immediately on publish. Use this to stage
+        the next announcement ahead of time without it showing up
+        early.</dd>
+
+      <dt>Ends_At</dt>
+      <dd>Optional. The latest moment the announcement should appear.
+        Leave blank to rely on Deadline_Date for the auto-stop.</dd>
 
       <dt>Version</dt>
-      <dd>Manual integer. Bump when re-surfacing to returning visitors.</dd>
+      <dd>A whole number. Each time you want returning visitors to see
+        a new announcement (even if they dismissed the old one),
+        increase this by 1. Behind the scenes the site uses Version
+        to tell whether a visitor has seen this particular
+        announcement before.</dd>
     </dl>
+
+    <h3>How to get an Anchor</h3>
+    <p>
+      The Anchor tells the site where to send the visitor when they
+      click the button. You have three options:
+    </p>
+    <ul>
+      <li><b>A spot on the homepage:</b> open <a href="https://nextgensw.org" target="_blank" rel="noopener">nextgensw.org</a>
+        in a new tab. In the navigation at the top, click one of the
+        section links (Why, How, Timeline, Team, Get Involved). The
+        page jumps to that section <em>and</em> the URL in your browser
+        changes to something like <code>https://nextgensw.org/#why</code>.
+        Copy that whole URL — or just the part starting with <code>#</code>
+        (e.g., <code>#why</code>) — and paste it into the Anchor field.</li>
+      <li><b>The Apply button shortcut:</b> if you want the button to
+        scroll to the Apply section, the easiest value is just
+        <code>#apply</code>.</li>
+      <li><b>An external link:</b> if the button should open something
+        outside the site (a Google Form, a donation page, etc.), paste
+        the full URL including <code>https://</code>.</li>
+    </ul>
+
+    <h3>If something goes wrong</h3>
+    <p>
+      If the red button is grey and won't click, give it a few seconds
+      and try again. If the notification message that appears below the
+      button is red instead of green, there was a network problem;
+      reload this page and try once more. If a publish goes through but
+      the public site doesn't update after a minute or two, ask David
+      to check the Netlify deploy log.
+    </p>
   </details>
 </section>
 
 <script>
 (function () {
-  // Netlify build hook — fires the deploy that runs the
-  // announcement:sync step in netlify.toml.
+  // Netlify build hook — triggers a deploy that runs the
+  // announcement:sync step configured in netlify.toml.
   var HOOK_URL = "https://api.netlify.com/build_hooks/6a4410231073c55b311a545b";
 
   var btn = document.getElementById("ngsw-publish-btn");
-  var toast = document.getElementById("ngsw-toast");
-  if (!btn || !toast) return;
+  var status = document.getElementById("ngsw-status");
+  if (!btn || !status) return;
 
-  function setToast(msg, kind) {
-    toast.hidden = false;
-    toast.className = "ngsw-toast ngsw-toast-" + (kind || "info");
-    toast.textContent = msg;
+  function setStatus(msg, kind) {
+    status.hidden = false;
+    status.className = "ngsw-status ngsw-status-" + (kind || "info");
+    status.textContent = msg;
   }
-  function clearToastAfter(ms) {
-    setTimeout(function () { toast.hidden = true; }, ms);
+  function hideStatusAfter(ms) {
+    setTimeout(function () { status.hidden = true; }, ms);
   }
 
   btn.addEventListener("click", function () {
     btn.disabled = true;
-    setToast("Triggering rebuild…", "info");
+    setStatus("Telling Netlify to rebuild the site…", "info");
 
-    // no-cors mode: the request is sent, but we can't read the response
-    // status (Netlify build hooks don't send CORS headers). The build
-    // still kicks off. We optimistically show success once the fetch
-    // resolves; a true network failure throws and is caught below.
+    // no-cors mode: the request goes through (Netlify accepts the
+    // build trigger) but we can't read the response status because
+    // build hooks don't send CORS headers. The build still happens.
+    // We show success once the fetch completes; an actual network
+    // failure throws and the catch block surfaces a red error.
     fetch(HOOK_URL, { method: "POST", mode: "no-cors" })
       .then(function () {
-        setToast(
-          "✓ Build triggered. The public site will reflect this announcement in about 45 seconds. " +
-          "Refresh nextgensw.org once you see the build finish in the Netlify dashboard.",
+        setStatus(
+          "✓ Got it — the site is rebuilding now. Refresh nextgensw.org in about 45 seconds to see your changes live.",
           "success"
         );
-        clearToastAfter(15000);
+        hideStatusAfter(15000);
       })
       .catch(function (err) {
-        setToast(
-          "Could not reach Netlify: " + (err && err.message ? err.message : "network error") +
-          ". Check connectivity and try again.",
+        setStatus(
+          "Could not reach Netlify (" + (err && err.message ? err.message : "network error") +
+          "). Check your internet connection and try again.",
           "error"
         );
       })
       .finally(function () {
-        // Re-enable after a short cooldown to prevent accidental
-        // double-triggers (Netlify deduplicates concurrent builds but
-        // it's friendlier UX to throttle here).
+        // Re-enable the button after 5 seconds. Stops accidental
+        // double-clicks from firing two builds in a row.
         setTimeout(function () { btn.disabled = false; }, 5000);
       });
   });
