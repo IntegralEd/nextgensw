@@ -777,6 +777,13 @@
           "linkedTableName": null
         },
         {
+          "id": "fldToSbdTIH4U5OS6",
+          "name": "Send_Copy_Requested",
+          "type": "checkbox",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
           "id": "fldZ4foOxTl4NM3s4",
           "name": "Interested_Role",
           "type": "multipleSelects",

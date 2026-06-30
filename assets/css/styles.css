@@ -1200,6 +1200,24 @@ ul, ol { margin: 0 0 1em; padding: 0 0 0 1.2em; }
 .ng-form { display: flex; flex-direction: column; gap: 0.9rem; }
 .ng-honeypot { position: absolute; left: -9999px; opacity: 0; width: 1px; height: 1px; }
 .ng-field { display: flex; flex-direction: column; gap: 0.35rem; }
+.ng-field-check {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: var(--step--1);
+  color: var(--gray-500);
+  cursor: pointer;
+  margin-top: -0.2rem;
+}
+.ng-field-check input[type="checkbox"] {
+  width: 1.05rem;
+  height: 1.05rem;
+  margin: 0;
+  accent-color: var(--brick);
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.ng-field-check span { line-height: 1.4; }
 .ng-label { font-weight: 600; font-size: var(--step--1); color: var(--ink); }
 .ng-optional { color: var(--gray-500); font-weight: 400; }
 .ng-form input[type="text"],

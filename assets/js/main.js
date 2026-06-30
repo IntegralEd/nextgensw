@@ -202,6 +202,7 @@
       const email = String(data.get('email') || '').trim();
       const name = String(data.get('name') || '').trim();
       const message = String(data.get('message') || '').trim();
+      const sendCopy = data.get('sendCopy') === 'yes';
       if (!name || !/.+@.+\..+/.test(email) || !message) {
         setContactStatus('Please complete name, email, and message.', 'err');
         return;
@@ -212,14 +213,16 @@
         const res = await fetch('/.netlify/functions/contact', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, email, message }),
+          body: JSON.stringify({ name, email, message, sendCopy }),
         });
         if (!res.ok) throw new Error(`status ${res.status}`);
         contactForm.classList.add('is-submitted');
         contactForm.innerHTML =
           '<div class="ng-success">' +
           '<h4>Message sent. ✨</h4>' +
-          '<p>Thanks for reaching out — we\'ll get back to you soon.</p>' +
+          '<p>Thanks for reaching out, we\'ll get back to you soon.' +
+          (sendCopy ? ' A copy is on its way to your inbox.' : '') +
+          '</p>' +
           '</div>';
       } catch (err) {
         csubmit.disabled = false;

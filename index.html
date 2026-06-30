@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=20260630b">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=20260630c">
 </head>
 <body>
   <a href="#main" class="skip-link">Skip to main content</a>
@@ -414,10 +414,11 @@
         <button type="button" class="modal-close" data-modal-close aria-label="Close">&times;</button>
       </header>
       <div class="modal-body modal-body-form">
-        <p class="modal-intro">
-          Question, comment, or want to get in touch? Send a note and we'll get back to you.
-        </p>
         <form id="contact-form" class="ng-form" novalidate>
+          <p class="modal-intro">
+            Question, comment, or want to get in touch? Send a note and we'll get back to you.
+          </p>
+
           <input type="text" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true" class="ng-honeypot">
 
           <label class="ng-field">
@@ -433,6 +434,11 @@
           <label class="ng-field">
             <span class="ng-label">Message</span>
             <textarea name="message" rows="5" required placeholder="What's on your mind?"></textarea>
+          </label>
+
+          <label class="ng-field ng-field-check">
+            <input type="checkbox" name="sendCopy" value="yes">
+            <span>Send me a copy of this message at the email above</span>
           </label>
 
           <button type="submit" class="btn btn-primary ng-submit">Send message</button>
@@ -522,7 +528,7 @@
     </div>
   </footer>
 
-  <script src="/assets/js/main.js?v=20260630b" defer></script>
-  <script src="/assets/js/announcement.js?v=20260630b" defer></script>
+  <script src="/assets/js/main.js?v=20260630c" defer></script>
+  <script src="/assets/js/announcement.js?v=20260630c" defer></script>
 </body>
 </html>

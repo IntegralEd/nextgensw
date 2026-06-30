@@ -55,6 +55,7 @@ export async function handler(event) {
   const email = String(p.email || '').trim().slice(0, 200);
   const name = String(p.name || '').trim().slice(0, 200);
   const message = String(p.message || '').trim().slice(0, 5000);
+  const sendCopy = p.sendCopy === true;
 
   if (!email || !/.+@.+\..+/.test(email)) {
     return { statusCode: 400, headers: corsHeaders(origin), body: 'invalid email' };
@@ -94,6 +95,7 @@ export async function handler(event) {
           Referral_Source: 'Contact form',
           Notes: message,
           Consent: true, // they reached out — implicit opt-in for reply
+          Send_Copy_Requested: sendCopy,
           Status: 'New',
         },
         typecast: true,
