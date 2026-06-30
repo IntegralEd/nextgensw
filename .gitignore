@@ -17,3 +17,4 @@ Reference/*
 # …but keep intentionally-shared reference files
 !Reference/softr.txt
 !Reference/softr-embed.txt
+!Reference/softr-website-announcements.html

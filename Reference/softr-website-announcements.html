@@ -1,0 +1,276 @@
+<!--
+  NextGen SW — Announcement admin header
+  Lives at: Reference/softr-website-announcements.html
+  Paste this entire block into Softr → /website-announcements page →
+  Custom Code (Header, before the Airtable form block).
+
+  ⚠ Schema reference: field names + types must match the Announcement
+  table snapshot at docs/schema.generated.json. If the schema changes
+  (e.g. new Preset option, new field), update the cheat sheet below in
+  the same PR so admins see accurate instructions. Schema-drift CI
+  catches the underlying table change; PR review catches the doc drift.
+
+  Last reviewed against schema: Announcement v19 fields incl.
+  Created_Time / Last_Modified_Time / Updated_By (commit 4803f48 +
+  follow-up UI fields).
+-->
+
+<style>
+  .ngsw-admin {
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+                  Roboto, Helvetica, Arial, sans-serif;
+    color: #1B1B1B;
+    max-width: 880px;
+    margin: 0 auto 1.25rem;
+    padding: 1.5rem clamp(1rem, 3vw, 1.75rem);
+    background: #FFFFFF;
+    border-radius: 18px;
+    border: 1px solid #E7E3E2;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+  }
+  .ngsw-admin h2 {
+    margin: 0 0 0.35rem;
+    font-size: 1.45rem;
+    font-weight: 800;
+    color: #1B1B1B;
+    letter-spacing: -0.01em;
+  }
+  .ngsw-admin .ngsw-lede {
+    margin: 0 0 1.25rem;
+    color: #6B6B6B;
+    font-size: 0.95rem;
+  }
+
+  .ngsw-publish-row {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    flex-wrap: wrap;
+    padding: 0.9rem;
+    background: linear-gradient(95deg, #FFF8DD, #FFF1B8);
+    border: 1px solid #FED01D;
+    border-radius: 12px;
+    margin: 0 0 1rem;
+  }
+  .ngsw-publish-btn {
+    background: #D93621;
+    color: #FFFFFF;
+    border: 0;
+    padding: 0.7rem 1.25rem;
+    font: inherit;
+    font-weight: 700;
+    border-radius: 999px;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(217,54,33,0.28);
+    transition: background 0.15s ease, transform 0.05s ease;
+  }
+  .ngsw-publish-btn:hover { background: #B02818; }
+  .ngsw-publish-btn:active { transform: translateY(1px); }
+  .ngsw-publish-btn:disabled {
+    background: #B5B5B5;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+  .ngsw-publish-hint {
+    margin: 0;
+    font-size: 0.82rem;
+    color: #6B6B6B;
+    flex: 1 1 12rem;
+  }
+
+  .ngsw-toast {
+    margin: 0 0 1rem;
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    font-size: 0.92rem;
+    font-weight: 600;
+    line-height: 1.45;
+  }
+  .ngsw-toast[hidden] { display: none; }
+  .ngsw-toast-info    { background: #F3F3F3; color: #1B1B1B; border-left: 4px solid #50AAE1; }
+  .ngsw-toast-success { background: #E9F8EF; color: #1B5E36; border-left: 4px solid #38A460; }
+  .ngsw-toast-error   { background: #FBEEEC; color: #B02818; border-left: 4px solid #D93621; }
+
+  .ngsw-help {
+    margin: 0;
+    border-top: 1px dashed #E7E3E2;
+    padding-top: 0.85rem;
+  }
+  .ngsw-help summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: #1B1B1B;
+    padding: 0.25rem 0;
+    list-style: none;
+  }
+  .ngsw-help summary::before {
+    content: "▸ ";
+    color: #D93621;
+    margin-right: 0.25rem;
+    transition: transform 0.15s ease;
+    display: inline-block;
+  }
+  .ngsw-help[open] summary::before { content: "▾ "; }
+  .ngsw-help ol {
+    margin: 0.75rem 0 0;
+    padding-left: 1.25rem;
+    color: #1B1B1B;
+    font-size: 0.92rem;
+    line-height: 1.55;
+  }
+  .ngsw-help ol li { margin-bottom: 0.4rem; }
+  .ngsw-help h3 {
+    margin: 1rem 0 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #6B6B6B;
+  }
+  .ngsw-help dl {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 0.35rem 0.85rem;
+    margin: 0;
+    font-size: 0.88rem;
+  }
+  .ngsw-help dt {
+    font-weight: 700;
+    color: #B02818;
+    white-space: nowrap;
+  }
+  .ngsw-help dd { margin: 0; color: #1B1B1B; }
+</style>
+
+<section class="ngsw-admin" aria-label="Announcement admin">
+  <h2>Announcement control</h2>
+  <p class="ngsw-lede">
+    Edit the live announcement (top banner + first-visit modal). Changes
+    publish to the public site when you click <strong>Publish to live
+    site</strong>; the rebuild takes about 45 seconds.
+  </p>
+
+  <div class="ngsw-publish-row">
+    <button type="button" class="ngsw-publish-btn" id="ngsw-publish-btn">
+      Publish to live site
+    </button>
+    <p class="ngsw-publish-hint">
+      Pulls the current <em>Status&nbsp;=&nbsp;Published</em> record into
+      <code>nextgensw.org</code>. Bump <strong>Version</strong> before
+      publishing if you want returning visitors to see the new
+      announcement even if they dismissed the previous one.
+    </p>
+  </div>
+
+  <p class="ngsw-toast" id="ngsw-toast" role="status" aria-live="polite" hidden></p>
+
+  <details class="ngsw-help">
+    <summary>How this works (and what each field controls)</summary>
+
+    <ol>
+      <li>Edit the row below. <strong>Status&nbsp;=&nbsp;Published</strong>
+        is what goes live; <strong>Draft</strong> and
+        <strong>Archived</strong> are ignored.</li>
+      <li>For a brand-new announcement, bump <strong>Version</strong> by
+        1. The site uses Version as a dismissal key, so a returning
+        visitor who dismissed v1 will see v2 again.</li>
+      <li>Click <strong>Publish to live site</strong>. Watch this toast
+        for confirmation, then refresh nextgensw.org in about a minute.</li>
+      <li>After the deadline passes (the day after
+        <strong>Deadline_Date</strong>), the
+        <em>Active_Announcements</em> view drops the record automatically
+        and the banner disappears next time the site rebuilds. No manual
+        cleanup needed.</li>
+    </ol>
+
+    <h3>Field cheat sheet</h3>
+    <dl>
+      <dt>Visible</dt>
+      <dd>Master kill switch. Off = nothing renders on the public site,
+        regardless of the two flags below.</dd>
+
+      <dt>Show_Banner</dt>
+      <dd>Top strip across every page. Dismissible by visitors;
+        re-appears when Version bumps.</dd>
+
+      <dt>Show_Modal</dt>
+      <dd>First-visit popup. Once per visitor per Version.</dd>
+
+      <dt>Show_Countdown</dt>
+      <dd>Off hides the "N days left" chip / pill on both placements.</dd>
+
+      <dt>Preset</dt>
+      <dd>V1 supports <strong>Application Deadline</strong>. Add
+        <em>Funding Match</em> / <em>Info Session</em> as a new singleSelect
+        option when those announcement types are needed.</dd>
+
+      <dt>Deadline_Date</dt>
+      <dd>Date only. Treated as end-of-day America/New_York. Drives the
+        countdown and the auto-archive behavior.</dd>
+
+      <dt>Anchor</dt>
+      <dd>Where the CTA button goes. Accepts a page anchor
+        (<code>#apply</code>) or a full URL.</dd>
+
+      <dt>Starts_At · Ends_At</dt>
+      <dd>Optional. Use to stage the next deadline in advance — site
+        won't render the announcement before Starts_At or after Ends_At.</dd>
+
+      <dt>Version</dt>
+      <dd>Manual integer. Bump when re-surfacing to returning visitors.</dd>
+    </dl>
+  </details>
+</section>
+
+<script>
+(function () {
+  // Netlify build hook — fires the deploy that runs the
+  // announcement:sync step in netlify.toml.
+  var HOOK_URL = "https://api.netlify.com/build_hooks/6a4410231073c55b311a545b";
+
+  var btn = document.getElementById("ngsw-publish-btn");
+  var toast = document.getElementById("ngsw-toast");
+  if (!btn || !toast) return;
+
+  function setToast(msg, kind) {
+    toast.hidden = false;
+    toast.className = "ngsw-toast ngsw-toast-" + (kind || "info");
+    toast.textContent = msg;
+  }
+  function clearToastAfter(ms) {
+    setTimeout(function () { toast.hidden = true; }, ms);
+  }
+
+  btn.addEventListener("click", function () {
+    btn.disabled = true;
+    setToast("Triggering rebuild…", "info");
+
+    // no-cors mode: the request is sent, but we can't read the response
+    // status (Netlify build hooks don't send CORS headers). The build
+    // still kicks off. We optimistically show success once the fetch
+    // resolves; a true network failure throws and is caught below.
+    fetch(HOOK_URL, { method: "POST", mode: "no-cors" })
+      .then(function () {
+        setToast(
+          "✓ Build triggered. The public site will reflect this announcement in about 45 seconds. " +
+          "Refresh nextgensw.org once you see the build finish in the Netlify dashboard.",
+          "success"
+        );
+        clearToastAfter(15000);
+      })
+      .catch(function (err) {
+        setToast(
+          "Could not reach Netlify: " + (err && err.message ? err.message : "network error") +
+          ". Check connectivity and try again.",
+          "error"
+        );
+      })
+      .finally(function () {
+        // Re-enable after a short cooldown to prevent accidental
+        // double-triggers (Netlify deduplicates concurrent builds but
+        // it's friendlier UX to throttle here).
+        setTimeout(function () { btn.disabled = false; }, 5000);
+      });
+  });
+})();
+</script>
