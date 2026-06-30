@@ -306,48 +306,6 @@ ul, ol { margin: 0 0 1em; padding: 0 0 0 1.2em; }
   align-items: stretch;
   gap: 0.6rem;
 }
-/* Priority deadline pill — sits between lede and CTA stack in the
-   hero panel. Yellow on the brick panel pulls the eye without
-   crowding out the buttons below. */
-.hero-deadline {
-  display: grid;
-  grid-template-columns: auto auto;
-  grid-template-areas:
-    "eyebrow date"
-    "note    note";
-  gap: 0.2rem 0.6rem;
-  align-items: baseline;
-  margin: 0 0 0.25rem;
-  padding: 0.7rem 0.9rem;
-  background: var(--yellow);
-  color: var(--ink);
-  border-radius: 12px;
-  box-shadow: 0 8px 22px rgba(0,0,0,0.18);
-}
-.hero-deadline-eyebrow {
-  grid-area: eyebrow;
-  font-size: 0.7rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--brick-dark);
-  align-self: center;
-}
-.hero-deadline-date {
-  grid-area: date;
-  font-size: var(--step-1);
-  font-weight: 800;
-  line-height: 1;
-  color: var(--brick-dark);
-  letter-spacing: -0.01em;
-}
-.hero-deadline-note {
-  grid-area: note;
-  font-size: 0.82rem;
-  line-height: 1.35;
-  color: var(--ink);
-  opacity: 0.85;
-}
 .hero-actions-stack .btn {
   width: 100%;
   justify-content: center;
@@ -1282,6 +1240,210 @@ ul, ol { margin: 0 0 1em; padding: 0 0 0 1.2em; }
 .ng-success p { margin: 0; color: var(--gray-500); }
 
 body.modal-open { overflow: hidden; }
+
+/* ─────────── Announcement banner + modal ───────────
+   Driven by /assets/js/announcement.js, content from
+   /assets/data/announcement.json. See ANNOUNCEMENT_BANNER_SPEC.md. */
+
+.announcement-banner {
+  background: linear-gradient(90deg, var(--brick-dark), var(--brick));
+  color: var(--white);
+  font-family: var(--font-sans);
+  position: relative;
+  z-index: 60;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+}
+.announcement-banner-inner {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.5rem, 1.2vw, 1rem);
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0.7rem var(--gutter);
+  font-size: 0.85rem;
+}
+.announcement-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--yellow);
+  flex-shrink: 0;
+  animation: ann-pulse 1.6s ease-in-out infinite;
+}
+.announcement-banner.announcement-reduced-motion .announcement-dot,
+@media (prefers-reduced-motion: reduce) {
+  .announcement-dot { animation: none; }
+}
+@keyframes ann-pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(254, 208, 29, 0.55);
+  }
+  50% {
+    transform: scale(1.18);
+    box-shadow: 0 0 0 6px rgba(254, 208, 29, 0);
+  }
+}
+.announcement-eyebrow {
+  color: var(--yellow);
+  font-weight: 700;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.announcement-headline {
+  font-weight: 700;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.announcement-days {
+  background: var(--yellow);
+  color: var(--brick-dark);
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.78rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.announcement-cta {
+  background: var(--white);
+  color: var(--brick-dark);
+  padding: 0.4rem 0.95rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.82rem;
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.announcement-cta:hover { background: var(--yellow); color: var(--brick-dark); }
+.announcement-dismiss {
+  background: transparent;
+  border: 0;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0.2rem 0.45rem;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+.announcement-dismiss:hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: var(--white);
+}
+@media (max-width: 720px) {
+  .announcement-banner-inner {
+    flex-wrap: wrap;
+    row-gap: 0.5rem;
+    padding: 0.6rem var(--gutter);
+  }
+  .announcement-headline {
+    order: 5;
+    flex-basis: 100%;
+    font-size: 0.82rem;
+  }
+  .announcement-days { order: 6; margin-left: auto; }
+  .announcement-cta { order: 7; }
+}
+
+/* Announcement modal — overrides on the shared .modal shell */
+.modal-dialog-announcement {
+  text-align: center;
+  padding: clamp(1.5rem, 3vw, 2.25rem) clamp(1.25rem, 3vw, 2rem);
+  max-width: 440px;
+  background: var(--white);
+  border-radius: 18px;
+  position: relative;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.35);
+}
+.modal-dialog-announcement .modal-close {
+  position: absolute;
+  top: 0.55rem;
+  right: 0.7rem;
+  font-size: 1.6rem;
+  line-height: 1;
+  color: var(--gray-500);
+}
+.announcement-modal-logo {
+  display: block;
+  margin: 0 auto 1rem;
+  width: 72px;
+  height: auto;
+}
+.announcement-modal-eyebrow {
+  display: inline-block;
+  background: #FBEEEC;
+  color: var(--brick-dark);
+  padding: 0.35rem 0.95rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 0 0 0.9rem;
+}
+.announcement-modal-headline {
+  font-size: clamp(1.35rem, 2.8vw, 1.7rem);
+  font-weight: 800;
+  color: var(--ink);
+  margin: 0 0 0.95rem;
+  line-height: 1.2;
+}
+.announcement-modal-days {
+  display: inline-block;
+  background: #FBEEEC;
+  color: var(--brick-dark);
+  padding: 0.55rem 1.1rem;
+  border-radius: 999px;
+  font-size: 0.92rem;
+  margin: 0 0 1.1rem;
+}
+.announcement-modal-days strong {
+  font-size: 1.35rem;
+  font-weight: 800;
+  margin-right: 0.15rem;
+}
+.announcement-modal-subtext {
+  color: var(--gray-500);
+  font-size: 0.92rem;
+  line-height: 1.55;
+  margin: 0 0 1.35rem;
+  max-width: 36ch;
+  margin-left: auto;
+  margin-right: auto;
+}
+.announcement-modal-cta {
+  display: block;
+  background: var(--brick);
+  color: var(--white);
+  padding: 0.9rem 1.25rem;
+  border-radius: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  margin: 0 0 0.75rem;
+  transition: background 0.15s ease;
+}
+.announcement-modal-cta:hover {
+  background: var(--brick-dark);
+  color: var(--white);
+}
+.announcement-modal-maybe {
+  background: transparent;
+  border: 0;
+  color: var(--gray-500);
+  font-weight: 500;
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0.3rem 0.6rem;
+}
+.announcement-modal-maybe:hover { color: var(--ink); }
+
+@media (prefers-reduced-motion: reduce) {
+  .modal-dialog-announcement { animation: none !important; }
+}
 .video-placeholder {
   position: absolute; inset: 0;
   display: flex; align-items: center; justify-content: center;
