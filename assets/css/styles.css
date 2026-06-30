@@ -306,6 +306,48 @@ ul, ol { margin: 0 0 1em; padding: 0 0 0 1.2em; }
   align-items: stretch;
   gap: 0.6rem;
 }
+/* Priority deadline pill — sits between lede and CTA stack in the
+   hero panel. Yellow on the brick panel pulls the eye without
+   crowding out the buttons below. */
+.hero-deadline {
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-template-areas:
+    "eyebrow date"
+    "note    note";
+  gap: 0.2rem 0.6rem;
+  align-items: baseline;
+  margin: 0 0 0.25rem;
+  padding: 0.7rem 0.9rem;
+  background: var(--yellow);
+  color: var(--ink);
+  border-radius: 12px;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.18);
+}
+.hero-deadline-eyebrow {
+  grid-area: eyebrow;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--brick-dark);
+  align-self: center;
+}
+.hero-deadline-date {
+  grid-area: date;
+  font-size: var(--step-1);
+  font-weight: 800;
+  line-height: 1;
+  color: var(--brick-dark);
+  letter-spacing: -0.01em;
+}
+.hero-deadline-note {
+  grid-area: note;
+  font-size: 0.82rem;
+  line-height: 1.35;
+  color: var(--ink);
+  opacity: 0.85;
+}
 .hero-actions-stack .btn {
   width: 100%;
   justify-content: center;
