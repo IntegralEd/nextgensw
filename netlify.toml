@@ -1,6 +1,13 @@
 [build]
   publish = "."
 
+  # On every deploy, pull the current published Announcement record
+  # from Airtable into assets/data/announcement.json. If no record is
+  # active the script writes a visible:false stub (banner stays
+  # hidden); on any non-zero exit the build fails so we never deploy
+  # with stale data because of a silent error.
+  command = "npm run announcement:sync"
+
   # Netlify's secrets scanner sees AIRTABLE_BASE_ID set as an env var
   # AND appearing in committed files (the schema snapshot, scripts,
   # docs) and assumes a leak. Base IDs are NOT secrets — they're

@@ -48,14 +48,18 @@ Announcement,tblbGWPTH7sWqOIGR,fldQKeYcyZzjVPAcH,Status,singleSelect,,,
 Announcement,tblbGWPTH7sWqOIGR,fldR5XZ0Ag3GwI94d,Headline,singleLineText,,,
 Announcement,tblbGWPTH7sWqOIGR,fldrzgVGRWtOiK6Nz,Eyebrow,singleLineText,,,
 Announcement,tblbGWPTH7sWqOIGR,fldUem58BHEtfSo4W,Show_Banner,checkbox,,,
+Announcement,tblbGWPTH7sWqOIGR,flduvTJZkOvWDt5Y4,Created_Time,createdTime,,,
 Announcement,tblbGWPTH7sWqOIGR,fldwDQgZlMENeB8z1,Version,number,,,
+Announcement,tblbGWPTH7sWqOIGR,fldwre2tSIY08Wxpa,Updated_By,multipleRecordLinks,checked,tbldH5vECddqn4Tvv,Users
 Announcement,tblbGWPTH7sWqOIGR,fldWUZf79BrISQoKe,Preset,singleSelect,,,
+Announcement,tblbGWPTH7sWqOIGR,fldY6Z2hhnaIZmtVH,Last_Modified_Time,lastModifiedTime,,,
 Users,tbldH5vECddqn4Tvv,fld0oFpDJu3SUnTar,User_Session,multipleRecordLinks,checked,tblABreioRlQTyMVH,User_Session
 Users,tbldH5vECddqn4Tvv,fld4ucTQWeyJbooqo,Last Modified,lastModifiedTime,,,
 Users,tbldH5vECddqn4Tvv,fld5xMaP1iEpO121p,Magic-Link-Reset,lastModifiedTime,,,
 Users,tbldH5vECddqn4Tvv,fld9lKEWHtDfLUV5U,Organization,singleSelect,,,
 Users,tbldH5vECddqn4Tvv,fld9Tjsep2j3ThWj5,User_Role,singleSelect,,,
 Users,tbldH5vECddqn4Tvv,fldB6n3mkkogxJZCH,Added_by,multipleRecordLinks,checked,tbldH5vECddqn4Tvv,Users
+Users,tbldH5vECddqn4Tvv,fldbrcRjjGjNcFCfE,Announcement,multipleRecordLinks,checked,tblbGWPTH7sWqOIGR,Announcement
 Users,tbldH5vECddqn4Tvv,flddOYHnS6RvBxivC,Visit_Count,rollup,,,
 Users,tbldH5vECddqn4Tvv,flde7MOGLMElMcwZa,Latest_Visit,rollup,,,
 Users,tbldH5vECddqn4Tvv,fldeS6kgNpaYDpEk2,Magic Link,url,,,

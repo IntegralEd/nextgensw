@@ -369,11 +369,25 @@
           "linkedTableName": null
         },
         {
+          "id": "flduvTJZkOvWDt5Y4",
+          "name": "Created_Time",
+          "type": "createdTime",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
           "id": "fldwDQgZlMENeB8z1",
           "name": "Version",
           "type": "number",
           "linkedTableId": null,
           "linkedTableName": null
+        },
+        {
+          "id": "fldwre2tSIY08Wxpa",
+          "name": "Updated_By",
+          "type": "multipleRecordLinks",
+          "linkedTableId": "tbldH5vECddqn4Tvv",
+          "linkedTableName": "Users"
         },
         {
           "id": "fldWUZf79BrISQoKe",
@@ -384,6 +398,13 @@
           "choices": [
             "Application Deadline"
           ]
+        },
+        {
+          "id": "fldY6Z2hhnaIZmtVH",
+          "name": "Last_Modified_Time",
+          "type": "lastModifiedTime",
+          "linkedTableId": null,
+          "linkedTableName": null
         }
       ]
     },
@@ -446,6 +467,13 @@
           "type": "multipleRecordLinks",
           "linkedTableId": "tbldH5vECddqn4Tvv",
           "linkedTableName": "Users"
+        },
+        {
+          "id": "fldbrcRjjGjNcFCfE",
+          "name": "Announcement",
+          "type": "multipleRecordLinks",
+          "linkedTableId": "tblbGWPTH7sWqOIGR",
+          "linkedTableName": "Announcement"
         },
         {
           "id": "flddOYHnS6RvBxivC",
