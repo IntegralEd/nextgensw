@@ -261,6 +261,133 @@
       ]
     },
     {
+      "id": "tblbGWPTH7sWqOIGR",
+      "name": "Announcement",
+      "primaryFieldId": "fld0xq7AwTfNsTbP5",
+      "fields": [
+        {
+          "id": "fld0xq7AwTfNsTbP5",
+          "name": "Name",
+          "type": "singleLineText",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fld4pLeKZLMWftLrB",
+          "name": "Visible",
+          "type": "checkbox",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fld8ODwuQHWlWmtha",
+          "name": "Anchor",
+          "type": "singleLineText",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fld8yp75TKBHnJvOm",
+          "name": "Starts_At",
+          "type": "dateTime",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldc3UcEKw3v3lhpn",
+          "name": "Ends_At",
+          "type": "dateTime",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldgDARNZj6XONx9U",
+          "name": "Deadline_Date",
+          "type": "date",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldI6Pp2aZQFQxpdI",
+          "name": "Show_Modal",
+          "type": "checkbox",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldMy7PABwROGgrcf",
+          "name": "Show_Countdown",
+          "type": "checkbox",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldmzMGTzOuzgNxl0",
+          "name": "Button_Text",
+          "type": "singleLineText",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldn2cKLED0X68Jn4",
+          "name": "Subtext",
+          "type": "multilineText",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldQKeYcyZzjVPAcH",
+          "name": "Status",
+          "type": "singleSelect",
+          "linkedTableId": null,
+          "linkedTableName": null,
+          "choices": [
+            "Archived",
+            "Draft",
+            "Published"
+          ]
+        },
+        {
+          "id": "fldR5XZ0Ag3GwI94d",
+          "name": "Headline",
+          "type": "singleLineText",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldrzgVGRWtOiK6Nz",
+          "name": "Eyebrow",
+          "type": "singleLineText",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldUem58BHEtfSo4W",
+          "name": "Show_Banner",
+          "type": "checkbox",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldwDQgZlMENeB8z1",
+          "name": "Version",
+          "type": "number",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldWUZf79BrISQoKe",
+          "name": "Preset",
+          "type": "singleSelect",
+          "linkedTableId": null,
+          "linkedTableName": null,
+          "choices": [
+            "Application Deadline"
+          ]
+        }
+      ]
+    },
+    {
       "id": "tbldH5vECddqn4Tvv",
       "name": "Users",
       "primaryFieldId": "fldtyASy8WTn1nfg9",
@@ -688,6 +815,13 @@
           "id": "fldRDy0m7IpxuP4ns",
           "name": "Is_Linked_Field",
           "type": "checkbox",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldrScwJdLGzlUpDx",
+          "name": "_probe_DELETE",
+          "type": "singleLineText",
           "linkedTableId": null,
           "linkedTableName": null
         },
