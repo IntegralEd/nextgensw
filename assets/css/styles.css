@@ -1314,6 +1314,18 @@ body.modal-open { overflow: hidden; }
 }
 .site-footer p { margin: 0.25rem 0; }
 .footer-meta { color: #B5B5B5; }
+.footer-contact {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: var(--white);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+.footer-contact:hover { color: var(--yellow); }
 .footer-credits {
   margin-top: 1rem;
   font-size: 0.78rem;

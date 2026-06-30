@@ -183,6 +183,51 @@
     });
   }
 
+  // "Contact us" form (footer / Learn More → Contact_List)
+  const contactForm = document.getElementById('contact-form');
+  if (contactForm) {
+    const cstatus = contactForm.querySelector('[data-status]');
+    const csubmit = contactForm.querySelector('.ng-submit');
+    function setContactStatus(msg, kind) {
+      if (!cstatus) return;
+      cstatus.textContent = msg;
+      cstatus.dataset.kind = kind || '';
+      cstatus.hidden = !msg;
+    }
+    contactForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      // Honeypot — silent drop, no error to the user (bots get no signal)
+      if (contactForm.querySelector('.ng-honeypot').value) return;
+      const data = new FormData(contactForm);
+      const email = String(data.get('email') || '').trim();
+      const name = String(data.get('name') || '').trim();
+      const message = String(data.get('message') || '').trim();
+      if (!name || !/.+@.+\..+/.test(email) || !message) {
+        setContactStatus('Please complete name, email, and message.', 'err');
+        return;
+      }
+      csubmit.disabled = true;
+      setContactStatus('Sending…', '');
+      try {
+        const res = await fetch('/.netlify/functions/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, message }),
+        });
+        if (!res.ok) throw new Error(`status ${res.status}`);
+        contactForm.classList.add('is-submitted');
+        contactForm.innerHTML =
+          '<div class="ng-success">' +
+          '<h4>Message sent. ✨</h4>' +
+          '<p>Thanks for reaching out — we\'ll get back to you soon.</p>' +
+          '</div>';
+      } catch (err) {
+        csubmit.disabled = false;
+        setContactStatus('Something went wrong. Please try again in a moment.', 'err');
+      }
+    });
+  }
+
   // Scroll-triggered hub & spoke + counter
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const stats = document.querySelectorAll('[data-stat-target]');

@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=20261114a">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=20261114b">
 </head>
 <body>
   <a href="#main" class="skip-link">Skip to main content</a>
@@ -403,6 +403,7 @@
           <li><a href="https://docs.google.com/forms/d/e/1FAIpQLSfVVKb1MTkX2bRNKJs_AFp3WhDQ88ont_lWqak5aSTTn3xDlw/viewform" target="_blank" rel="noopener">Take the Partner Interest Survey</a></li>
           <li><a href="https://form.jotform.com/252113228540143" target="_blank" rel="noopener">Donate or sponsor an intern</a></li>
           <li><a href="https://docs.google.com/document/d/10HspqerMqffKHHbVJzMNLUB9xyGIY_jiInvxdj4Weos/edit?tab=t.0" target="_blank" rel="noopener">Read the intern job description</a></li>
+          <li><a href="#" data-modal-open="modal-contact">Contact NextGen SW</a></li>
         </ul>
       </div>
     </section>
@@ -410,6 +411,42 @@
   </main>
 
   <!-- Modals -->
+  <div id="modal-contact" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-contact-title" hidden>
+    <div class="modal-backdrop" data-modal-close></div>
+    <div class="modal-dialog modal-dialog-form">
+      <header class="modal-header">
+        <h3 id="modal-contact-title">Contact NextGen SW</h3>
+        <button type="button" class="modal-close" data-modal-close aria-label="Close">&times;</button>
+      </header>
+      <div class="modal-body modal-body-form">
+        <p class="modal-intro">
+          Question, comment, or want to get in touch? Send a note and we'll get back to you.
+        </p>
+        <form id="contact-form" class="ng-form" novalidate>
+          <input type="text" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true" class="ng-honeypot">
+
+          <label class="ng-field">
+            <span class="ng-label">Name</span>
+            <input name="name" type="text" autocomplete="name" required>
+          </label>
+
+          <label class="ng-field">
+            <span class="ng-label">Email</span>
+            <input name="email" type="email" autocomplete="email" required>
+          </label>
+
+          <label class="ng-field">
+            <span class="ng-label">Message</span>
+            <textarea name="message" rows="5" required placeholder="What's on your mind?"></textarea>
+          </label>
+
+          <button type="submit" class="btn btn-primary ng-submit">Send message</button>
+          <p class="ng-form-status" data-status hidden></p>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <div id="modal-apply-notify" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-apply-notify-title" hidden>
     <div class="modal-backdrop" data-modal-close></div>
     <div class="modal-dialog modal-dialog-form">
@@ -485,11 +522,11 @@
 
   <footer class="site-footer">
     <div class="container">
-      <p>&copy; <span id="year"></span> NextGen SW &middot; A program of SWNA's Youth Activities Task Force</p>
+      <p>&copy; <span id="year"></span> NextGen SW &middot; A program of SWNA's Youth Activities Task Force &middot; <button type="button" class="footer-contact" data-modal-open="modal-contact">Contact us</button></p>
       <p class="footer-meta">Rooted in Southwest DC. Built for 2026 and beyond.</p>
     </div>
   </footer>
 
-  <script src="/assets/js/main.js?v=20261114a" defer></script>
+  <script src="/assets/js/main.js?v=20261114b" defer></script>
 </body>
 </html>
