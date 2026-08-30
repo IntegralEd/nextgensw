@@ -3,6 +3,10 @@
 node_modules/
 *.log
 
+# Workspace panel app build output — regenerated every deploy by
+# `npm run build:app` (source lives in workspace-app/)
+/app/
+
 # Secrets — never commit
 .env
 .env.*
@@ -18,3 +22,4 @@ Reference/*
 !Reference/softr.txt
 !Reference/softr-embed.txt
 !Reference/softr-website-announcements.html
+!Reference/softr-workspace-embed.html

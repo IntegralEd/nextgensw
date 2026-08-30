@@ -5,6 +5,7 @@
   "description": "Static site for nextgensw.org. Node tooling here is for Airtable schema drift checks only — the public site has no build step.",
   "type": "module",
   "scripts": {
+    "build:app": "npm --prefix workspace-app ci && npm --prefix workspace-app run build",
     "schema:sync": "node scripts/sync-schema.mjs",
     "schema:verify": "node scripts/verify-schema.mjs",
     "announcement:sync": "node scripts/sync-announcement.mjs",

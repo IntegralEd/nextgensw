@@ -1,0 +1,52 @@
+/* Workspace app baseline — mobile-first, meant to sit inside a Softr
+   iframe so the background stays white and chrome stays minimal.
+   Real design tokens arrive with Stage 1; this is deliberately spare. */
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    Helvetica, Arial, sans-serif;
+  color: #1a2b3c;
+  background: #ffffff;
+  -webkit-font-smoothing: antialiased;
+}
+
+.panel {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+.panel.center {
+  text-align: center;
+  padding-top: 15vh;
+}
+
+h1 {
+  font-size: 1.5rem;
+  margin: 0 0 12px;
+}
+
+.muted { color: #5b6b7b; }
+
+table.kv {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 16px 0;
+}
+
+table.kv th,
+table.kv td {
+  text-align: left;
+  padding: 8px 12px;
+  border-bottom: 1px solid #e4e9ee;
+  font-size: 0.95rem;
+}
+
+table.kv th {
+  color: #5b6b7b;
+  font-weight: 600;
+  width: 40%;
+}

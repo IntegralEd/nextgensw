@@ -6,7 +6,7 @@
   # active the script writes a visible:false stub (banner stays
   # hidden); on any non-zero exit the build fails so we never deploy
   # with stale data because of a silent error.
-  command = "npm run announcement:sync"
+  command = "npm run build:app && npm run announcement:sync"
 
   # Netlify's secrets scanner sees AIRTABLE_BASE_ID set as an env var
   # AND appearing in committed files (the schema snapshot, scripts,

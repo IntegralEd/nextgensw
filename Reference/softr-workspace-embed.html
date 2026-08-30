@@ -1,0 +1,26 @@
+<!--
+  SOFTR WORKSPACE EMBED — the one snippet Softr ever holds.
+  Source of truth lives here in git; paste into a Custom Code block on
+  each workspace Softr page, changing ONLY the PANEL_KEY in the src.
+
+  Available panel keys live in workspace-app/src/panels/index.jsx.
+  Stage 0 keys: home, whoami
+
+  How it works:
+  - Softr fills {LOGGED_IN_USER:email} with the logged-in user's email.
+  - The app sends it to /api/me, which verifies the address against the
+    Users table and returns a signed session token. An email that isn't
+    registered in Users gets a friendly "account not found" screen —
+    the asserted email grants nothing by itself.
+  - After this paste, all workspace changes are repo deploys. Do not
+    edit this block per-release.
+
+  The page must be gated to logged-in users via Softr user groups —
+  that keeps the page private; the token keeps the data private.
+-->
+
+<iframe
+  src="https://nextgensw.org/app/?email={LOGGED_IN_USER:email}#/PANEL_KEY"
+  style="width:100%; min-height:100vh; border:0; display:block;"
+  title="NextGen SW Workspace"
+></iframe>
