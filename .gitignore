@@ -6,6 +6,8 @@ node_modules/
 # Workspace panel app build output — regenerated every deploy by
 # `npm run build:app` (source lives in workspace-app/)
 /app/
+# Generated at build from docs/user-guide/*.md (build-guides.mjs)
+workspace-app/src/generated/
 
 # Secrets — never commit
 .env

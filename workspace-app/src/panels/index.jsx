@@ -8,10 +8,12 @@
 
 import Home from './Home.jsx';
 import WhoAmI from './WhoAmI.jsx';
+import UserGuide from './UserGuide.jsx';
 
 export const PANELS = {
   home: { component: Home, roles: ['*'], title: 'Home' },
   whoami: { component: WhoAmI, roles: ['*'], title: 'Who am I' },
+  'user-guide': { component: UserGuide, roles: ['*'], title: 'User guide' },
 };
 
 export const DEFAULT_PANEL = 'home';

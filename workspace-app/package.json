@@ -5,13 +5,17 @@
   "type": "module",
   "description": "Workspace panel app embedded in Softr pages. Source here; builds to /app/ at the repo root.",
   "scripts": {
+    "predev": "node scripts/build-guides.mjs",
     "dev": "vite",
+    "prebuild": "node scripts/build-guides.mjs",
     "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "react-markdown": "^9.0.1",
+    "remark-gfm": "^4.0.0"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.1",
