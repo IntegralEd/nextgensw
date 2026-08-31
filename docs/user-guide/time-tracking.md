@@ -55,3 +55,14 @@ Open **Pay periods**. The program runs Monday-start weeks:
 
 The **Current** badge marks this week. Approved hours attach to their
 week automatically for export.
+
+## Payroll export (staff)
+
+On **Pay periods**, any week with hours shows a **CSV** button. The
+file has two sections: per-intern totals (what payroll needs), then
+every approved entry with its date, category, and notes.
+
+After payroll has the file, click **Mark paid** on the same row — it
+flags every approved entry in that week so nothing gets exported
+twice. Entries approved later in the same week simply stay unpaid
+until the next export.

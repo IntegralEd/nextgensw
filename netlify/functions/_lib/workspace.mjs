@@ -110,6 +110,33 @@ export function publicUser(record) {
   };
 }
 
+// All users as {id: {name, email}} — for joining names onto linked
+// records server-side. Small table; paginates fully.
+export async function fetchUserMap(cfg) {
+  const map = {};
+  let offset;
+  do {
+    const qs = new URLSearchParams({ pageSize: '100' });
+    qs.append('fields[]', 'Full Name');
+    qs.append('fields[]', 'Email');
+    if (offset) qs.set('offset', offset);
+    const res = await fetch(
+      `https://api.airtable.com/v0/${cfg.baseId}/${encodeURIComponent(TABLES.USERS)}?${qs}`,
+      { headers: { Authorization: `Bearer ${cfg.pat}` } }
+    );
+    if (!res.ok) throw new Error(`users: ${res.status}`);
+    const data = await res.json();
+    for (const r of data.records || []) {
+      map[r.id] = {
+        name: (r.fields?.['Full Name'] || '').trim(),
+        email: r.fields?.['Email'] || '',
+      };
+    }
+    offset = data.offset;
+  } while (offset);
+  return map;
+}
+
 // ---- session tokens ----------------------------------------------------
 
 const b64u = (buf) => Buffer.from(buf).toString('base64url');

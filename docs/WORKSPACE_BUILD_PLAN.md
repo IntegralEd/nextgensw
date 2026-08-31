@@ -67,6 +67,9 @@ Panels: `home` (alert cards: new tasks, due dates, new messages, missing hours),
 **Stage 4 — Events & cohort ops.**
 Panels: `events` + `event-detail` (agenda, materials, attendance, log-hours-against-event, event message board), `cohort-admin` (members, cohort-wide task fan-out — one row per member).
 
+**Queued — Employer dashboard (build after the intern/team functional pages).**
+One unified panel for partner mentors: their intern(s), active tasks, tasks awaiting partner review, and **timesheet visibility only after coordinator processing** — employers see entries once Approved (post-review), never the Submitted queue or clarification threads. Decided 2026-08-31.
+
 **Stage 5 — Notifications & reporting.**
 Scheduled function → per-user daily digest (email provider) + Monday-meeting reminders; `reports` panel (hours by intern, task completion, partner engagement, funder export).
 

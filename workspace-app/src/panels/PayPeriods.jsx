@@ -36,6 +36,56 @@ export default function PayPeriods() {
     }
   }
 
+  const csvCell = (v) => {
+    const s = String(v ?? '');
+    return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+  };
+
+  async function exportCsv(p) {
+    setBusy(true);
+    try {
+      const r = await apiFetch(`export-hours?period=${p.id}`);
+      if (!r.rows.length) return flash('No approved hours in that period yet', true);
+      const lines = [
+        ['Pay period', r.period.label].map(csvCell).join(','),
+        '',
+        ['Intern', 'Email', 'Total hours'].join(','),
+        ...r.totals.map((t) => [t.intern, t.email, t.hours].map(csvCell).join(',')),
+        '',
+        ['Intern', 'Email', 'Date', 'Hours', 'Category', 'Notes', 'Paid'].join(','),
+        ...r.rows.map((row) =>
+          [row.intern, row.email, row.date, row.hours, row.category, row.notes, row.paid ? 'yes' : 'no']
+            .map(csvCell).join(',')),
+      ];
+      const blob = new Blob([lines.join('\n')], { type: 'text/csv' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `hours_${r.period.label.replace(/[^0-9a-z]+/gi, '-')}.csv`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+      flash(`Exported ${r.rows.length} entries — mark them paid once payroll has them`);
+    } catch (e) {
+      flash(e.message, true);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function markPaid(p) {
+    setBusy(true);
+    try {
+      const r = await apiFetch('export-hours', {
+        method: 'POST',
+        body: JSON.stringify({ action: 'mark-paid', periodId: p.id }),
+      });
+      flash(r.marked ? `Marked ${r.marked} entries paid ✓` : 'Nothing unpaid in that period');
+    } catch (e) {
+      flash(e.message, true);
+    } finally {
+      setBusy(false);
+    }
+  }
+
   if (!periods) return <div className="panel center muted">Loading pay periods…</div>;
 
   return (
@@ -100,6 +150,12 @@ export default function PayPeriods() {
                       <td>{p.totalHours || 0}</td>
                       <td style={{ whiteSpace: 'nowrap' }}>
                         <button className="btn btn-outline btn-sm" onClick={() => setEditing({ id: p.id, starting: p.starting, ending: p.ending })}>Edit</button>{' '}
+                        {p.entryCount > 0 && (
+                          <>
+                            <button className="btn btn-secondary btn-sm" disabled={busy} onClick={() => exportCsv(p)}>CSV</button>{' '}
+                            <button className="btn btn-ghost btn-sm" disabled={busy} onClick={() => markPaid(p)}>Mark paid</button>
+                          </>
+                        )}
                         {p.entryCount === 0 && (
                           <button className="btn btn-ghost btn-sm" disabled={busy}
                             onClick={() => post({ action: 'delete', id: p.id }, 'Period deleted')}>

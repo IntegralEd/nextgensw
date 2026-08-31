@@ -18,29 +18,11 @@ import {
   STAFF_ROLES,
   airtableGet,
   airtableWrite,
+  fetchUserMap,
   requireAuth,
   corsHeaders,
   json,
 } from './_lib/workspace.mjs';
-
-async function userNameMap(cfg) {
-  const map = {};
-  let offset;
-  do {
-    const params = { pageSize: '100', 'fields[]': 'Full Name' };
-    const qs = new URLSearchParams(params);
-    if (offset) qs.set('offset', offset);
-    const res = await fetch(
-      `https://api.airtable.com/v0/${cfg.baseId}/${encodeURIComponent(TABLES.USERS)}?${qs}`,
-      { headers: { Authorization: `Bearer ${cfg.pat}` } }
-    );
-    if (!res.ok) throw new Error(`users: ${res.status}`);
-    const data = await res.json();
-    for (const r of data.records || []) map[r.id] = (r.fields?.['Full Name'] || '').trim();
-    offset = data.offset;
-  } while (offset);
-  return map;
-}
 
 export async function handler(event) {
   const origin = event.headers.origin || event.headers.Origin || '';
@@ -65,13 +47,13 @@ export async function handler(event) {
           'sort[0][field]': 'Submitted_At',
           'sort[0][direction]': 'asc',
         }),
-        userNameMap(cfg),
+        fetchUserMap(cfg),
       ]);
       const entries = (data.records || []).map((r) => {
         const f = r.fields || {};
         return {
           id: r.id,
-          internName: names[(f['Intern'] || [])[0]] || '(unknown)',
+          internName: names[(f['Intern'] || [])[0]]?.name || '(unknown)',
           date: f['Date_Worked'] || null,
           minutes: f['Minutes'] ?? 0,
           category: f['Work_Category'] || null,
