@@ -173,6 +173,22 @@ export async function handler(event) {
       const roots = (await scanAll(cfg, TABLES.MESSAGES, { filterByFormula: 'NOT({Is_Reply})' }))
         .filter((r) => rootVisible(r.fields || {}, auth, ctx));
 
+      // ?anchor=recX → just the visible threads on one item (an event
+      // page's message board, a task's discussion, …)
+      const anchor = event.queryStringParameters?.anchor;
+      if (anchor) {
+        const mine = roots.filter((r) => (r.fields?.['Anchor_Record_ID'] || '') === anchor);
+        return json(200, origin, {
+          threads: mine
+            .map((r) => ({
+              ...publicMessage(r, users),
+              replyCount: r.fields?.['Reply_Count'] ?? 0,
+              latestAt: [r.fields?.['Created_Datetime'], r.fields?.['Latest_Reply_Datetime']].filter(Boolean).sort().pop() || null,
+            }))
+            .sort((a, b) => String(b.latestAt).localeCompare(String(a.latestAt))),
+        });
+      }
+
       const threadId = event.queryStringParameters?.thread;
       if (threadId) {
         const root = roots.find((r) => r.id === threadId);
