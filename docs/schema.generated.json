@@ -56,6 +56,13 @@
           ]
         },
         {
+          "id": "fldGpKgtTZ4zn0ljT",
+          "name": "Thread_Root_ID",
+          "type": "singleLineText",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
           "id": "fldGtMWJXYQsQrb46",
           "name": "Cohort",
           "type": "multipleRecordLinks",
