@@ -28,11 +28,18 @@ close-and-reopen is the reliable habit.)
 
 ## Test accounts
 
+Use only these dedicated test accounts — don't test with your own
+account or anyone else's personal login.
+
 | Name | Role | Email | Magic link |
 |---|---|---|---|
-| *(populated separately — magic links are login credentials and are shared privately, not published in this guide)* | | | |
+| Intern Test | Intern | intern@test.com | shared privately |
+| Employer Test | Employer | employer@test.com | shared privately |
+| Coordinator Test | Coordinator | coordinator@test.com | shared privately |
 
-Ask David for the current test-account table.
+Magic links are login credentials, so they're never published in this
+guide (this page and the repo are publicly readable) — David shares
+the current links directly with testers.
 
 ## What to check (Stage 0)
 
