@@ -73,6 +73,7 @@ Time_Entries,tblAFI7T1B0FXs4yr,fldaMmWeJzTbwwE9U,Submitted_At,dateTime,,,
 Time_Entries,tblAFI7T1B0FXs4yr,fldCDlnPMg6RcAM91,Messages,multipleRecordLinks,checked,tbl0tzwKoiyHXYFRM,Messages
 Time_Entries,tblAFI7T1B0FXs4yr,fldCZIF9MZkibtNqe,Hours,formula,,,
 Time_Entries,tblAFI7T1B0FXs4yr,flddMVKMjkJNNWIei,Created,formula,,,
+Time_Entries,tblAFI7T1B0FXs4yr,fldDXeXaytvntONgP,Intern_Record_ID,singleLineText,,,
 Time_Entries,tblAFI7T1B0FXs4yr,flde1xBsWGzUk6BtS,Pay_Period,multipleRecordLinks,checked,tblSUypMwuYJonX5o,Pay_Period
 Time_Entries,tblAFI7T1B0FXs4yr,fldFeSSwHsYgtoAt1,Paid,checkbox,,,
 Time_Entries,tblAFI7T1B0FXs4yr,fldipXQFkcNKqULGb,Timesheet_ID,autoNumber,,,
@@ -132,6 +133,7 @@ Tasks,tblCqQJL1EMpI0LJx,fldzyWanNlpdO9MpO,Task_ID,autoNumber,,,
 Users,tbldH5vECddqn4Tvv,fld0oFpDJu3SUnTar,User_Session,multipleRecordLinks,checked,tblABreioRlQTyMVH,User_Session
 Users,tbldH5vECddqn4Tvv,fld1lWiun88IkZhbw,Cohorts,multipleRecordLinks,checked,tblXsOJwoqoOSpYDT,Cohorts
 Users,tbldH5vECddqn4Tvv,fld1m6Z90DIgqrgZy,Time_Entries_Reviewed,multipleRecordLinks,checked,tblAFI7T1B0FXs4yr,Time_Entries
+Users,tbldH5vECddqn4Tvv,fld1OyuSTpXTVUd84,Last_Name,singleLineText,,,
 Users,tbldH5vECddqn4Tvv,fld2cVQB9z2ostjX3,Partner_Org,multipleRecordLinks,checked,tbl1RbO4XsWIo4OWP,Partner_Orgs
 Users,tbldH5vECddqn4Tvv,fld2zubP0Ra2HbwG4,Phone,phoneNumber,,,
 Users,tbldH5vECddqn4Tvv,fld45blfys7ndgiav,Skills_Interests,multilineText,,,
