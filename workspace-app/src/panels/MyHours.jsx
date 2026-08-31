@@ -88,7 +88,14 @@ export default function MyHours() {
                   <td>{hrs(e.minutes)}</td>
                   <td>{e.category}</td>
                   <td>{e.notes ? String(e.notes).replace(/\n+/g, ' ').slice(0, 80) : '—'}</td>
-                  <td><span className={`chip ${STATUS_CHIP[e.status] || 'draft'}`}>{e.status}</span></td>
+                  <td>
+                    <span className={`chip ${STATUS_CHIP[e.status] || 'draft'}`}>{e.status}</span>
+                    {e.reviewNote && (
+                      <div className="muted" style={{ marginTop: 4, fontSize: '0.85rem' }}>
+                        “{e.reviewNote}”
+                      </div>
+                    )}
+                  </td>
                   <td style={{ whiteSpace: 'nowrap' }}>
                     {e.status === 'Draft' && (
                       <>

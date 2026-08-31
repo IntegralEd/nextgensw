@@ -21,6 +21,13 @@
           "linkedTableName": null
         },
         {
+          "id": "fld9LbvUi6Ng7oZBX",
+          "name": "Anchor_Record_ID",
+          "type": "singleLineText",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
           "id": "fldFQ4CCDfyS6vwz0",
           "name": "Subject",
           "type": "singleLineText",

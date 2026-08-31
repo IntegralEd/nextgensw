@@ -11,10 +11,13 @@ import WhoAmI from './WhoAmI.jsx';
 import UserGuide from './UserGuide.jsx';
 import LogHours from './LogHours.jsx';
 import MyHours from './MyHours.jsx';
+import ReviewHours from './ReviewHours.jsx';
+import PayPeriods from './PayPeriods.jsx';
 
 // Coordinator/Admin can log hours too (Rhonda logs her own hours per
 // Ava's requirements); Employers don't log time.
 const TIME_LOGGERS = ['Intern', 'Coordinator', 'Admin', 'SuperAdmin'];
+const STAFF = ['Coordinator', 'Admin', 'SuperAdmin'];
 
 export const PANELS = {
   home: { component: Home, roles: ['*'], title: 'Home' },
@@ -22,6 +25,8 @@ export const PANELS = {
   'user-guide': { component: UserGuide, roles: ['*'], title: 'User guide' },
   'log-hours': { component: LogHours, roles: TIME_LOGGERS, title: 'Log hours' },
   'my-hours': { component: MyHours, roles: TIME_LOGGERS, title: 'My hours' },
+  'review-hours': { component: ReviewHours, roles: STAFF, title: 'Review hours' },
+  'pay-periods': { component: PayPeriods, roles: STAFF, title: 'Pay periods' },
 };
 
 export const DEFAULT_PANEL = 'home';

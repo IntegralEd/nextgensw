@@ -113,7 +113,28 @@ export async function handler(event) {
         'sort[0][field]': 'Date_Worked',
         'sort[0][direction]': 'desc',
       });
-      return json(200, origin, { entries: (data.records || []).map(publicEntry) });
+      const entries = (data.records || []).map(publicEntry);
+
+      // Attach the latest clarification note to returned entries so the
+      // intern sees WHY it came back (the note lives as a Messages
+      // thread anchored to the entry).
+      const returned = entries.filter((e) => e.status === 'Returned for Clarification').slice(0, 20);
+      if (returned.length) {
+        const or = returned.map((e) => `{Anchor_Record_ID} = '${e.id}'`).join(', ');
+        const msgs = await airtableGet(cfg, TABLES.MESSAGES, {
+          filterByFormula: `OR(${or})`,
+          pageSize: '100',
+          'sort[0][field]': 'Created_Datetime',
+          'sort[0][direction]': 'desc',
+        });
+        const noteByEntry = {};
+        for (const m of msgs.records || []) {
+          const anchor = m.fields?.['Anchor_Record_ID'];
+          if (anchor && !noteByEntry[anchor]) noteByEntry[anchor] = m.fields?.['Message_Content'] || '';
+        }
+        for (const e of entries) if (noteByEntry[e.id]) e.reviewNote = noteByEntry[e.id];
+      }
+      return json(200, origin, { entries });
     }
 
     if (event.httpMethod === 'POST') {
