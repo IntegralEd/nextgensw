@@ -47,8 +47,9 @@ export const WORKSPACE_ROLES = [
   'Sponsor',
   'Admin',
   'SuperAdmin',
+  'Super Admin', // the select option was renamed in Airtable; accept both
 ];
-export const STAFF_ROLES = ['Coordinator', 'Admin', 'SuperAdmin'];
+export const STAFF_ROLES = ['Coordinator', 'Admin', 'SuperAdmin', 'Super Admin'];
 
 const TOKEN_TTL_MS = 12 * 60 * 60 * 1000; // 12h — one workspace day
 
@@ -119,6 +120,7 @@ export async function fetchUserMap(cfg) {
     const qs = new URLSearchParams({ pageSize: '100' });
     qs.append('fields[]', 'Full Name');
     qs.append('fields[]', 'Email');
+    qs.append('fields[]', 'User_Role');
     if (offset) qs.set('offset', offset);
     const res = await fetch(
       `https://api.airtable.com/v0/${cfg.baseId}/${encodeURIComponent(TABLES.USERS)}?${qs}`,
@@ -130,6 +132,7 @@ export async function fetchUserMap(cfg) {
       map[r.id] = {
         name: (r.fields?.['Full Name'] || '').trim(),
         email: r.fields?.['Email'] || '',
+        role: r.fields?.['User_Role'] || null,
       };
     }
     offset = data.offset;

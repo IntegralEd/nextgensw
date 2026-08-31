@@ -1,6 +1,7 @@
-// Guided task creation for partner mentors (and staff). Each prompt
-// from Ava's requirements doc is its own field, so "write clear
-// assignments" is built into the form rather than a training ask.
+// Guided task requests — open to every workspace role (teammates
+// request of each other, interns of the team, employers of their
+// interns). Each prompt from Ava's requirements doc is its own field,
+// so "write clear assignments" is built in rather than a training ask.
 
 import { useEffect, useState } from 'react';
 import { apiFetch } from '../api.js';
@@ -31,8 +32,8 @@ export default function AssignTask() {
 
   async function create() {
     if (!f.name.trim()) return flash('Give the task a short title', true);
-    if (!f.internId) return flash('Pick the intern', true);
-    if (!f.description.trim()) return flash('Describe what the intern should do', true);
+    if (!f.internId) return flash('Pick who it\'s for', true);
+    if (!f.description.trim()) return flash('Describe what they should do', true);
     if (!f.doneLooksLike.trim()) return flash('Say what “done” looks like — it’s the difference between a clear task and a confusing one', true);
     setBusy(true);
     try {
@@ -41,7 +42,7 @@ export default function AssignTask() {
         body: JSON.stringify({ ...f, estHours: f.estHours ? Number(f.estHours) : undefined }),
       });
       setF(blank);
-      flash('Task assigned ✓ — the intern will see it in their task list');
+      flash('Task requested ✓ — it\'s now in their task list');
     } catch (e) {
       flash(e.message, true);
     } finally {
@@ -53,11 +54,11 @@ export default function AssignTask() {
 
   return (
     <div className="panel">
-      <h1>Assign a task</h1>
+      <h1>Request a task</h1>
       <p className="muted lead">
-        A clear assignment answers four questions: what to do, what done
+        A clear request answers four questions: what to do, what done
         looks like, when it's due, and who to ask. The form walks you
-        through them.
+        through them. Anyone can request a task of anyone on the program.
       </p>
 
       <div className="card">
@@ -66,11 +67,11 @@ export default function AssignTask() {
 
         <label style={{ marginTop: 12 }}>Who is it for?</label>
         <select value={f.internId} onChange={set('internId')}>
-          <option value="">Choose an intern…</option>
-          {meta.interns.map((i) => <option key={i.id} value={i.id}>{i.name}</option>)}
+          <option value="">Choose a person…</option>
+          {meta.interns.map((i) => <option key={i.id} value={i.id}>{i.name}{i.role ? ` (${i.role})` : ''}</option>)}
         </select>
 
-        <label style={{ marginTop: 12 }}>What should the intern do?</label>
+        <label style={{ marginTop: 12 }}>What should they do?</label>
         <textarea rows={3} value={f.description} onChange={set('description')} placeholder="The steps or the ask, in plain language." />
 
         <label style={{ marginTop: 12 }}>What does “done” look like?</label>
@@ -96,14 +97,14 @@ export default function AssignTask() {
         <label style={{ marginTop: 12 }}>Link to resources (optional)</label>
         <input type="url" value={f.links} onChange={set('links')} placeholder="https://…" />
 
-        <label style={{ marginTop: 12 }}>What skill will this help them build? (optional)</label>
+        <label style={{ marginTop: 12 }}>What skill does this build? (optional)</label>
         <select value={f.skillAreaId} onChange={set('skillAreaId')}>
           <option value="">Choose a skill area…</option>
           {meta.skillAreas.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
         </select>
 
         <div className="actions">
-          <button className="btn btn-primary" disabled={busy} onClick={create}>Assign task</button>
+          <button className="btn btn-primary" disabled={busy} onClick={create}>Request task</button>
         </div>
         <p className="muted" style={{ fontSize: '0.85rem' }}>
           You'll be listed as the contact if they get stuck.

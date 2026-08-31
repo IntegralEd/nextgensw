@@ -100,7 +100,7 @@ export async function handler(event) {
   if (!auth) return json(401, origin, { error: 'sign in again' });
   // Employers see intern hours through review surfaces (later stage),
   // never through the logging endpoints.
-  if (!['Intern', 'Coordinator', 'Admin', 'SuperAdmin'].includes(auth.role)) {
+  if (!['Intern', 'Coordinator', 'Admin', 'SuperAdmin', 'Super Admin'].includes(auth.role)) {
     return json(403, origin, { error: 'your role does not log hours' });
   }
 

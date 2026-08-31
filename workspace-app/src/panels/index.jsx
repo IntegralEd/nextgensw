@@ -20,8 +20,8 @@ import AllTasks from './AllTasks.jsx';
 
 // Coordinator/Admin can log hours too (Rhonda logs her own hours per
 // Ava's requirements); Employers don't log time.
-const TIME_LOGGERS = ['Intern', 'Coordinator', 'Admin', 'SuperAdmin'];
-const STAFF = ['Coordinator', 'Admin', 'SuperAdmin'];
+const TIME_LOGGERS = ['Intern', 'Coordinator', 'Admin', 'SuperAdmin', 'Super Admin'];
+const STAFF = ['Coordinator', 'Admin', 'SuperAdmin', 'Super Admin'];
 
 export const PANELS = {
   home: { component: Home, roles: ['*'], title: 'Home' },
@@ -32,8 +32,10 @@ export const PANELS = {
   'review-hours': { component: ReviewHours, roles: STAFF, title: 'Review hours' },
   'pay-periods': { component: PayPeriods, roles: STAFF, title: 'Pay periods' },
   'my-tasks': { component: MyTasks, roles: TIME_LOGGERS, title: 'My tasks' },
-  'assign-task': { component: AssignTask, roles: ['Employer', ...STAFF], title: 'Assign a task' },
-  'partner-tasks': { component: PartnerTasks, roles: ['Employer', ...STAFF], title: 'Partner tasks' },
+  // Task requests are open to every workspace role (2026-08-31):
+  // teammates, intern → team, employer → intern all valid.
+  'assign-task': { component: AssignTask, roles: ['*'], title: 'Request a task' },
+  'partner-tasks': { component: PartnerTasks, roles: ['*'], title: 'Tasks you requested' },
   'all-tasks': { component: AllTasks, roles: STAFF, title: 'All tasks' },
 };
 

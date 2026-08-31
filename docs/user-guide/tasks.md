@@ -17,21 +17,25 @@ what "done" looks like, resources, and who to ask if you get stuck.
 If the reviewer requests updates, the task comes back to *In Progress*
 with their note — make the changes and submit again.
 
-## For partner mentors — Assign a task & Your intern's tasks
+## Requesting tasks — open to everyone
 
-**Assign a task** walks you through writing a clear assignment: what
-to do, what done looks like, when it's due, and roughly how long it
-should take. You're automatically listed as the person to ask if the
-intern gets stuck.
+**Request a task** walks you through writing a clear request: what to
+do, what done looks like, when it's due, and roughly how long it
+should take. Anyone can request a task of anyone on the program —
+partner mentors of their interns, teammates of each other, even an
+intern asking a team member for something (an introduction, a review,
+a resource). You're automatically listed as the person to ask if they
+get stuck.
 
-**Your intern's tasks** shows work waiting for your review at the top.
-Open the submitted link, then either **Accept work** or **Request
-updates…** with a specific note — the note goes straight to the
-intern.
+**Tasks you've requested** shows work waiting for your review at the
+top. Open the submitted link, then either **Accept work** or **Request
+updates…** with a specific note — the note goes straight to them. You
+can never review a task assigned to you, no matter your role.
 
 ## For the coordinator — All tasks
 
-Every task in the program, with one-click lenses: **Blocked**,
-**Overdue**, **Waiting for review**, **Complete**. Blocked and overdue
-are your follow-up list; completed tasks can be archived to keep the
-view clean.
+Every task in the program. Filter by any mix of **status, assignee,
+and requester** (each is multi-select — click chips to toggle), plus
+an **Overdue only** switch. **Export CSV** or **Export XLSX** downloads
+exactly what the current filters show. Completed tasks can be archived
+to keep the view clean.

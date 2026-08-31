@@ -97,7 +97,7 @@ export default function PartnerTasks() {
 
   return (
     <div className="panel">
-      <h1>Your intern's tasks</h1>
+      <h1>Tasks you've requested</h1>
       <p className="muted lead">
         {waiting.length
           ? `${waiting.length} ${waiting.length === 1 ? 'task' : 'tasks'} waiting for your review.`
@@ -116,7 +116,7 @@ export default function PartnerTasks() {
       {tasks.length === 0 && (
         <div className="card">
           <p className="muted" style={{ margin: 0 }}>
-            No tasks yet — use <strong>Assign a task</strong> to create the first one.
+            No tasks yet — use <strong>Request a task</strong> to create the first one.
           </p>
         </div>
       )}

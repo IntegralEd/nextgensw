@@ -89,13 +89,6 @@ async function callerOrgIds(cfg, uid) {
   return data.records?.[0]?.fields?.['Partner_Org'] || [];
 }
 
-function canManage(rec, auth, orgIds) {
-  if (STAFF_ROLES.includes(auth.role)) return true;
-  const f = rec.fields || {};
-  if ((f['Assigned_By'] || []).includes(auth.uid)) return true;
-  return (f['Partner_Org'] || []).some((o) => orgIds.includes(o));
-}
-
 async function getTask(cfg, id) {
   if (!/^rec[A-Za-z0-9]{14}$/.test(String(id))) return null;
   const data = await airtableGet(cfg, TABLES.TASKS, {
@@ -128,39 +121,31 @@ export async function handler(event) {
       }
 
       if (scope === 'partner') {
-        if (!isStaff && auth.role !== 'Employer') return json(403, origin, { error: 'partner view is for employers and staff' });
-        const orgIds = isStaff ? null : await callerOrgIds(cfg, auth.uid);
+        // Open to every workspace role (2026-08-31): staff see all;
+        // employers see their org's tasks plus ones they requested;
+        // everyone else sees the tasks they requested.
+        const orgIds = auth.role === 'Employer' ? await callerOrgIds(cfg, auth.uid) : [];
         const recs = await scanTasks(cfg, (r) => {
           if (isStaff) return true;
           const f = r.fields || {};
           return (
             (f['Assigned_By'] || []).includes(auth.uid) ||
-            (f['Partner_Org'] || []).some((o) => orgIds.includes(o))
+            (auth.role === 'Employer' && (f['Partner_Org'] || []).some((o) => orgIds.includes(o)))
           );
         });
-        // assignable interns for the create form
-        let internIds;
-        if (isStaff) {
-          const all = await airtableGet(cfg, TABLES.USERS, {
-            filterByFormula: `{User_Role} = 'Intern'`, pageSize: '100',
-          });
-          internIds = (all.records || []).map((r) => r.id);
-        } else {
-          internIds = [];
-          for (const orgId of orgIds) {
-            const org = await airtableGet(cfg, TABLES.PARTNER_ORGS, {
-              filterByFormula: `RECORD_ID() = '${orgId}'`, maxRecords: '1',
-            });
-            internIds.push(...(org.records?.[0]?.fields?.['Assigned_Interns'] || []));
-          }
-        }
+        // Task requests are open to anyone → anyone in the workspace
+        // is assignable (teammates, intern→team, employer→intern).
+        const assignable = Object.entries(users)
+          .filter(([, u]) => ['Intern', 'Coordinator', 'Employer', 'Admin', 'SuperAdmin', 'Super Admin'].includes(u.role))
+          .map(([id, u]) => ({ id, name: u.name || u.email, role: u.role }))
+          .sort((a, b) => a.name.localeCompare(b.name));
         const skills = await airtableGet(cfg, TABLES.SKILL_AREAS, {
           filterByFormula: `{Active} = TRUE()`, pageSize: '100',
           'sort[0][field]': 'Skill_Name', 'sort[0][direction]': 'asc',
         });
         return json(200, origin, {
           tasks: recs.map((r) => publicTask(r, users)),
-          interns: [...new Set(internIds)].map((id) => ({ id, name: users[id]?.name || '?' })),
+          interns: assignable,
           skillAreas: (skills.records || []).map((r) => ({ id: r.id, name: r.fields?.['Skill_Name'] || '' })),
         });
       }
@@ -175,25 +160,20 @@ export async function handler(event) {
     }
 
     if (event.httpMethod === 'POST') {
-      if (!isStaff && auth.role !== 'Employer') return json(403, origin, { error: 'only employers and staff assign tasks' });
+      // Task requests are open to every workspace role (2026-08-31):
+      // teammates request of each other, interns of the team, employers
+      // of their interns. The assignee just has to be a workspace user.
       const b = JSON.parse(event.body || '{}');
       const name = String(b.name || '').trim().slice(0, 200);
       const internId = String(b.internId || '');
       if (!name) return json(400, origin, { error: 'the task needs a title' });
-      if (!/^rec[A-Za-z0-9]{14}$/.test(internId)) return json(400, origin, { error: 'pick the intern' });
-
-      const orgIds = isStaff ? [] : await callerOrgIds(cfg, auth.uid);
-      if (!isStaff) {
-        // employer may only assign to interns of their own org
-        let allowed = false;
-        for (const orgId of orgIds) {
-          const org = await airtableGet(cfg, TABLES.PARTNER_ORGS, {
-            filterByFormula: `RECORD_ID() = '${orgId}'`, maxRecords: '1',
-          });
-          if ((org.records?.[0]?.fields?.['Assigned_Interns'] || []).includes(internId)) allowed = true;
-        }
-        if (!allowed) return json(403, origin, { error: 'that intern is not assigned to your organization' });
+      if (!/^rec[A-Za-z0-9]{14}$/.test(internId)) return json(400, origin, { error: 'pick who it\'s for' });
+      const allUsers = await fetchUserMap(cfg);
+      const assignee = allUsers[internId];
+      if (!assignee || !['Intern', 'Coordinator', 'Employer', 'Admin', 'SuperAdmin', 'Super Admin'].includes(assignee.role)) {
+        return json(400, origin, { error: 'that person isn\'t an active workspace user' });
       }
+      const orgIds = auth.role === 'Employer' ? await callerOrgIds(cfg, auth.uid) : [];
 
       const fields = {
         Task_Name: name,
@@ -204,7 +184,7 @@ export async function handler(event) {
         Status: 'Not Started',
         Ask_If_Stuck: [auth.uid],
       };
-      if (!isStaff && orgIds.length) fields.Partner_Org = [orgIds[0]];
+      if (orgIds.length) fields.Partner_Org = [orgIds[0]]; // employer's org stamp
       if (b.dueDate && /^\d{4}-\d{2}-\d{2}$/.test(b.dueDate)) fields.Due_Date = b.dueDate;
       if (['Low', 'Medium', 'High'].includes(b.priority)) fields.Priority = b.priority;
       const est = Number(b.estHours);
@@ -213,8 +193,7 @@ export async function handler(event) {
       if (/^rec[A-Za-z0-9]{14}$/.test(String(b.skillAreaId || ''))) fields.Skill_Area = [b.skillAreaId];
 
       const res = await airtableWrite(cfg, TABLES.TASKS, 'POST', [{ fields }]);
-      const users = await fetchUserMap(cfg);
-      return json(201, origin, { task: publicTask(res.records[0], users) });
+      return json(201, origin, { task: publicTask(res.records[0], allUsers) });
     }
 
     if (event.httpMethod === 'PATCH') {
@@ -251,14 +230,16 @@ export async function handler(event) {
       }
 
       if (b.action === 'review') {
-        // Interns share an org link with their tasks (their placement),
-        // so role must be checked BEFORE org membership — otherwise an
-        // intern could accept their own work.
-        if (!isStaff && auth.role !== 'Employer') {
-          return json(403, origin, { error: 'reviewing is for employers and staff' });
+        // With task requests open to everyone, the reviewer is: staff,
+        // the requester, or an employer of the task's org — but NEVER
+        // the assignee, so nobody accepts their own work.
+        if (mine) return json(403, origin, { error: 'you can\'t review your own task' });
+        const orgIds = auth.role === 'Employer' ? await callerOrgIds(cfg, auth.uid) : [];
+        const isRequester = (rec.fields?.['Assigned_By'] || []).includes(auth.uid);
+        const orgMatch = auth.role === 'Employer' && (rec.fields?.['Partner_Org'] || []).some((o) => orgIds.includes(o));
+        if (!isStaff && !isRequester && !orgMatch) {
+          return json(403, origin, { error: 'this task is not yours to review' });
         }
-        const orgIds = isStaff ? [] : await callerOrgIds(cfg, auth.uid);
-        if (!canManage(rec, auth, orgIds)) return json(403, origin, { error: 'this task is not yours to review' });
         const comment = String(b.comment || '').trim().slice(0, 2000);
         let fields;
         if (b.decision === 'accept') {
