@@ -1,113 +1,211 @@
-/* Workspace app baseline — mobile-first, meant to sit inside a Softr
-   iframe so the background stays white and chrome stays minimal.
-   Real design tokens arrive with Stage 1; this is deliberately spare. */
+/* Workspace app styles — tokens inherited from the public site
+   (assets/css/styles.css) so panels feel native to nextgensw.org.
+   See docs/WORKSPACE_STYLE_GUIDE.md for usage rules. */
+
+:root {
+  /* Brand palette (identical values to the public site) */
+  --brick: #D93621;
+  --brick-dark: #B02818;
+  --leaf: #38A460;
+  --leaf-dark: #2A7C48;
+  --potomac: #50AAE1;
+  --potomac-dark: #2E86BD;
+  --yellow: #FED01D;
+  --pink: #F8DDE9;
+  --gray-50: #F7F7F7;
+  --gray-100: #F3F3F3;
+  --gray-200: #E7E3E2;
+  --gray-500: #6B6B6B;
+  --ink: #1B1B1B;
+  --white: #FFFFFF;
+
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, Helvetica, Arial, sans-serif;
+
+  --radius: 14px;
+  --radius-sm: 8px;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05), 0 2px 8px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08), 0 12px 32px rgba(0,0,0,0.06);
+
+  /* Status semantics — one mapping, used everywhere a status shows */
+  --status-draft: var(--gray-500);
+  --status-submitted: var(--potomac-dark);
+  --status-approved: var(--leaf-dark);
+  --status-returned: var(--brick);
+}
 
 * { box-sizing: border-box; }
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-    Helvetica, Arial, sans-serif;
-  color: #1a2b3c;
-  background: #ffffff;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  color: var(--ink);
+  background: var(--white);
   -webkit-font-smoothing: antialiased;
 }
 
 .panel {
-  max-width: 720px;
+  max-width: 860px;
   margin: 0 auto;
-  padding: 24px 16px;
+  padding: 24px 16px 48px;
 }
 
-.panel.center {
-  text-align: center;
-  padding-top: 15vh;
+.panel.center { text-align: center; padding-top: 15vh; max-width: 560px; }
+
+h1 { font-size: 1.5rem; margin: 0 0 6px; letter-spacing: -0.01em; }
+h2 { font-size: 1.1rem; margin: 24px 0 8px; }
+.muted { color: var(--gray-500); }
+.lead { margin-top: 0; }
+
+/* ---------- Buttons (public-site pills) ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.15rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  font-family: var(--font-sans);
+  border: 2px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.btn:active { transform: translateY(1px); }
+.btn:disabled { opacity: 0.5; cursor: default; transform: none; }
+.btn-primary { background: var(--brick); color: var(--white); }
+.btn-primary:hover:not(:disabled) { background: var(--brick-dark); }
+.btn-secondary { background: var(--leaf); color: var(--white); }
+.btn-secondary:hover:not(:disabled) { background: var(--leaf-dark); }
+.btn-outline { background: transparent; color: var(--ink); border-color: var(--ink); }
+.btn-outline:hover:not(:disabled) { background: var(--ink); color: var(--white); }
+.btn-ghost { background: transparent; color: var(--gray-500); border-color: transparent; }
+.btn-ghost:hover:not(:disabled) { color: var(--brick); }
+.btn-sm { padding: 0.4rem 0.85rem; font-size: 0.85rem; }
+
+/* ---------- Forms ---------- */
+label { font-weight: 600; font-size: 0.85rem; display: block; margin-bottom: 4px; }
+
+input, select, textarea {
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  color: var(--ink);
+  padding: 9px 12px;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-sm);
+  background: var(--white);
+  width: 100%;
+}
+input:focus, select:focus, textarea:focus {
+  outline: 2px solid var(--potomac);
+  outline-offset: 0;
+  border-color: var(--potomac);
 }
 
-h1 {
-  font-size: 1.5rem;
-  margin: 0 0 12px;
+/* ---------- Cards & tables ---------- */
+.card {
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  padding: 16px;
+  margin: 12px 0;
+  background: var(--white);
 }
 
-.muted { color: #5b6b7b; }
+.table-wrap { overflow-x: auto; }
 
-table.kv {
+table.kv, table.data {
   border-collapse: collapse;
   width: 100%;
-  margin: 16px 0;
+  margin: 12px 0;
 }
-
-table.kv th,
-table.kv td {
+table.kv th, table.kv td,
+table.data th, table.data td {
   text-align: left;
   padding: 8px 12px;
-  border-bottom: 1px solid #e4e9ee;
+  border-bottom: 1px solid var(--gray-200);
   font-size: 0.95rem;
 }
+table.kv th { color: var(--gray-500); font-weight: 600; width: 40%; }
+table.data th { color: var(--gray-500); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; }
 
-table.kv th {
-  color: #5b6b7b;
-  font-weight: 600;
-  width: 40%;
+/* ---------- Status chips ---------- */
+.chip {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--white);
+  background: var(--gray-500);
+  white-space: nowrap;
 }
+.chip.draft { background: var(--status-draft); }
+.chip.submitted { background: var(--status-submitted); }
+.chip.approved { background: var(--status-approved); }
+.chip.returned { background: var(--status-returned); }
 
-/* User guide panel */
+/* ---------- Toasts ---------- */
+.toast {
+  position: fixed;
+  left: 50%; bottom: 24px;
+  transform: translateX(-50%);
+  background: var(--ink);
+  color: var(--white);
+  padding: 10px 18px;
+  border-radius: 999px;
+  box-shadow: var(--shadow-md);
+  font-size: 0.9rem;
+  z-index: 50;
+}
+.toast.error { background: var(--brick); }
+
+/* ---------- Multi-entry rows (log hours) ---------- */
+.entry-row {
+  display: grid;
+  grid-template-columns: 130px 90px 1fr 1fr 36px;
+  gap: 8px;
+  align-items: start;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--gray-100);
+}
+.entry-row .notes { grid-column: 1 / -1; }
+@media (max-width: 640px) {
+  .entry-row { grid-template-columns: 1fr 1fr; }
+  .entry-row > * { grid-column: auto; }
+  .entry-row .notes { grid-column: 1 / -1; }
+}
+.row-remove {
+  border: none; background: none; color: var(--gray-500);
+  font-size: 1.1rem; cursor: pointer; padding: 8px 4px;
+}
+.row-remove:hover { color: var(--brick); }
+
+.actions { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+
+/* ---------- User guide panel ---------- */
 .guide-search {
   width: 100%;
   padding: 10px 14px;
   font-size: 1rem;
-  border: 1px solid #c7d0d9;
-  border-radius: 8px;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-sm);
   margin: 4px 0 16px;
 }
-
-.guide-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 16px;
-}
-
+.guide-list { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
 .guide-list button {
-  border: 1px solid #c7d0d9;
-  background: #fff;
+  border: 1px solid var(--gray-200);
+  background: var(--white);
   border-radius: 999px;
   padding: 6px 14px;
   font-size: 0.9rem;
   cursor: pointer;
+  font-family: var(--font-sans);
 }
-
-.guide-list button.active {
-  background: #1a2b3c;
-  border-color: #1a2b3c;
-  color: #fff;
-}
-
-.guide-body {
-  line-height: 1.6;
-}
-
+.guide-list button.active { background: var(--ink); border-color: var(--ink); color: var(--white); }
+.guide-body { line-height: 1.6; }
 .guide-body h1 { font-size: 1.35rem; margin-top: 8px; }
 .guide-body h2 { font-size: 1.1rem; margin-top: 24px; }
-.guide-body code {
-  background: #f2f5f7;
-  padding: 1px 5px;
-  border-radius: 4px;
-  font-size: 0.9em;
-}
-
-.guide-body table {
-  border-collapse: collapse;
-  width: 100%;
-  margin: 12px 0;
-  display: block;
-  overflow-x: auto;
-}
-
-.guide-body th,
-.guide-body td {
-  border: 1px solid #e4e9ee;
-  padding: 8px 12px;
-  text-align: left;
-  font-size: 0.95rem;
-}
+.guide-body code { background: var(--gray-100); padding: 1px 5px; border-radius: 4px; font-size: 0.9em; }
+.guide-body table { border-collapse: collapse; width: 100%; margin: 12px 0; display: block; overflow-x: auto; }
+.guide-body th, .guide-body td { border: 1px solid var(--gray-200); padding: 8px 12px; text-align: left; font-size: 0.95rem; }
