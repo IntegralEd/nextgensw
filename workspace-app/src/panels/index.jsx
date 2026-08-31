@@ -13,6 +13,10 @@ import LogHours from './LogHours.jsx';
 import MyHours from './MyHours.jsx';
 import ReviewHours from './ReviewHours.jsx';
 import PayPeriods from './PayPeriods.jsx';
+import MyTasks from './MyTasks.jsx';
+import AssignTask from './AssignTask.jsx';
+import PartnerTasks from './PartnerTasks.jsx';
+import AllTasks from './AllTasks.jsx';
 
 // Coordinator/Admin can log hours too (Rhonda logs her own hours per
 // Ava's requirements); Employers don't log time.
@@ -27,6 +31,10 @@ export const PANELS = {
   'my-hours': { component: MyHours, roles: TIME_LOGGERS, title: 'My hours' },
   'review-hours': { component: ReviewHours, roles: STAFF, title: 'Review hours' },
   'pay-periods': { component: PayPeriods, roles: STAFF, title: 'Pay periods' },
+  'my-tasks': { component: MyTasks, roles: TIME_LOGGERS, title: 'My tasks' },
+  'assign-task': { component: AssignTask, roles: ['Employer', ...STAFF], title: 'Assign a task' },
+  'partner-tasks': { component: PartnerTasks, roles: ['Employer', ...STAFF], title: 'Partner tasks' },
+  'all-tasks': { component: AllTasks, roles: STAFF, title: 'All tasks' },
 };
 
 export const DEFAULT_PANEL = 'home';
