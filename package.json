@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "build:app": "npm --prefix workspace-app ci && npm --prefix workspace-app run build",
+    "guides:check": "node scripts/check-guide-slugs.mjs",
     "schema:sync": "node scripts/sync-schema.mjs",
     "schema:verify": "node scripts/verify-schema.mjs",
     "announcement:sync": "node scripts/sync-announcement.mjs",

@@ -1,26 +1,45 @@
 <!--
-  SOFTR WORKSPACE EMBED — the one snippet Softr ever holds.
-  Source of truth lives here in git; paste into a Custom Code block on
-  each workspace Softr page, changing ONLY the PANEL_KEY in the src.
+  SOFTR WORKSPACE EMBED — the one snippet Softr ever holds. Source of
+  truth lives here in git; paste into a Custom Code block on each
+  workspace Softr page, changing ONLY the PANEL_KEY in the src.
 
-  Available panel keys live in workspace-app/src/panels/index.jsx.
-  Stage 0 keys: home, whoami
+  Panel keys: see docs/user-guide/site-map.md (kept in sync by CI).
+  e.g. home, inbox, my-tasks, log-hours, events, user-guide, testing-guide
 
-  How it works:
+  Auto-height: the app reports its real content height and the script
+  below sizes the iframe to it, so the page's footer (e.g. the ticket
+  footer) sits right below the panel — no dead scroll space. This is
+  why the iframe has NO min-height and scrolling is off.
+
+  How identity works:
   - Softr fills {LOGGED_IN_USER:email} with the logged-in user's email.
-  - The app sends it to /api/me, which verifies the address against the
-    Users table and returns a signed session token. An email that isn't
-    registered in Users gets a friendly "account not found" screen —
-    the asserted email grants nothing by itself.
+  - The app verifies it against the Users table and returns a signed
+    token. An unregistered email gets a friendly "account not found".
   - After this paste, all workspace changes are repo deploys. Do not
     edit this block per-release.
 
-  The page must be gated to logged-in users via Softr user groups —
-  that keeps the page private; the token keeps the data private.
+  Gate each page to the right Softr user group (the app enforces roles
+  regardless, but the groups keep the front door tidy). The testing
+  guide page (#/testing-guide) must be gated to Admin / SuperAdmin.
 -->
 
 <iframe
+  id="ngsw-workspace-frame"
   src="https://nextgensw.org/app/?email={LOGGED_IN_USER:email}#/PANEL_KEY"
-  style="width:100%; min-height:100vh; border:0; display:block;"
+  style="width:100%; height:600px; border:0; display:block;"
+  scrolling="no"
   title="NextGen SW Workspace"
 ></iframe>
+<script>
+(function () {
+  var frame = document.getElementById('ngsw-workspace-frame');
+  if (!frame) return;
+  window.addEventListener('message', function (e) {
+    if (e.origin !== 'https://nextgensw.org') return;
+    var d = e.data || {};
+    if (d.source === 'ngsw-workspace' && typeof d.ngswHeight === 'number' && d.ngswHeight > 0) {
+      frame.style.height = d.ngswHeight + 'px';
+    }
+  });
+})();
+</script>

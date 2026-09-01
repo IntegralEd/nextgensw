@@ -30,6 +30,9 @@ export const PANELS = {
   home: { component: Home, roles: ['*'], title: 'Home' },
   whoami: { component: WhoAmI, roles: ['*'], title: 'Who am I' },
   'user-guide': { component: UserGuide, roles: ['*'], title: 'User guide' },
+  // The testing/orientation guide (test accounts, QA steps) is staff-
+  // only — its own slug, gated to admins in Softr and here.
+  'testing-guide': { component: () => <UserGuide only="orientation" />, roles: ['Admin', 'SuperAdmin', 'Super Admin'], title: 'Testing guide' },
   'log-hours': { component: LogHours, roles: TIME_LOGGERS, title: 'Log hours' },
   'my-hours': { component: MyHours, roles: TIME_LOGGERS, title: 'My hours' },
   'review-hours': { component: ReviewHours, roles: STAFF, title: 'Review hours' },

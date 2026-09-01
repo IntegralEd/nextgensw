@@ -8,17 +8,25 @@ import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import guidesData from '../generated/guides.json';
 
-export default function UserGuide() {
+// Guides shown only on their own gated panel, not in the general list.
+const RESTRICTED = { orientation: 'testing-guide' };
+
+export default function UserGuide({ only = null }) {
+  const pool = useMemo(() => {
+    if (only) return guidesData.guides.filter((g) => g.slug === only);
+    return guidesData.guides.filter((g) => !RESTRICTED[g.slug]);
+  }, [only]);
+
   const [query, setQuery] = useState('');
-  const [openSlug, setOpenSlug] = useState(guidesData.guides[0]?.slug || null);
+  const [openSlug, setOpenSlug] = useState(pool[0]?.slug || null);
 
   const matches = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return guidesData.guides;
-    return guidesData.guides.filter(
+    if (!q) return pool;
+    return pool.filter(
       (g) => g.title.toLowerCase().includes(q) || g.content.toLowerCase().includes(q)
     );
-  }, [query]);
+  }, [query, pool]);
 
   const open = matches.find((g) => g.slug === openSlug) || matches[0] || null;
 

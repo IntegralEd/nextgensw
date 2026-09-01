@@ -1,0 +1,26 @@
+name: Guide / panel sync
+
+# Companion to schema-drift: that check keeps Airtable and the code in
+# step; this keeps the user-guide site map in step with the actual
+# panels. A panel added or renamed without updating
+# docs/user-guide/site-map.md fails the build.
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  guide-slugs:
+    name: Site map matches the panel registry
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Check guide slugs
+        run: node scripts/check-guide-slugs.mjs
