@@ -8,6 +8,9 @@ tasks, notes on your hours, event discussions, and direct messages.
 Threads sort by latest activity; a red dot means something new since
 you last opened the inbox. Click a thread to read it and reply.
 
+Use the **All / Received / Sent** tabs to narrow the list — **Sent**
+shows the conversations you started.
+
 **New message** starts a direct or group conversation — pick any
 people on the program (your mentor, a teammate, the coordinator).
 

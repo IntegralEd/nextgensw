@@ -3,7 +3,7 @@
 // they opened this panel. Compose starts a DM/group thread; anything
 // item-anchored is started from the item's own panel.
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { apiFetch, currentUser } from '../api.js';
 
 function Dot() {
@@ -23,6 +23,7 @@ export default function Inbox() {
   const [reply, setReply] = useState('');
   const [busy, setBusy] = useState(false);
   const [toast, setToast] = useState(null);
+  const [filter, setFilter] = useState('all'); // all | received | sent
   const me = currentUser();
 
   const load = () =>
@@ -143,6 +144,12 @@ export default function Inbox() {
 
   // ---- inbox list ----
   const unreadCount = data.threads.filter((t) => t.unread).length;
+  const sentCount = data.threads.filter((t) => t.authoredByMe).length;
+  const shown = filter === 'sent'
+    ? data.threads.filter((t) => t.authoredByMe)
+    : filter === 'received'
+      ? data.threads.filter((t) => !t.authoredByMe)
+      : data.threads;
   return (
     <div className="panel">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
@@ -157,7 +164,20 @@ export default function Inbox() {
             : 'You’re all caught up.'}
       </p>
 
-      {data.threads.map((t) => (
+      {data.threads.length > 0 && (
+        <div className="guide-list">
+          {[['all', `All (${data.threads.length})`], ['received', `Received (${data.threads.length - sentCount})`], ['sent', `Sent (${sentCount})`]]
+            .map(([k, label]) => (
+              <button key={k} className={filter === k ? 'active' : ''} onClick={() => setFilter(k)}>{label}</button>
+            ))}
+        </div>
+      )}
+
+      {shown.length === 0 && (
+        <p className="muted">{filter === 'sent' ? 'You haven’t started any threads yet.' : 'Nothing here.'}</p>
+      )}
+
+      {shown.map((t) => (
         <div className="card" key={t.id} style={{ cursor: 'pointer' }} onClick={() => openOne(t.id)}>
           <div style={{ display: 'flex', alignItems: 'baseline' }}>
             {t.unread && <Dot />}

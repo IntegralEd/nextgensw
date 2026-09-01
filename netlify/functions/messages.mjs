@@ -216,6 +216,7 @@ export async function handler(event) {
             anchorLabel: anchorId ? labels[anchorId] || null : (m.participants.length ? `With: ${m.participants.join(', ')}` : null),
             latestAt: latest,
             unread: Boolean(latest && (!ctx.lastChecked || latest > ctx.lastChecked)),
+            authoredByMe: (f['Author'] || []).includes(auth.uid),
           };
         })
         .sort((a, b) => String(b.latestAt).localeCompare(String(a.latestAt)));
