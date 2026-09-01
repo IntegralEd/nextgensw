@@ -30,66 +30,68 @@ export default function App() {
         const user = await signIn(email);
         setState({ phase: 'ready', user });
       } catch (err) {
-        setState({
-          phase: err.status === 403 ? 'not-registered' : 'error',
-          detail: err.message,
-        });
+        // A 400 (invalid/placeholder email) means "not really signed
+        // in" — e.g. the Softr editor preview, where the email param
+        // isn't filled — so show the same friendly sign-in notice.
+        const phase = err.status === 403 ? 'not-registered'
+          : err.status === 400 ? 'no-identity'
+          : 'error';
+        setState({ phase, detail: err.message });
       }
     })();
   }, []);
 
+  // The title of the page the user was trying to reach — known from
+  // the hash even before/without a verified identity, so every notice
+  // can name the page.
+  const pageTitle = PANELS[panelKey]?.title || 'NextGen SW Workspace';
+
+  const Notice = ({ title, children }) => (
+    <div className="panel center">
+      <h1>{title}</h1>
+      <p className="muted">{children}</p>
+    </div>
+  );
+
   if (state.phase === 'loading') {
-    return <div className="panel center muted">Loading your workspace…</div>;
+    return <div className="panel center muted">Loading {pageTitle}…</div>;
   }
   if (state.phase === 'no-identity') {
     return (
-      <div className="panel center">
-        <h1>No identity provided</h1>
-        <p className="muted">
-          This page must be opened from the NextGen SW workspace site while
-          logged in. If you got here from the workspace, tell your program
-          coordinator.
-        </p>
-      </div>
+      <Notice title={pageTitle}>
+        Access denied. Make sure you’re signed in to your NextGen SW account
+        to view this page.
+      </Notice>
     );
   }
   if (state.phase === 'not-registered') {
     return (
-      <div className="panel center">
-        <h1>Account not found</h1>
-        <p className="muted">
-          Your login isn&apos;t registered in the workspace yet. Ask your
-          program coordinator to add you.
-        </p>
-      </div>
+      <Notice title={pageTitle}>
+        This account isn’t set up in the workspace yet. Ask your program
+        coordinator to add you, then sign in again.
+      </Notice>
     );
   }
   if (state.phase === 'error') {
     return (
-      <div className="panel center">
-        <h1>Something went wrong</h1>
-        <p className="muted">{state.detail}</p>
-      </div>
+      <Notice title={pageTitle}>
+        Something went wrong loading this page. Try refreshing; if it keeps
+        happening, let your program coordinator know. ({state.detail})
+      </Notice>
     );
   }
 
   const { panel, error } = panelForRole(panelKey, state.user.role);
   if (error === 'unknown-panel') {
-    return (
-      <div className="panel center">
-        <h1>Page not found</h1>
-        <p className="muted">
-          No panel named “{panelKey}”. Available: {Object.keys(PANELS).join(', ')}
-        </p>
-      </div>
-    );
+    return <Notice title="Page not found">There’s no workspace page at this address.</Notice>;
   }
   if (error === 'not-allowed') {
     return (
-      <div className="panel center">
-        <h1>Not available</h1>
-        <p className="muted">This page isn&apos;t part of your role&apos;s workspace.</p>
-      </div>
+      <Notice title={pageTitle}>
+        Access denied. This page isn’t part of your role’s workspace — if you
+        think it should be, check that you’re signed in with the right NextGen
+        SW account.
+      </Notice>
     );
   }
 
