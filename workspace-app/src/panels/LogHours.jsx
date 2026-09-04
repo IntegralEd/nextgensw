@@ -18,7 +18,14 @@ const CATEGORIES = [
 ];
 
 const today = () => new Date().toISOString().slice(0, 10);
-const blankRow = () => ({ date: today(), hours: '', category: '', taskId: '', notes: '' });
+// Time is entered as hours + minutes and stored as exact minutes — no
+// rounding to quarter-hours (Ava's ticket).
+const blankRow = () => ({ date: today(), hr: '', min: '', category: '', taskId: '', notes: '' });
+const rowMinutes = (r) => {
+  const hr = parseInt(r.hr, 10) || 0;
+  const min = parseInt(r.min, 10) || 0;
+  return hr * 60 + min;
+};
 
 export default function LogHours() {
   const [rows, setRows] = useState([blankRow()]);
@@ -41,10 +48,12 @@ export default function LogHours() {
 
   function validate() {
     for (const [i, r] of rows.entries()) {
-      const hours = parseFloat(r.hours);
+      const minutes = rowMinutes(r);
       if (!r.date) return `Row ${i + 1}: pick a date`;
-      if (!Number.isFinite(hours) || hours <= 0 || hours > 24)
-        return `Row ${i + 1}: hours should be between 0.25 and 24`;
+      if (minutes <= 0 || minutes > 24 * 60)
+        return `Row ${i + 1}: enter the time worked (hours and/or minutes)`;
+      if ((parseInt(r.min, 10) || 0) > 59)
+        return `Row ${i + 1}: minutes should be 0–59 (use the hours box for 60+)`;
       if (!r.category) return `Row ${i + 1}: pick what kind of work this was`;
       if (r.category === 'Partner Task' && !r.taskId)
         return `Row ${i + 1}: partner task hours need the task selected`;
@@ -59,7 +68,7 @@ export default function LogHours() {
     try {
       const entries = rows.map((r) => ({
         date: r.date,
-        minutes: Math.round(parseFloat(r.hours) * 60),
+        minutes: rowMinutes(r),
         category: r.category,
         taskId: r.taskId || undefined,
         notes: r.notes,
@@ -91,12 +100,17 @@ export default function LogHours() {
             <label>Date</label>
             <input type="date" value={r.date} max={today()} onChange={(e) => update(i, { date: e.target.value })} />
           </div>
-          <div>
-            <label>Hours</label>
-            <input
-              type="number" min="0.25" max="24" step="0.25" placeholder="1.5"
-              value={r.hours} onChange={(e) => update(i, { hours: e.target.value })}
-            />
+          <div className="hm">
+            <div>
+              <label>Hrs</label>
+              <input type="number" min="0" max="24" step="1" placeholder="1"
+                value={r.hr} onChange={(e) => update(i, { hr: e.target.value })} />
+            </div>
+            <div>
+              <label>Min</label>
+              <input type="number" min="0" max="59" step="1" placeholder="30"
+                value={r.min} onChange={(e) => update(i, { min: e.target.value })} />
+            </div>
           </div>
           <div>
             <label>Kind of work</label>

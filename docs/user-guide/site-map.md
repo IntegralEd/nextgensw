@@ -11,7 +11,8 @@ checked in CI against the live panel list, so it never drifts.
 
 ## Time tracking
 
-- **Record timesheets** — `#/log-hours` — interns & staff. Log hours.
+- **Record timesheets** — `#/log-hours` — interns & staff. Log hours & minutes.
+- **Stopwatch** — `#/stopwatch` — interns & staff. Time work live, log the minutes.
 - **My hours** — `#/my-hours` — interns & staff. Your entries & status.
 - **Review timesheets** — `#/review-hours` — staff. Approve / return.
 - **Pay periods** — `#/pay-periods` — staff. Weeks, CSV export, mark paid.

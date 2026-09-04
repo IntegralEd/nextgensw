@@ -56,10 +56,15 @@ export default function MyTasks() {
 
   return (
     <div className="panel">
-      <h1>My tasks</h1>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
+        <h1>My tasks</h1>
+        <button className="btn btn-outline btn-sm" onClick={() => (window.location.hash = '#/assign-task')}>
+          Request a task
+        </button>
+      </div>
       <p className="muted lead">
         {tasks.length === 0
-          ? 'No tasks assigned yet — they’ll appear here when your partner or coordinator assigns one.'
+          ? 'No tasks assigned yet — they’ll appear here when someone assigns one. You can also request a task of anyone on the program.'
           : `${tasks.filter((t) => t.status !== 'Complete').length} open, ${tasks.filter(isOverdue).length} overdue.`}
       </p>
 

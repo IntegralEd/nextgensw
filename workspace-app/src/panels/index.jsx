@@ -11,6 +11,7 @@ import WhoAmI from './WhoAmI.jsx';
 import UserGuide from './UserGuide.jsx';
 import LogHours from './LogHours.jsx';
 import MyHours from './MyHours.jsx';
+import Stopwatch from './Stopwatch.jsx';
 import ReviewHours from './ReviewHours.jsx';
 import PayPeriods from './PayPeriods.jsx';
 import MyTasks from './MyTasks.jsx';
@@ -34,6 +35,7 @@ export const PANELS = {
   // only — its own slug, gated to admins in Softr and here.
   'testing-guide': { component: () => <UserGuide only="orientation" />, roles: ['Admin', 'SuperAdmin', 'Super Admin'], title: 'Testing guide' },
   'log-hours': { component: LogHours, roles: TIME_LOGGERS, title: 'Log hours' },
+  'stopwatch': { component: Stopwatch, roles: TIME_LOGGERS, title: 'Stopwatch' },
   'my-hours': { component: MyHours, roles: TIME_LOGGERS, title: 'My hours' },
   'review-hours': { component: ReviewHours, roles: STAFF, title: 'Review hours' },
   'pay-periods': { component: PayPeriods, roles: STAFF, title: 'Pay periods' },

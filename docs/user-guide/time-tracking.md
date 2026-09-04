@@ -8,13 +8,15 @@ reviews them, approved hours go to payroll.
 Open **Log hours**. One row per chunk of work:
 
 - **Date** — the day you did the work (not the day you're logging).
-- **Hours** — decimals are fine: 1.5 means an hour and a half.
+- **Hrs / Min** — enter the exact time (e.g. 1 hr 20 min); it's stored to the minute, no rounding.
 - **Kind of work** — pick the closest category. Working on something
   a partner assigned? Choose *Partner Task* and select the task.
 - **What did you work on?** — one sentence is plenty; it helps the
   coordinator approve quickly.
 
 Add rows to log several days at once, then:
+
+Prefer to time yourself? Use **Stopwatch** — start a timer when you begin, and "Log time" submits the exact minutes.
 
 - **Submit for review** — sends everything to the coordinator.
 - **Save as draft** — keeps entries private to you until you submit

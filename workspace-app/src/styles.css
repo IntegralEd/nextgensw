@@ -173,6 +173,8 @@ table.data th { color: var(--gray-500); font-weight: 600; font-size: 0.8rem; tex
   border-bottom: 1px solid var(--gray-100);
 }
 .entry-row .notes { grid-column: 1 / -1; }
+.entry-row .hm { display: flex; gap: 6px; }
+.entry-row .hm > div { flex: 1; }
 @media (max-width: 640px) {
   .entry-row { grid-template-columns: 1fr 1fr; }
   .entry-row > * { grid-column: auto; }
