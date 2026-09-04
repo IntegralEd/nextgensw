@@ -135,7 +135,12 @@ export default function CohortAdmin() {
               <textarea rows={2} value={fan.doneLooksLike} onChange={(e) => setFan({ ...fan, doneLooksLike: e.target.value })} />
               <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 8 }}>
                 <div><label>Due</label><input type="date" value={fan.dueDate} onChange={(e) => setFan({ ...fan, dueDate: e.target.value })} /></div>
-                <div style={{ width: 110 }}><label>Est. hours</label><input type="number" min="0.25" step="0.25" value={fan.estHours} onChange={(e) => setFan({ ...fan, estHours: e.target.value })} /></div>
+                <div><label>About how long?</label>
+                  <select value={fan.estHours} onChange={(e) => setFan({ ...fan, estHours: e.target.value })}>
+                    <option value="">Choose…</option>
+                    {['15 Minutes', '30 Minutes', '1 Hour', '2 Hours', '4 Hours', '8 hours'].map((c) => <option key={c}>{c}</option>)}
+                  </select>
+                </div>
                 <div>
                   <label>Priority</label>
                   <select value={fan.priority} onChange={(e) => setFan({ ...fan, priority: e.target.value })}>
@@ -146,7 +151,7 @@ export default function CohortAdmin() {
               <div className="actions">
                 <button className="btn btn-primary btn-sm" disabled={busy || !fan.name.trim()}
                   onClick={async () => {
-                    if (await act({ action: 'fanout', cohortId: c.id, ...fan, estHours: fan.estHours ? Number(fan.estHours) : undefined },
+                    if (await act({ action: 'fanout', cohortId: c.id, ...fan },
                       'Assigned to every intern in the cohort ✓')) {
                       setFanFor(null);
                       setFan({ name: '', description: '', doneLooksLike: '', dueDate: '', estHours: '', priority: 'Medium' });

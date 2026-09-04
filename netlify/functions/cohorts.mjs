@@ -133,8 +133,7 @@ export async function handler(event) {
       };
       if (b.dueDate && /^\d{4}-\d{2}-\d{2}$/.test(b.dueDate)) base.Due_Date = b.dueDate;
       if (['Low', 'Medium', 'High'].includes(b.priority)) base.Priority = b.priority;
-      const est = Number(b.estHours);
-      if (Number.isFinite(est) && est > 0 && est <= 200) base.Est_Hours = est;
+      if (['15 Minutes', '30 Minutes', '1 Hour', '2 Hours', '4 Hours', '8 hours'].includes(b.estHours)) base.Est_Hours = b.estHours;
       const records = internMembers.map((id) => ({ fields: { ...base, Assigned_To: [id] } }));
       for (let i = 0; i < records.length; i += 10) {
         await airtableWrite(cfg, TABLES.TASKS, 'POST', records.slice(i, i + 10));

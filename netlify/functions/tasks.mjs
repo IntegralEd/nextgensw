@@ -34,6 +34,9 @@ import {
 } from './_lib/workspace.mjs';
 
 const INTERN_STATUSES = ['Not Started', 'In Progress', 'Blocked / Need Help', 'Ready for Review', 'Complete'];
+// Est_Hours is a single-select of productive chunks (Menlo/Joy Inc);
+// Est_Hours_Decimal is the derived number. The label is the source.
+export const EST_CHUNKS = ['15 Minutes', '30 Minutes', '1 Hour', '2 Hours', '4 Hours', '8 hours'];
 
 function publicTask(r, users) {
   const f = r.fields || {};
@@ -51,13 +54,15 @@ function publicTask(r, users) {
     status: f['Status'] || 'Not Started',
     reviewStatus: f['Review_Status'] || null,
     priority: f['Priority'] || null,
-    estHours: f['Est_Hours'] ?? null,
+    estHours: f['Est_Hours'] || null,
+    estHoursDecimal: f['Est_Hours_Decimal'] ?? null,
     startDate: f['Start_Date'] || null,
     dueDate: f['Due_Date'] || null,
     links: f['Links'] || null,
     askIfStuck: who(f['Ask_If_Stuck']),
     submittedWorkUrl: f['Submitted_Work_URL'] || null,
     skillAreaIds: f['Skill_Area'] || [],
+    attachments: (f['Task_Attachment'] || []).map((a) => ({ url: a.url, name: a.filename })),
   };
 }
 
@@ -187,8 +192,7 @@ export async function handler(event) {
       if (orgIds.length) fields.Partner_Org = [orgIds[0]]; // employer's org stamp
       if (b.dueDate && /^\d{4}-\d{2}-\d{2}$/.test(b.dueDate)) fields.Due_Date = b.dueDate;
       if (['Low', 'Medium', 'High'].includes(b.priority)) fields.Priority = b.priority;
-      const est = Number(b.estHours);
-      if (Number.isFinite(est) && est > 0 && est <= 200) fields.Est_Hours = est;
+      if (EST_CHUNKS.includes(b.estHours)) fields.Est_Hours = b.estHours;
       if (b.links) fields.Links = String(b.links).slice(0, 500);
       if (/^rec[A-Za-z0-9]{14}$/.test(String(b.skillAreaId || ''))) fields.Skill_Area = [b.skillAreaId];
 

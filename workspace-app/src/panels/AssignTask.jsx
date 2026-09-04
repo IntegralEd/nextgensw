@@ -39,7 +39,7 @@ export default function AssignTask() {
     try {
       await apiFetch('tasks', {
         method: 'POST',
-        body: JSON.stringify({ ...f, estHours: f.estHours ? Number(f.estHours) : undefined }),
+        body: JSON.stringify(f),
       });
       setF(blank);
       flash('Task requested ✓ — it\'s now in their task list');
@@ -82,9 +82,12 @@ export default function AssignTask() {
             <label>When is it due?</label>
             <input type="date" value={f.dueDate} onChange={set('dueDate')} />
           </div>
-          <div style={{ width: 120 }}>
+          <div>
             <label>About how long?</label>
-            <input type="number" min="0.5" step="0.5" placeholder="hours" value={f.estHours} onChange={set('estHours')} />
+            <select value={f.estHours} onChange={set('estHours')}>
+              <option value="">Choose…</option>
+              {['15 Minutes', '30 Minutes', '1 Hour', '2 Hours', '4 Hours', '8 hours'].map((c) => <option key={c}>{c}</option>)}
+            </select>
           </div>
           <div>
             <label>Priority</label>

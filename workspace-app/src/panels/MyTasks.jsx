@@ -83,7 +83,7 @@ export default function MyTasks() {
                       </span>
                     ) : 'no due date'}
                     {' · '}from {t.assignedBy || '—'}
-                    {t.estHours ? ` · ~${t.estHours}h` : ''}
+                    {t.estHours ? ` · ${t.estHours}` : ''}
                     {t.priority ? ` · ${t.priority} priority` : ''}
                   </div>
                 </div>
@@ -109,6 +109,13 @@ export default function MyTasks() {
                     </>
                   )}
                   {t.links && <p><a href={t.links} target="_blank" rel="noreferrer">Task resources ↗</a></p>}
+                  {t.attachments?.length > 0 && (
+                    <p>
+                      {t.attachments.map((a, k) => (
+                        <a key={k} href={a.url} target="_blank" rel="noreferrer" style={{ display: 'block' }}>📎 {a.name}</a>
+                      ))}
+                    </p>
+                  )}
                   {t.askIfStuck && <p className="muted">Stuck? Ask {t.askIfStuck}.</p>}
                   {t.reviewStatus === 'Updates Requested' && (
                     <p style={{ color: 'var(--brick)', fontWeight: 600 }}>Updates requested — check the reviewer's note, then resubmit.</p>

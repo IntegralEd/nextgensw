@@ -83,7 +83,8 @@ export default function AllTasks() {
       Status: t.status,
       Review: t.reviewStatus || '',
       Priority: t.priority || '',
-      'Est. hours': t.estHours ?? '',
+      'Est. chunk': t.estHours ?? '',
+      'Est. hours (decimal)': t.estHoursDecimal ?? '',
       Overdue: isOverdue(t) ? 'yes' : '',
       'Submitted work': t.submittedWorkUrl || '',
     }));

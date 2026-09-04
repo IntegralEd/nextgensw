@@ -63,6 +63,9 @@ export default function PartnerTasks() {
           {t.submittedWorkUrl && (
             <a href={t.submittedWorkUrl} target="_blank" rel="noreferrer">View submitted work ↗</a>
           )}
+          {t.attachments?.length > 0 && t.attachments.map((a, k) => (
+            <a key={k} href={a.url} target="_blank" rel="noreferrer" style={{ display: 'block', fontSize: '0.9rem' }}>📎 {a.name}</a>
+          ))}
         </div>
         <span className={`chip ${STATUS_CHIP[t.status] || 'draft'}`}>{t.status}</span>
       </div>
