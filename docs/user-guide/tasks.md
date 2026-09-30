@@ -35,7 +35,14 @@ can never review a task assigned to you, no matter your role.
 ## For the coordinator — All tasks
 
 Every task in the program. Filter by any mix of **status, assignee,
-and requester** (each is multi-select — click chips to toggle), plus
-an **Overdue only** switch. **Export CSV** or **Export XLSX** downloads
-exactly what the current filters show. Completed tasks can be archived
-to keep the view clean.
+requester, and coordinator review** (each is multi-select — click chips
+to toggle), plus an **Overdue only** switch. **Export CSV** or **Export
+XLSX** downloads exactly what the current filters show. Completed tasks
+can be archived to keep the view clean.
+
+**Coordinator review** is your own oversight track, separate from the
+partner's accept/request-updates. On any task you can **Mark reviewed**
+or leave a **💬 comment** to the intern — even after a partner has
+accepted the work. The task's coordinator-review state (New / Open
+Comment / Approved) shows in its own column, and your comment appears
+for the intern on their task.

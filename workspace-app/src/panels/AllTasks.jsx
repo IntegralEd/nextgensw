@@ -38,6 +38,7 @@ export default function AllTasks() {
   const [statusF, setStatusF] = useState([]);
   const [assigneeF, setAssigneeF] = useState([]);
   const [requesterF, setRequesterF] = useState([]);
+  const [coordF, setCoordF] = useState([]);
   const [overdueOnly, setOverdueOnly] = useState(false);
   const [busyId, setBusyId] = useState(null);
   const [toast, setToast] = useState(null);
@@ -70,9 +71,10 @@ export default function AllTasks() {
         (!statusF.length || statusF.includes(t.status)) &&
         (!assigneeF.length || assigneeF.includes(t.assignedTo)) &&
         (!requesterF.length || requesterF.includes(t.assignedBy)) &&
+        (!coordF.length || coordF.includes(t.coordinatorReview)) &&
         (!overdueOnly || isOverdue(t))
     );
-  }, [tasks, statusF, assigneeF, requesterF, overdueOnly]);
+  }, [tasks, statusF, assigneeF, requesterF, coordF, overdueOnly]);
 
   const exportRows = () =>
     list.map((t) => ({
@@ -129,6 +131,25 @@ export default function AllTasks() {
     }
   }
 
+  // Coordinator oversight — separate from the partner's review.
+  async function coordReview(id) {
+    setBusyId(id);
+    try {
+      await apiFetch('tasks', { method: 'PATCH', body: JSON.stringify({ id, action: 'coord-review' }) });
+      await load();
+      flash('Marked reviewed ✓');
+    } catch (e) { flash(e.message, true); } finally { setBusyId(null); }
+  }
+  async function coordComment(id) {
+    const comment = window.prompt('Comment to the intern about this task:', '');
+    if (!comment || !comment.trim()) return;
+    setBusyId(id);
+    try {
+      await apiFetch('tasks', { method: 'PATCH', body: JSON.stringify({ id, action: 'coord-comment', comment }) });
+      await load();
+      flash('Comment sent ✓');
+    } catch (e) { flash(e.message, true); } finally { setBusyId(null); }
+  }
 
   if (!tasks) return <div className="panel center muted">Loading all tasks…</div>;
 
@@ -144,6 +165,7 @@ export default function AllTasks() {
         <FilterGroup label="Status" options={options.statuses} selected={statusF} onToggle={toggle(statusF, setStatusF)} />
         <FilterGroup label="Assignee" options={options.assignees} selected={assigneeF} onToggle={toggle(assigneeF, setAssigneeF)} />
         <FilterGroup label="Requester" options={options.requesters} selected={requesterF} onToggle={toggle(requesterF, setRequesterF)} />
+        <FilterGroup label="Coordinator review" options={['New', 'Open Comment', 'Approved']} selected={coordF} onToggle={toggle(coordF, setCoordF)} />
         <div className="guide-list" style={{ marginBottom: 0 }}>
           <button className={overdueOnly ? 'active' : ''} onClick={() => setOverdueOnly(!overdueOnly)}>
             Overdue only
@@ -166,7 +188,7 @@ export default function AllTasks() {
         <div className="table-wrap">
           <table className="data">
             <thead>
-              <tr><th>Task</th><th>Assignee</th><th>Requester</th><th>Due</th><th>Status</th><th>Review</th><th></th></tr>
+              <tr><th>Task</th><th>Assignee</th><th>Requester</th><th>Due</th><th>Status</th><th>Partner review</th><th>Coord</th><th></th></tr>
             </thead>
             <tbody>
               {list.map((t) => (
@@ -180,10 +202,15 @@ export default function AllTasks() {
                   <td><span className={`chip ${STATUS_CHIP[t.status] || 'draft'}`}>{t.status}</span></td>
                   <td>{t.reviewStatus || '—'}</td>
                   <td>
+                    <span className={`chip ${t.coordinatorReview === 'Approved' ? 'approved' : t.coordinatorReview === 'Open Comment' ? 'returned' : 'draft'}`}>
+                      {t.coordinatorReview}
+                    </span>
+                  </td>
+                  <td style={{ whiteSpace: 'nowrap' }}>
+                    <button className="btn btn-secondary btn-sm" disabled={busyId === t.id} onClick={() => coordReview(t.id)}>Reviewed</button>{' '}
+                    <button className="btn btn-outline btn-sm" disabled={busyId === t.id} onClick={() => coordComment(t.id)}>💬</button>{' '}
                     {t.status === 'Complete' && (
-                      <button className="btn btn-ghost btn-sm" disabled={busyId === t.id} onClick={() => archive(t.id)}>
-                        Archive
-                      </button>
+                      <button className="btn btn-ghost btn-sm" disabled={busyId === t.id} onClick={() => archive(t.id)}>Archive</button>
                     )}
                   </td>
                 </tr>

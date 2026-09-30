@@ -120,6 +120,11 @@ export default function MyTasks() {
                   {t.reviewStatus === 'Updates Requested' && (
                     <p style={{ color: 'var(--brick)', fontWeight: 600 }}>Updates requested — check the reviewer's note, then resubmit.</p>
                   )}
+                  {t.coordinatorNote && (
+                    <p style={{ marginTop: 4 }}>
+                      <strong>Coordinator comment:</strong> <span className="muted">“{t.coordinatorNote}”</span>
+                    </p>
+                  )}
 
                   {t.status !== 'Complete' && (
                     <div className="actions">

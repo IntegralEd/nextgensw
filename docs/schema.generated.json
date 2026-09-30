@@ -952,6 +952,13 @@
           "linkedTableName": "Users"
         },
         {
+          "id": "fldiCAJeWaxmcbds4",
+          "name": "Last_Reviewed",
+          "type": "lastModifiedTime",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
           "id": "fldkKfjHuxya9Z9yH",
           "name": "Task_Attachment",
           "type": "multipleAttachments",
@@ -1048,6 +1055,18 @@
           "type": "formula",
           "linkedTableId": null,
           "linkedTableName": null
+        },
+        {
+          "id": "fldXohywoRYJaKcwo",
+          "name": "Coordinator_Review",
+          "type": "singleSelect",
+          "linkedTableId": null,
+          "linkedTableName": null,
+          "choices": [
+            "Approved",
+            "New",
+            "Open Comment"
+          ]
         },
         {
           "id": "fldXr8IP9TsnF3YIu",
