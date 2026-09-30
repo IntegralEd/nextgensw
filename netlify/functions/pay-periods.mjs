@@ -27,6 +27,9 @@ import {
   corsHeaders,
   json,
 } from './_lib/workspace.mjs';
+import { finalizePeriod } from './_lib/payroll.mjs';
+
+const ADMIN_ROLES = ['Admin', 'SuperAdmin', 'Super Admin'];
 
 const DAY = 86400000;
 const iso = (d) => d.toISOString().slice(0, 10);
@@ -58,7 +61,29 @@ function publicPeriod(r) {
     isCurrent: f['Is_Current'] === 1 || f['Is_Current'] === true,
     entryCount: (f['Time_Entries'] || []).length,
     totalHours: f['Total_Hours'] ?? 0,
+    reviewClose: f['Payroll_Review_Close'] || null,
+    finalized: f['Payroll_Finalized'] === true,
+    finalizedAt: f['Payroll_Finalized_At'] || null,
   };
+}
+
+// Submitted (awaiting payroll) vs Approved counts per period, by date
+// range — for the cycle view.
+async function payrollCounts(cfg, periods) {
+  const data = await airtableGet(cfg, TABLES.TIME_ENTRIES, {
+    filterByFormula: `{Status} != 'Draft'`, pageSize: '100',
+  });
+  const rows = (data.records || []).map((r) => ({ d: r.fields?.['Date_Worked'], s: r.fields?.['Status'] }));
+  const counts = {};
+  for (const p of periods) {
+    const f = p.fields || {};
+    const inRange = rows.filter((x) => x.d && x.d >= f['Starting'] && x.d <= f['Ending']);
+    counts[p.id] = {
+      submitted: inRange.filter((x) => x.s === 'Submitted').length,
+      approved: inRange.filter((x) => x.s === 'Approved').length,
+    };
+  }
+  return counts;
 }
 
 async function renumber(cfg, periods) {
@@ -87,9 +112,14 @@ export async function handler(event) {
     return json(403, origin, { error: 'pay periods are managed by program staff' });
   }
 
+  const isAdmin = ADMIN_ROLES.includes(auth.role);
+
   try {
     if (event.httpMethod === 'GET') {
-      return json(200, origin, { periods: (await allPeriods(cfg)).map(publicPeriod) });
+      const periods = await allPeriods(cfg);
+      const counts = await payrollCounts(cfg, periods);
+      const out = periods.map((r) => ({ ...publicPeriod(r), ...(counts[r.id] || { submitted: 0, approved: 0 }) }));
+      return json(200, origin, { periods: out, isAdmin });
     }
 
     if (event.httpMethod !== 'POST') return json(405, origin, { error: 'method not allowed' });
@@ -167,6 +197,35 @@ export async function handler(event) {
       if (!res.ok) throw new Error(`delete: ${res.status}`);
       await renumber(cfg, await allPeriods(cfg));
       return json(200, origin, { periods: (await allPeriods(cfg)).map(publicPeriod) });
+    }
+
+    // ---- payroll cycle (admin) ----
+    const reListed = async () => {
+      const ps = await allPeriods(cfg);
+      const c = await payrollCounts(cfg, ps);
+      return ps.map((r) => ({ ...publicPeriod(r), ...(c[r.id] || { submitted: 0, approved: 0 }) }));
+    };
+
+    if (body.action === 'set-close') {
+      if (!isAdmin) return json(403, origin, { error: 'payroll settings are admin-only' });
+      const rec = periods.find((p) => p.id === body.id);
+      if (!rec) return json(404, origin, { error: 'period not found' });
+      const d = String(body.reviewClose || '').slice(0, 10);
+      const fields = {};
+      if (!d) fields.Payroll_Review_Close = null;
+      else if (/^\d{4}-\d{2}-\d{2}$/.test(d)) fields.Payroll_Review_Close = d;
+      else return json(400, origin, { error: 'bad date' });
+      await airtableWrite(cfg, TABLES.PAY_PERIOD, 'PATCH', [{ id: rec.id, fields }]);
+      return json(200, origin, { periods: await reListed() });
+    }
+
+    if (body.action === 'finalize') {
+      if (!isAdmin) return json(403, origin, { error: 'payroll approval is admin-only' });
+      const rec = periods.find((p) => p.id === body.id);
+      if (!rec) return json(404, origin, { error: 'period not found' });
+      if (rec.fields?.['Payroll_Finalized']) return json(409, origin, { error: 'this period is already finalized' });
+      const count = await finalizePeriod(cfg, rec, auth.uid);
+      return json(200, origin, { periods: await reListed(), approved: count });
     }
 
     return json(400, origin, { error: 'unknown action' });

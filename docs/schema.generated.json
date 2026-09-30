@@ -1660,9 +1660,23 @@
           "linkedTableName": null
         },
         {
+          "id": "fldAysj1JHYyFFXVd",
+          "name": "Payroll_Finalized_At",
+          "type": "dateTime",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
           "id": "fldCr3pxiEaNuvaQ9",
           "name": "Total_Hours",
           "type": "rollup",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldcv9pYuNpGGad1i",
+          "name": "Payroll_Review_Close",
+          "type": "date",
           "linkedTableId": null,
           "linkedTableName": null
         },
@@ -1691,6 +1705,13 @@
           "id": "fldRG8qDtSNrmxEil",
           "name": "Sequence",
           "type": "number",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldtOWhRp7m09rtNu",
+          "name": "Payroll_Finalized",
+          "type": "checkbox",
           "linkedTableId": null,
           "linkedTableName": null
         }
