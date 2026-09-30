@@ -91,7 +91,8 @@ export default function LogHours() {
     <div className="panel">
       <h1>Log hours</h1>
       <p className="muted lead">
-        One row per chunk of work. Add rows to log several days at once.
+        Log one entry for each task you worked on. To log hours for another
+        task or another day, select Log more hours.
       </p>
 
       {rows.map((r, i) => (
@@ -139,7 +140,7 @@ export default function LogHours() {
 
       <div className="actions">
         <button className="btn btn-outline btn-sm" onClick={() => setRows((rs) => [...rs, blankRow()])}>
-          + Add another row
+          Log more hours
         </button>
       </div>
       <div className="actions">

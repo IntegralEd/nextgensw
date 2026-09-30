@@ -9,11 +9,11 @@ import { apiFetch } from '../api.js';
 const STATUS_CHIP = {
   'Not Started': 'draft',
   'In Progress': 'submitted',
-  'Blocked / Need Help': 'returned',
+  'Need Help': 'returned',
   'Ready for Review': 'ready',
   Complete: 'approved',
 };
-const STATUS_ORDER = ['Not Started', 'In Progress', 'Blocked / Need Help', 'Ready for Review', 'Complete'];
+const STATUS_ORDER = ['Not Started', 'In Progress', 'Need Help', 'Ready for Review', 'Complete'];
 
 const todayISO = () => new Date().toISOString().slice(0, 10);
 const isOverdue = (t) => t.dueDate && t.status !== 'Complete' && t.dueDate < todayISO();
@@ -128,6 +128,7 @@ export default function AllTasks() {
       setBusyId(null);
     }
   }
+
 
   if (!tasks) return <div className="panel center muted">Loading all tasks…</div>;
 

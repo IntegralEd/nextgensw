@@ -33,7 +33,7 @@ import {
   json,
 } from './_lib/workspace.mjs';
 
-const INTERN_STATUSES = ['Not Started', 'In Progress', 'Blocked / Need Help', 'Ready for Review', 'Complete'];
+const INTERN_STATUSES = ['Not Started', 'In Progress', 'Need Help', 'Ready for Review', 'Complete'];
 // Est_Hours is a single-select of productive chunks (Menlo/Joy Inc);
 // Est_Hours_Decimal is the derived number. The label is the source.
 export const EST_CHUNKS = ['15 Minutes', '30 Minutes', '1 Hour', '2 Hours', '4 Hours', '8 hours'];

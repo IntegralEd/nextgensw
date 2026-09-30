@@ -1,7 +1,7 @@
 // The intern's task list. Cards grouped by urgency (blocked and
 // in-progress first), with the assignment details expandable and the
 // three actions Ava's doc asks for: update status, ask for help
-// (= Blocked), and submit work.
+// (= Need Help), and submit work.
 
 import { useEffect, useState } from 'react';
 import { apiFetch } from '../api.js';
@@ -9,11 +9,11 @@ import { apiFetch } from '../api.js';
 const STATUS_CHIP = {
   'Not Started': 'draft',
   'In Progress': 'submitted',
-  'Blocked / Need Help': 'returned',
+  'Need Help': 'returned',
   'Ready for Review': 'ready',
   Complete: 'approved',
 };
-const GROUP_ORDER = ['Blocked / Need Help', 'In Progress', 'Not Started', 'Ready for Review', 'Complete'];
+const GROUP_ORDER = ['Need Help', 'In Progress', 'Not Started', 'Ready for Review', 'Complete'];
 
 const isOverdue = (t) =>
   t.dueDate && t.status !== 'Complete' && t.dueDate < new Date().toISOString().slice(0, 10);
@@ -129,9 +129,9 @@ export default function MyTasks() {
                           {t.status === 'Not Started' ? 'Start task' : 'Back to in progress'}
                         </button>
                       )}
-                      {t.status !== 'Blocked / Need Help' && (
+                      {t.status !== 'Need Help' && (
                         <button className="btn btn-outline btn-sm" disabled={busyId === t.id}
-                          onClick={() => patch(t.id, { action: 'status', status: 'Blocked / Need Help' }, 'Flagged — your coordinator will see this')}>
+                          onClick={() => patch(t.id, { action: 'status', status: 'Need Help' }, 'Flagged — your coordinator will see this')}>
                           I'm stuck / need help
                         </button>
                       )}
