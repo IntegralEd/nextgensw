@@ -1,6 +1,6 @@
 {
-  "_comment": "NextGen SW reply config for scripts/post-reply.mjs. Merges over the script's built-in defaults; other projects copy this file and adjust table/field/status names to taste.",
-  "table": "Messages",
+  "_comment": "NextGen SW reply config for scripts/post-reply.mjs. Targets the Tickets table (the site's form/All_Tickets pipeline; renamed from Messages 2026-08, when a new workspace Messages table was minted). Merges over the script's built-in defaults.",
+  "table": "Tickets",
   "fields": {
     "content": "Message_Content",
     "isReply": "Is_Reply",
