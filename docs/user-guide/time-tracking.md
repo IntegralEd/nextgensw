@@ -41,12 +41,24 @@ Monday–Sunday).
 
 ## Reviewing hours (coordinator)
 
-Open **Review hours**. Entries wait oldest-first. For each:
+Open **Review hours** to browse all submitted timesheets. Your review
+is **separate from payroll** — it's your oversight layer.
 
-- **Approve** — locks the entry and files it under its pay week.
-- **Return…** — asks the intern to clarify. Your note goes to the
-  intern (they see it on the entry) and the entry comes back to your
-  queue when they resubmit. Partners don't see clarification notes.
+- Filter by **review state** (New / Open Comment / Approved) and by
+  **who has commented** (Partner / Coordinator / Intern).
+- **Mark reviewed** — records that you've looked at the entry. Use the
+  checkboxes to review several at once. This does *not* change payroll.
+- **Add a comment** (💬) — sends a note to the intern (they see it on
+  their My hours) and flags the entry "Open Comment." You can comment
+  even on an already-approved entry; it doesn't change payroll status.
+  Partners don't see these notes.
+
+## Approving for payroll (admin)
+
+Payroll approval is a separate, admin-only step. In **Review hours**,
+admins see **Approve for payroll**, which marks the entry approved and
+files it under its pay week — that's what the payroll export reads.
+(Coordinator review and payroll approval are independent on purpose.)
 
 ## Pay periods (staff)
 

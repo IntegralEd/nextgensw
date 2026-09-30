@@ -51,6 +51,7 @@ function publicEntry(r) {
     eventIds: f['Event'] || [],
     notes: f['Notes'] || '',
     status: f['Status'] || 'Draft',
+    coordinatorReview: f['Coordinator_Review'] || 'New',
     submittedAt: f['Submitted_At'] || null,
     payPeriodIds: f['Pay_Period'] || [],
     partnerOrgIds: f['Partner_Org'] || [],
@@ -116,10 +117,13 @@ export async function handler(event) {
       });
       const entries = (data.records || []).map(publicEntry);
 
-      // Attach the latest clarification note to returned entries so the
-      // intern sees WHY it came back (the note lives as a Messages
-      // thread anchored to the entry).
-      const returned = entries.filter((e) => e.status === 'Returned for Clarification').slice(0, 20);
+      // Attach the latest coordinator note so the intern sees it — for
+      // entries returned for clarification OR flagged with an open
+      // coordinator comment (the note lives as a Messages thread on the
+      // entry).
+      const returned = entries
+        .filter((e) => e.status === 'Returned for Clarification' || e.coordinatorReview === 'Open Comment')
+        .slice(0, 20);
       if (returned.length) {
         const or = returned.map((e) => `{Anchor_Record_ID} = '${e.id}'`).join(', ');
         const msgs = await airtableGet(cfg, TABLES.MESSAGES, {
