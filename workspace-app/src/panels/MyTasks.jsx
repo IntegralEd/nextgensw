@@ -14,6 +14,10 @@ const STATUS_CHIP = {
   Complete: 'approved',
 };
 const GROUP_ORDER = ['Blocked / Need Help', 'In Progress', 'Not Started', 'Ready for Review', 'Complete'];
+// "Blocked" read as punitive in testing — show a supportive label; the
+// stored status value is unchanged.
+const STATUS_LABEL = { 'Blocked / Need Help': 'Needs help' };
+const showStatus = (s) => STATUS_LABEL[s] || s;
 
 const isOverdue = (t) =>
   t.dueDate && t.status !== 'Complete' && t.dueDate < new Date().toISOString().slice(0, 10);
@@ -70,7 +74,7 @@ export default function MyTasks() {
 
       {grouped.map(([group, list]) => (
         <div key={group}>
-          <h2>{group}</h2>
+          <h2>{showStatus(group)}</h2>
           {list.map((t) => (
             <div className="card" key={t.id}>
               <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8, flexWrap: 'wrap' }}>
@@ -87,7 +91,7 @@ export default function MyTasks() {
                     {t.priority ? ` · ${t.priority} priority` : ''}
                   </div>
                 </div>
-                <span className={`chip ${STATUS_CHIP[t.status] || 'draft'}`}>{t.status}</span>
+                <span className={`chip ${STATUS_CHIP[t.status] || 'draft'}`}>{showStatus(t.status)}</span>
               </div>
 
               <button className="btn btn-ghost btn-sm" style={{ paddingLeft: 0 }} onClick={() => setOpen(open === t.id ? null : t.id)}>

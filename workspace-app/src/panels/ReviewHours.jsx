@@ -68,7 +68,7 @@ export default function ReviewHours() {
                 disabled={busyId === e.id}
                 onClick={() => { setReturning(returning === e.id ? null : e.id); setComment(''); }}
               >
-                Return…
+                Request changes
               </button>
             </div>
           </div>
@@ -87,7 +87,7 @@ export default function ReviewHours() {
                   disabled={busyId === e.id || !comment.trim()}
                   onClick={() => decide(e.id, 'return')}
                 >
-                  Return with note
+                  Send request
                 </button>
               </div>
             </div>

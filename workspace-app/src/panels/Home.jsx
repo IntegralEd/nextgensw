@@ -118,7 +118,7 @@ export default function Home() {
             )}
             {isStaff && (
               <>
-                {stats.blocked > 0 && <Card n={stats.blocked} label="interns blocked" accent="var(--brick)" hash="#/all-tasks" />}
+                {stats.blocked > 0 && <Card n={stats.blocked} label="interns need help" accent="var(--brick)" hash="#/all-tasks" />}
                 <Card n={stats.readyReview ?? 0} label="tasks ready for review" accent="var(--yellow)" hash="#/all-tasks" />
                 <Card n={stats.hoursQueue ?? 0} label="hours to review" accent="var(--potomac)" hash="#/review-hours" />
               </>
@@ -130,8 +130,14 @@ export default function Home() {
             {!isEmployer && (
               <button className="btn btn-primary" onClick={() => (window.location.hash = '#/log-hours')}>Log hours</button>
             )}
-            <button className="btn btn-secondary" onClick={() => (window.location.hash = isEmployer ? '#/assign-task' : '#/my-tasks')}>
-              {isEmployer ? 'Request a task' : 'Update a task'}
+            {/* Staff jump to the program-wide All tasks view (was three
+                buttons all landing on My tasks in testing); interns update
+                their own; employers request. */}
+            <button
+              className="btn btn-secondary"
+              onClick={() => (window.location.hash = isStaff ? '#/all-tasks' : isEmployer ? '#/assign-task' : '#/my-tasks')}
+            >
+              {isStaff ? 'All tasks' : isEmployer ? 'Request a task' : 'Update a task'}
             </button>
             <button className="btn btn-outline" onClick={() => (window.location.hash = '#/inbox')}>Send a message</button>
           </div>

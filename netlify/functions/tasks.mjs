@@ -276,6 +276,32 @@ export async function handler(event) {
         return json(200, origin, { ok: true });
       }
 
+      // Coordinator re-review after a partner already accepted: send a
+      // completed task back to review and note why (All Stakeholders).
+      if (b.action === 'reopen') {
+        if (!isStaff) return json(403, origin, { error: 'reopening is a coordinator/admin function' });
+        if (rec.fields?.['Status'] !== 'Complete') {
+          return json(409, origin, { error: 'only completed tasks can be reopened' });
+        }
+        const comment = String(b.comment || '').trim().slice(0, 2000);
+        await airtableWrite(cfg, TABLES.TASKS, 'PATCH', [
+          { id: rec.id, fields: { Status: 'Ready for Review', Review_Status: 'Awaiting Review' } },
+        ]);
+        if (comment) {
+          await airtableWrite(cfg, TABLES.MESSAGES, 'POST', [{
+            fields: {
+              Subject: 'Task reopened for review',
+              Message_Content: comment,
+              Author: [auth.uid],
+              Task: [rec.id],
+              Anchor_Record_ID: rec.id,
+              Visibility: 'All Stakeholders',
+            },
+          }]);
+        }
+        return json(200, origin, { ok: true });
+      }
+
       return json(400, origin, { error: 'unknown action' });
     }
 
