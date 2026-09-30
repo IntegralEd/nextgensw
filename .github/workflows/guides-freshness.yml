@@ -1,0 +1,25 @@
+name: Guides freshness
+
+# User-facing changes must ship with a user-guide update, so the guides
+# (which feed the /user-guide Softr page and the helper agent) stay
+# current. Runs on PRs only — the gate is at review, not on the main
+# push after merge. Escape hatch: "[skip guides]" in the HEAD commit.
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  guides-freshness:
+    name: User guide keeps up with the app
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # need the base ref to diff against
+      - name: Check guides freshness
+        env:
+          GUIDES_DIFF_BASE: origin/${{ github.base_ref }}
+        run: node scripts/check-guides-freshness.mjs

@@ -53,6 +53,7 @@ function publicTask(r, users) {
     partnerOrgIds: f['Partner_Org'] || [],
     status: f['Status'] || 'Not Started',
     reviewStatus: f['Review_Status'] || null,
+    coordinatorReview: f['Coordinator_Review'] || 'New',
     priority: f['Priority'] || null,
     estHours: f['Est_Hours'] || null,
     estHoursDecimal: f['Est_Hours_Decimal'] ?? null,
@@ -122,7 +123,24 @@ export async function handler(event) {
 
       if (scope === 'mine') {
         const recs = await scanTasks(cfg, (r) => (r.fields?.['Assigned_To'] || []).includes(auth.uid));
-        return json(200, origin, { tasks: recs.map((r) => publicTask(r, users)) });
+        const tasks = recs.map((r) => publicTask(r, users));
+        // Attach the latest coordinator note to tasks flagged with an
+        // open coordinator comment, so the intern sees it.
+        const open = tasks.filter((t) => t.coordinatorReview === 'Open Comment').slice(0, 20);
+        if (open.length) {
+          const or = open.map((t) => `{Anchor_Record_ID} = '${t.id}'`).join(', ');
+          const msgs = await airtableGet(cfg, TABLES.MESSAGES, {
+            filterByFormula: `OR(${or})`, pageSize: '100',
+            'sort[0][field]': 'Created_Datetime', 'sort[0][direction]': 'desc',
+          });
+          const noteBy = {};
+          for (const m of msgs.records || []) {
+            const a = m.fields?.['Anchor_Record_ID'];
+            if (a && !noteBy[a]) noteBy[a] = m.fields?.['Message_Content'] || '';
+          }
+          for (const t of tasks) if (noteBy[t.id]) t.coordinatorNote = noteBy[t.id];
+        }
+        return json(200, origin, { tasks });
       }
 
       if (scope === 'partner') {
@@ -273,6 +291,32 @@ export async function handler(event) {
       if (b.action === 'archive') {
         if (!isStaff) return json(403, origin, { error: 'archiving is staff only' });
         await airtableWrite(cfg, TABLES.TASKS, 'PATCH', [{ id: rec.id, fields: { Status: 'Archived' } }]);
+        return json(200, origin, { ok: true });
+      }
+
+      // Coordinator oversight on a task — separate track from the
+      // partner's Review_Status, so the coordinator can review or
+      // comment even after a partner accepted the work.
+      if (b.action === 'coord-review') {
+        if (!isStaff) return json(403, origin, { error: 'review is a coordinator/admin function' });
+        await airtableWrite(cfg, TABLES.TASKS, 'PATCH', [{ id: rec.id, fields: { Coordinator_Review: 'Approved' } }]);
+        return json(200, origin, { ok: true });
+      }
+      if (b.action === 'coord-comment') {
+        if (!isStaff) return json(403, origin, { error: 'commenting is a coordinator/admin function' });
+        const comment = String(b.comment || '').trim().slice(0, 2000);
+        if (!comment) return json(400, origin, { error: 'write your comment first' });
+        await airtableWrite(cfg, TABLES.TASKS, 'PATCH', [{ id: rec.id, fields: { Coordinator_Review: 'Open Comment' } }]);
+        await airtableWrite(cfg, TABLES.MESSAGES, 'POST', [{
+          fields: {
+            Subject: 'Coordinator comment on your task',
+            Message_Content: comment,
+            Author: [auth.uid],
+            Task: [rec.id],
+            Anchor_Record_ID: rec.id,
+            Visibility: 'Program + Intern',
+          },
+        }]);
         return json(200, origin, { ok: true });
       }
 

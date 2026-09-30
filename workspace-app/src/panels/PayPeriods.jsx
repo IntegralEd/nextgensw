@@ -7,6 +7,7 @@ import { apiFetch } from '../api.js';
 
 export default function PayPeriods() {
   const [periods, setPeriods] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [firstMonday, setFirstMonday] = useState('');
   const [weeks, setWeeks] = useState('16');
   const [editing, setEditing] = useState(null); // { id, starting, ending }
@@ -14,7 +15,8 @@ export default function PayPeriods() {
   const [toast, setToast] = useState(null);
 
   const load = () =>
-    apiFetch('pay-periods').then((r) => setPeriods(r.periods)).catch((e) => flash(e.message, true));
+    apiFetch('pay-periods').then((r) => { setPeriods(r.periods); setIsAdmin(r.isAdmin); })
+      .catch((e) => flash(e.message, true));
   useEffect(() => { load(); }, []);
 
   function flash(text, error = false) {
@@ -34,6 +36,11 @@ export default function PayPeriods() {
     } finally {
       setBusy(false);
     }
+  }
+
+  async function finalize(p) {
+    if (!window.confirm(`Approve all ${p.submitted} submitted timesheet(s) in ${p.label} for payroll? This locks the period.`)) return;
+    await post({ action: 'finalize', id: p.id }, `Approved ${p.label} for payroll ✓`);
   }
 
   const csvCell = (v) => {
@@ -93,7 +100,10 @@ export default function PayPeriods() {
       <h1>Pay periods</h1>
       <p className="muted lead">
         Weekly, Monday to Sunday. Periods must be back-to-back — the
-        server blocks overlaps and gaps.
+        server blocks overlaps and gaps. Admins run the payroll cycle in
+        the <strong>Payroll</strong> column: set a review-close date and
+        “Approve all,” or let unapproved hours auto-approve after the
+        close date.
       </p>
 
       <div className="card">
@@ -121,7 +131,7 @@ export default function PayPeriods() {
         <div className="table-wrap">
           <table className="data">
             <thead>
-              <tr><th>#</th><th>Period</th><th>Start</th><th>End</th><th>Hours</th><th></th></tr>
+              <tr><th>#</th><th>Period</th><th>Start</th><th>End</th><th>Hours</th><th>Payroll</th><th></th></tr>
             </thead>
             <tbody>
               {periods.map((p) => (
@@ -135,6 +145,7 @@ export default function PayPeriods() {
                       <td><input type="date" value={editing.starting} onChange={(e) => setEditing({ ...editing, starting: e.target.value })} /></td>
                       <td><input type="date" value={editing.ending} onChange={(e) => setEditing({ ...editing, ending: e.target.value })} /></td>
                       <td>{p.totalHours || 0}</td>
+                      <td>—</td>
                       <td style={{ whiteSpace: 'nowrap' }}>
                         <button className="btn btn-secondary btn-sm" disabled={busy}
                           onClick={() => post({ action: 'update', id: p.id, starting: editing.starting, ending: editing.ending }, 'Period updated ✓')}>
@@ -148,6 +159,31 @@ export default function PayPeriods() {
                       <td>{p.starting}</td>
                       <td>{p.ending}</td>
                       <td>{p.totalHours || 0}</td>
+                      <td style={{ minWidth: 180 }}>
+                        {p.finalized ? (
+                          <span className="chip approved" title={p.finalizedAt ? `Finalized ${new Date(p.finalizedAt).toLocaleDateString()}` : ''}>Finalized</span>
+                        ) : (
+                          <>
+                            <div style={{ fontSize: '0.85rem' }}>
+                              {p.submitted} to approve · {p.approved} approved
+                            </div>
+                            {isAdmin ? (
+                              <div style={{ display: 'flex', gap: 6, alignItems: 'center', marginTop: 4, flexWrap: 'wrap' }}>
+                                <input type="date" title="Review close date (auto-approves after)" value={p.reviewClose || ''}
+                                  style={{ width: 140 }}
+                                  onChange={(e) => post({ action: 'set-close', id: p.id, reviewClose: e.target.value }, 'Review-close date set')} />
+                                {p.submitted > 0 && (
+                                  <button className="btn btn-primary btn-sm" disabled={busy} onClick={() => finalize(p)}>Approve all</button>
+                                )}
+                              </div>
+                            ) : (
+                              <div className="muted" style={{ fontSize: '0.8rem' }}>
+                                {p.reviewClose ? `auto-approves after ${p.reviewClose}` : 'no close date set'}
+                              </div>
+                            )}
+                          </>
+                        )}
+                      </td>
                       <td style={{ whiteSpace: 'nowrap' }}>
                         <button className="btn btn-outline btn-sm" onClick={() => setEditing({ id: p.id, starting: p.starting, ending: p.ending })}>Edit</button>{' '}
                         {p.entryCount > 0 && (

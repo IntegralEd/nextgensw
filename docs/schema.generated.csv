@@ -23,6 +23,7 @@ Partner_Orgs,tbl1RbO4XsWIo4OWP,fld1JEZ1gjKCbRKQy,Name,singleLineText,,,
 Partner_Orgs,tbl1RbO4XsWIo4OWP,fld3qQPxIyLcKDSgT,Work_Format,singleSelect,,,
 Partner_Orgs,tbl1RbO4XsWIo4OWP,fldhnKWSP0PQnm4hx,Events,multipleRecordLinks,checked,tblWXcLQ8zOH3G3aj,Events
 Partner_Orgs,tbl1RbO4XsWIo4OWP,fldiAxCPH8K9WGmaR,Last_Modified,formula,,,
+Partner_Orgs,tbl1RbO4XsWIo4OWP,fldkCV1iq6Kecy72e,Time_Entries,multipleRecordLinks,checked,tblAFI7T1B0FXs4yr,Time_Entries
 Partner_Orgs,tbl1RbO4XsWIo4OWP,fldkJAE0ZyAQ6Et9N,Org_ID,formula,,,
 Partner_Orgs,tbl1RbO4XsWIo4OWP,fldkY2QBlBoUlmarx,Admin_Notes,multilineText,,,
 Partner_Orgs,tbl1RbO4XsWIo4OWP,fldLxxBt86mH9D1XY,Created,formula,,,
@@ -81,6 +82,7 @@ Time_Entries,tblAFI7T1B0FXs4yr,flde1xBsWGzUk6BtS,Pay_Period,multipleRecordLinks,
 Time_Entries,tblAFI7T1B0FXs4yr,fldFeSSwHsYgtoAt1,Paid,checkbox,,,
 Time_Entries,tblAFI7T1B0FXs4yr,fldipXQFkcNKqULGb,Timesheet_ID,autoNumber,,,
 Time_Entries,tblAFI7T1B0FXs4yr,fldkMF7GkRoExQ2Ph,Reviewed_By,multipleRecordLinks,checked,tbldH5vECddqn4Tvv,Users
+Time_Entries,tblAFI7T1B0FXs4yr,fldKRmfTCDRCVmoOT,Partner_Org,multipleRecordLinks,checked,tbl1RbO4XsWIo4OWP,Partner_Orgs
 Time_Entries,tblAFI7T1B0FXs4yr,fldky7ixUcUxlCr5f,Notes,richText,,,
 Time_Entries,tblAFI7T1B0FXs4yr,fldlI5Ce9rYDpEfCu,Intern,multipleRecordLinks,checked,tbldH5vECddqn4Tvv,Users
 Time_Entries,tblAFI7T1B0FXs4yr,fldNYNPFkE5wpwchw,Task,multipleRecordLinks,checked,tblCqQJL1EMpI0LJx,Tasks
@@ -120,6 +122,7 @@ Tasks,tblCqQJL1EMpI0LJx,fldGzaKcumJLTMlkI,Skill_Area,multipleRecordLinks,checked
 Tasks,tblCqQJL1EMpI0LJx,fldhF0y4gXNAfbqAJ,Start_Date,date,,,
 Tasks,tblCqQJL1EMpI0LJx,fldhHmnsxjfW7JYE3,Description,richText,,,
 Tasks,tblCqQJL1EMpI0LJx,fldI1OwOMrnXUBHUT,Assigned_By,multipleRecordLinks,checked,tbldH5vECddqn4Tvv,Users
+Tasks,tblCqQJL1EMpI0LJx,fldiCAJeWaxmcbds4,Last_Reviewed,lastModifiedTime,,,
 Tasks,tblCqQJL1EMpI0LJx,fldkKfjHuxya9Z9yH,Task_Attachment,multipleAttachments,,,
 Tasks,tblCqQJL1EMpI0LJx,fldNELGUiuhJE0bqj,Cohort,multipleRecordLinks,checked,tblXsOJwoqoOSpYDT,Cohorts
 Tasks,tblCqQJL1EMpI0LJx,fldpa7QkxuUPPvacY,Est_Hours,singleSelect,,,
@@ -131,6 +134,7 @@ Tasks,tblCqQJL1EMpI0LJx,fldUCg4R5O4guNRcF,Assigned_To,multipleRecordLinks,checke
 Tasks,tblCqQJL1EMpI0LJx,fldWASWskJkM26nzi,Status,singleSelect,,,
 Tasks,tblCqQJL1EMpI0LJx,fldWxtICt7KNocY5w,Priority,singleSelect,,,
 Tasks,tblCqQJL1EMpI0LJx,fldX3CxJt82uiZMoB,Created,formula,,,
+Tasks,tblCqQJL1EMpI0LJx,fldXohywoRYJaKcwo,Coordinator_Review,singleSelect,,,
 Tasks,tblCqQJL1EMpI0LJx,fldXr8IP9TsnF3YIu,Submitted_Work_URL,url,,,
 Tasks,tblCqQJL1EMpI0LJx,fldyIIHnPfmJxcBoq,Submitted_Work_Files,multipleAttachments,,,
 Tasks,tblCqQJL1EMpI0LJx,fldz3A2iBC8AU8nAk,Links,url,,,
@@ -205,11 +209,14 @@ Tickets,tbllRFgUQ8oFjYieR,fldYK3jqW9QREI2kW,User,multipleRecordLinks,checked,tbl
 Pay_Period,tblSUypMwuYJonX5o,fld2Hqz7FmGpxzdue,Starting,date,,,
 Pay_Period,tblSUypMwuYJonX5o,fld7X3IHtHRJCtIVE,Label,singleLineText,,,
 Pay_Period,tblSUypMwuYJonX5o,fld9nzZBGLo4iR87R,Ending,date,,,
+Pay_Period,tblSUypMwuYJonX5o,fldAysj1JHYyFFXVd,Payroll_Finalized_At,dateTime,,,
 Pay_Period,tblSUypMwuYJonX5o,fldCr3pxiEaNuvaQ9,Total_Hours,rollup,,,
+Pay_Period,tblSUypMwuYJonX5o,fldcv9pYuNpGGad1i,Payroll_Review_Close,date,,,
 Pay_Period,tblSUypMwuYJonX5o,fldILtAxGJNFQ7Dbp,Time_Entries,multipleRecordLinks,checked,tblAFI7T1B0FXs4yr,Time_Entries
 Pay_Period,tblSUypMwuYJonX5o,fldJwZ8id2CauNfLR,Pay_Period_ID,formula,,,
 Pay_Period,tblSUypMwuYJonX5o,fldK9Hp9fKpopRU3E,Is_Current,formula,,,
 Pay_Period,tblSUypMwuYJonX5o,fldRG8qDtSNrmxEil,Sequence,number,,,
+Pay_Period,tblSUypMwuYJonX5o,fldtOWhRp7m09rtNu,Payroll_Finalized,checkbox,,,
 Contact_List,tblw5iX3qNcrcAogn,fldBGuCubqDli4Tho,Status,singleSelect,,,
 Contact_List,tblw5iX3qNcrcAogn,fldfjai1tIYy3ur8U,Created,createdTime,,,
 Contact_List,tblw5iX3qNcrcAogn,fldG7S1I4uLN2o0xx,Name,singleLineText,,,

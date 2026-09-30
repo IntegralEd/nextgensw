@@ -13,6 +13,9 @@ Open **Log hours**. One row per chunk of work:
   a partner assigned? Choose *Partner Task* and select the task.
 - **What did you work on?** — one sentence is plenty; it helps the
   coordinator approve quickly.
+- **Partner org (optional)** — if you're placed with more than one
+  organization, tag which one this time was for. Handy for meetings or
+  work that isn't tied to a specific task.
 
 Add rows to log several days at once, then:
 
@@ -57,6 +60,20 @@ Open **Pay periods**. The program runs Monday-start weeks:
 
 The **Current** badge marks this week. Approved hours attach to their
 week automatically for export.
+
+## The payroll cycle (admin)
+
+On **Pay periods**, the **Payroll** column runs the cycle per week:
+
+- It shows how many timesheets are still **to approve** vs already
+  **approved** for that week.
+- Set a **review-close date** — the deadline for admin review.
+- **Approve all** finalizes the week now: every submitted timesheet in
+  it is approved for payroll and the week is locked (green **Finalized**
+  badge).
+- If a week isn't finalized by its review-close date, its submitted
+  hours **auto-approve** the next day, so payroll never stalls waiting
+  on a review.
 
 ## Payroll export (staff)
 

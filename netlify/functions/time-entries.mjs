@@ -53,6 +53,7 @@ function publicEntry(r) {
     status: f['Status'] || 'Draft',
     submittedAt: f['Submitted_At'] || null,
     payPeriodIds: f['Pay_Period'] || [],
+    partnerOrgIds: f['Partner_Org'] || [],
   };
 }
 
@@ -159,6 +160,9 @@ export async function handler(event) {
         };
         if (e.taskId) fields.Task = [String(e.taskId)];
         if (e.eventId) fields.Event = [String(e.eventId)];
+        if (Array.isArray(e.partnerOrgIds) && e.partnerOrgIds.length) {
+          fields.Partner_Org = e.partnerOrgIds.filter((id) => /^rec[A-Za-z0-9]{14}$/.test(String(id)));
+        }
         if (submit) {
           fields.Submitted_At = new Date().toISOString();
           const pp = await resolvePayPeriod(cfg, fields.Date_Worked);
