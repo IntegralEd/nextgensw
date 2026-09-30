@@ -195,6 +195,13 @@
           "linkedTableName": null
         },
         {
+          "id": "fldkCV1iq6Kecy72e",
+          "name": "Time_Entries",
+          "type": "multipleRecordLinks",
+          "linkedTableId": "tblAFI7T1B0FXs4yr",
+          "linkedTableName": "Time_Entries"
+        },
+        {
           "id": "fldkJAE0ZyAQ6Et9N",
           "name": "Org_ID",
           "type": "formula",
@@ -640,6 +647,13 @@
           "type": "multipleRecordLinks",
           "linkedTableId": "tbldH5vECddqn4Tvv",
           "linkedTableName": "Users"
+        },
+        {
+          "id": "fldKRmfTCDRCVmoOT",
+          "name": "Partner_Org",
+          "type": "multipleRecordLinks",
+          "linkedTableId": "tbl1RbO4XsWIo4OWP",
+          "linkedTableName": "Partner_Orgs"
         },
         {
           "id": "fldky7ixUcUxlCr5f",

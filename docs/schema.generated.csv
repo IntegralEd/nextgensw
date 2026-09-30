@@ -23,6 +23,7 @@ Partner_Orgs,tbl1RbO4XsWIo4OWP,fld1JEZ1gjKCbRKQy,Name,singleLineText,,,
 Partner_Orgs,tbl1RbO4XsWIo4OWP,fld3qQPxIyLcKDSgT,Work_Format,singleSelect,,,
 Partner_Orgs,tbl1RbO4XsWIo4OWP,fldhnKWSP0PQnm4hx,Events,multipleRecordLinks,checked,tblWXcLQ8zOH3G3aj,Events
 Partner_Orgs,tbl1RbO4XsWIo4OWP,fldiAxCPH8K9WGmaR,Last_Modified,formula,,,
+Partner_Orgs,tbl1RbO4XsWIo4OWP,fldkCV1iq6Kecy72e,Time_Entries,multipleRecordLinks,checked,tblAFI7T1B0FXs4yr,Time_Entries
 Partner_Orgs,tbl1RbO4XsWIo4OWP,fldkJAE0ZyAQ6Et9N,Org_ID,formula,,,
 Partner_Orgs,tbl1RbO4XsWIo4OWP,fldkY2QBlBoUlmarx,Admin_Notes,multilineText,,,
 Partner_Orgs,tbl1RbO4XsWIo4OWP,fldLxxBt86mH9D1XY,Created,formula,,,
@@ -81,6 +82,7 @@ Time_Entries,tblAFI7T1B0FXs4yr,flde1xBsWGzUk6BtS,Pay_Period,multipleRecordLinks,
 Time_Entries,tblAFI7T1B0FXs4yr,fldFeSSwHsYgtoAt1,Paid,checkbox,,,
 Time_Entries,tblAFI7T1B0FXs4yr,fldipXQFkcNKqULGb,Timesheet_ID,autoNumber,,,
 Time_Entries,tblAFI7T1B0FXs4yr,fldkMF7GkRoExQ2Ph,Reviewed_By,multipleRecordLinks,checked,tbldH5vECddqn4Tvv,Users
+Time_Entries,tblAFI7T1B0FXs4yr,fldKRmfTCDRCVmoOT,Partner_Org,multipleRecordLinks,checked,tbl1RbO4XsWIo4OWP,Partner_Orgs
 Time_Entries,tblAFI7T1B0FXs4yr,fldky7ixUcUxlCr5f,Notes,richText,,,
 Time_Entries,tblAFI7T1B0FXs4yr,fldlI5Ce9rYDpEfCu,Intern,multipleRecordLinks,checked,tbldH5vECddqn4Tvv,Users
 Time_Entries,tblAFI7T1B0FXs4yr,fldNYNPFkE5wpwchw,Task,multipleRecordLinks,checked,tblCqQJL1EMpI0LJx,Tasks

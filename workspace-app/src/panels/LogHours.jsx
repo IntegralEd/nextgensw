@@ -20,7 +20,7 @@ const CATEGORIES = [
 const today = () => new Date().toISOString().slice(0, 10);
 // Time is entered as hours + minutes and stored as exact minutes — no
 // rounding to quarter-hours (Ava's ticket).
-const blankRow = () => ({ date: today(), hr: '', min: '', category: '', taskId: '', notes: '' });
+const blankRow = () => ({ date: today(), hr: '', min: '', category: '', taskId: '', notes: '', orgIds: [] });
 const rowMinutes = (r) => {
   const hr = parseInt(r.hr, 10) || 0;
   const min = parseInt(r.min, 10) || 0;
@@ -30,11 +30,12 @@ const rowMinutes = (r) => {
 export default function LogHours() {
   const [rows, setRows] = useState([blankRow()]);
   const [tasks, setTasks] = useState([]);
+  const [orgs, setOrgs] = useState([]);
   const [busy, setBusy] = useState(false);
   const [toast, setToast] = useState(null); // { text, error }
 
   useEffect(() => {
-    apiFetch('my-tasks').then((r) => setTasks(r.tasks)).catch(() => {});
+    apiFetch('my-tasks').then((r) => { setTasks(r.tasks); setOrgs(r.orgs || []); }).catch(() => {});
   }, []);
 
   const update = (i, patch) =>
@@ -72,6 +73,7 @@ export default function LogHours() {
         category: r.category,
         taskId: r.taskId || undefined,
         notes: r.notes,
+        partnerOrgIds: r.orgIds,
       }));
       await apiFetch('time-entries', { method: 'POST', body: JSON.stringify({ entries, submit }) });
       setRows([blankRow()]);
@@ -135,6 +137,24 @@ export default function LogHours() {
               value={r.notes} onChange={(e) => update(i, { notes: e.target.value })}
             />
           </div>
+          {orgs.length > 0 && (
+            <div className="notes">
+              <label>Partner org (optional{orgs.length > 1 ? ' — pick any' : ''})</label>
+              <div className="guide-list" style={{ marginBottom: 0 }}>
+                {orgs.map((o) => (
+                  <button
+                    key={o.id}
+                    className={r.orgIds.includes(o.id) ? 'active' : ''}
+                    onClick={() => update(i, {
+                      orgIds: r.orgIds.includes(o.id) ? r.orgIds.filter((x) => x !== o.id) : [...r.orgIds, o.id],
+                    })}
+                  >
+                    {o.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       ))}
 

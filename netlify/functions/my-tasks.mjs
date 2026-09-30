@@ -11,6 +11,7 @@
 import {
   env,
   TABLES,
+  airtableGet,
   requireAuth,
   corsHeaders,
   json,
@@ -64,7 +65,20 @@ export async function handler(event) {
       pages += 1;
     } while (offset && pages < 10);
 
-    return json(200, origin, { tasks: mine });
+    // The caller's partner org(s), for the optional org picker on Log
+    // hours (interns can be linked to more than one).
+    let orgs = [];
+    const meRec = (await airtableGet(cfg, TABLES.USERS, {
+      filterByFormula: `RECORD_ID() = '${auth.uid}'`, maxRecords: '1',
+    })).records?.[0];
+    const orgIds = meRec?.fields?.['Partner_Org'] || [];
+    if (orgIds.length) {
+      const or = orgIds.map((id) => `RECORD_ID() = '${id}'`).join(', ');
+      const od = await airtableGet(cfg, TABLES.PARTNER_ORGS, { filterByFormula: `OR(${or})`, pageSize: '100' });
+      orgs = (od.records || []).map((r) => ({ id: r.id, name: r.fields?.['Name'] || '(org)' }));
+    }
+
+    return json(200, origin, { tasks: mine, orgs });
   } catch (err) {
     return json(502, origin, { error: err.message });
   }

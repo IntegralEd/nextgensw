@@ -13,6 +13,9 @@ Open **Log hours**. One row per chunk of work:
   a partner assigned? Choose *Partner Task* and select the task.
 - **What did you work on?** — one sentence is plenty; it helps the
   coordinator approve quickly.
+- **Partner org (optional)** — if you're placed with more than one
+  organization, tag which one this time was for. Handy for meetings or
+  work that isn't tied to a specific task.
 
 Add rows to log several days at once, then:
 
