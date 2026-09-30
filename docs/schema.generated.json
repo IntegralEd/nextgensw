@@ -540,6 +540,18 @@
       "primaryFieldId": "fldipXQFkcNKqULGb",
       "fields": [
         {
+          "id": "fld0dSVzV78M6L6Qv",
+          "name": "Coordinator_Review",
+          "type": "singleSelect",
+          "linkedTableId": null,
+          "linkedTableName": null,
+          "choices": [
+            "Approved",
+            "New",
+            "Open Comment"
+          ]
+        },
+        {
           "id": "fld0ZS9cZha31swKm",
           "name": "Status",
           "type": "singleSelect",
@@ -561,8 +573,8 @@
         },
         {
           "id": "fldadpX6ecEI1LgL3",
-          "name": "Entry",
-          "type": "singleLineText",
+          "name": "Timesheet_AT_ID",
+          "type": "formula",
           "linkedTableId": null,
           "linkedTableName": null
         },
@@ -649,6 +661,13 @@
           "type": "multipleRecordLinks",
           "linkedTableId": "tblCqQJL1EMpI0LJx",
           "linkedTableName": "Tasks"
+        },
+        {
+          "id": "fldQ8gfk3FcwQmR3O",
+          "name": "Last_Reviewed",
+          "type": "lastModifiedTime",
+          "linkedTableId": null,
+          "linkedTableName": null
         },
         {
           "id": "fldRK2xo3icJa9nWE",
@@ -933,6 +952,13 @@
           "linkedTableName": "Users"
         },
         {
+          "id": "fldkKfjHuxya9Z9yH",
+          "name": "Task_Attachment",
+          "type": "multipleAttachments",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
           "id": "fldNELGUiuhJE0bqj",
           "name": "Cohort",
           "type": "multipleRecordLinks",
@@ -940,18 +966,19 @@
           "linkedTableName": "Cohorts"
         },
         {
-          "id": "fldO4uP1m6RbOQcs8",
-          "name": "Resources",
-          "type": "multipleAttachments",
-          "linkedTableId": null,
-          "linkedTableName": null
-        },
-        {
           "id": "fldpa7QkxuUPPvacY",
           "name": "Est_Hours",
-          "type": "number",
+          "type": "singleSelect",
           "linkedTableId": null,
-          "linkedTableName": null
+          "linkedTableName": null,
+          "choices": [
+            "1 Hour",
+            "15 Minutes",
+            "2 Hours",
+            "30 Minutes",
+            "4 Hours",
+            "8 hours"
+          ]
         },
         {
           "id": "fldpZSDOjxUnFLAzn",
@@ -975,6 +1002,13 @@
           "linkedTableName": "Partner_Orgs"
         },
         {
+          "id": "fldTuEYqJT4nsmwhG",
+          "name": "Est_Hours_Decimal",
+          "type": "formula",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
           "id": "fldUCg4R5O4guNRcF",
           "name": "Assigned_To",
           "type": "multipleRecordLinks",
@@ -989,9 +1023,9 @@
           "linkedTableName": null,
           "choices": [
             "Archived",
-            "Blocked / Need Help",
             "Complete",
             "In Progress",
+            "Need Help",
             "Not Started",
             "Ready for Review"
           ]

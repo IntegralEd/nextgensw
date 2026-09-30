@@ -68,9 +68,10 @@ AirTable_API_Post,tblacwYdRuQwQGIHq,fldsMYmJLBlhhHSbp,User_Module_Session,multip
 AirTable_API_Post,tblacwYdRuQwQGIHq,fldVWmbUalxQTwXBf,AT_Session_ID,formula,,,
 AirTable_API_Post,tblacwYdRuQwQGIHq,fldyGujZ3z1M3jiln,URL_Visited,singleLineText,,,
 AirTable_API_Post,tblacwYdRuQwQGIHq,fldypNWxLfcdgNmp8,User_Email,singleLineText,,,
+Time_Entries,tblAFI7T1B0FXs4yr,fld0dSVzV78M6L6Qv,Coordinator_Review,singleSelect,,,
 Time_Entries,tblAFI7T1B0FXs4yr,fld0ZS9cZha31swKm,Status,singleSelect,,,
 Time_Entries,tblAFI7T1B0FXs4yr,fld9sOQj5DManstLF,Date_Worked,date,,,
-Time_Entries,tblAFI7T1B0FXs4yr,fldadpX6ecEI1LgL3,Entry,singleLineText,,,
+Time_Entries,tblAFI7T1B0FXs4yr,fldadpX6ecEI1LgL3,Timesheet_AT_ID,formula,,,
 Time_Entries,tblAFI7T1B0FXs4yr,fldaMmWeJzTbwwE9U,Submitted_At,dateTime,,,
 Time_Entries,tblAFI7T1B0FXs4yr,fldCDlnPMg6RcAM91,Messages,multipleRecordLinks,checked,tbl0tzwKoiyHXYFRM,Messages
 Time_Entries,tblAFI7T1B0FXs4yr,fldCZIF9MZkibtNqe,Hours,formula,,,
@@ -83,6 +84,7 @@ Time_Entries,tblAFI7T1B0FXs4yr,fldkMF7GkRoExQ2Ph,Reviewed_By,multipleRecordLinks
 Time_Entries,tblAFI7T1B0FXs4yr,fldky7ixUcUxlCr5f,Notes,richText,,,
 Time_Entries,tblAFI7T1B0FXs4yr,fldlI5Ce9rYDpEfCu,Intern,multipleRecordLinks,checked,tbldH5vECddqn4Tvv,Users
 Time_Entries,tblAFI7T1B0FXs4yr,fldNYNPFkE5wpwchw,Task,multipleRecordLinks,checked,tblCqQJL1EMpI0LJx,Tasks
+Time_Entries,tblAFI7T1B0FXs4yr,fldQ8gfk3FcwQmR3O,Last_Reviewed,lastModifiedTime,,,
 Time_Entries,tblAFI7T1B0FXs4yr,fldRK2xo3icJa9nWE,Work_Category,singleSelect,,,
 Time_Entries,tblAFI7T1B0FXs4yr,fldroMC1ePJroJz5m,Event,multipleRecordLinks,checked,tblWXcLQ8zOH3G3aj,Events
 Time_Entries,tblAFI7T1B0FXs4yr,fldtjL7w5jDuTyLyK,Minutes,number,,,
@@ -118,12 +120,13 @@ Tasks,tblCqQJL1EMpI0LJx,fldGzaKcumJLTMlkI,Skill_Area,multipleRecordLinks,checked
 Tasks,tblCqQJL1EMpI0LJx,fldhF0y4gXNAfbqAJ,Start_Date,date,,,
 Tasks,tblCqQJL1EMpI0LJx,fldhHmnsxjfW7JYE3,Description,richText,,,
 Tasks,tblCqQJL1EMpI0LJx,fldI1OwOMrnXUBHUT,Assigned_By,multipleRecordLinks,checked,tbldH5vECddqn4Tvv,Users
+Tasks,tblCqQJL1EMpI0LJx,fldkKfjHuxya9Z9yH,Task_Attachment,multipleAttachments,,,
 Tasks,tblCqQJL1EMpI0LJx,fldNELGUiuhJE0bqj,Cohort,multipleRecordLinks,checked,tblXsOJwoqoOSpYDT,Cohorts
-Tasks,tblCqQJL1EMpI0LJx,fldO4uP1m6RbOQcs8,Resources,multipleAttachments,,,
-Tasks,tblCqQJL1EMpI0LJx,fldpa7QkxuUPPvacY,Est_Hours,number,,,
+Tasks,tblCqQJL1EMpI0LJx,fldpa7QkxuUPPvacY,Est_Hours,singleSelect,,,
 Tasks,tblCqQJL1EMpI0LJx,fldpZSDOjxUnFLAzn,Done_Looks_Like,richText,,,
 Tasks,tblCqQJL1EMpI0LJx,fldSDmotT49YHz54S,Time_Entries,multipleRecordLinks,checked,tblAFI7T1B0FXs4yr,Time_Entries
 Tasks,tblCqQJL1EMpI0LJx,fldtTmCaURlT03JWs,Partner_Org,multipleRecordLinks,checked,tbl1RbO4XsWIo4OWP,Partner_Orgs
+Tasks,tblCqQJL1EMpI0LJx,fldTuEYqJT4nsmwhG,Est_Hours_Decimal,formula,,,
 Tasks,tblCqQJL1EMpI0LJx,fldUCg4R5O4guNRcF,Assigned_To,multipleRecordLinks,checked,tbldH5vECddqn4Tvv,Users
 Tasks,tblCqQJL1EMpI0LJx,fldWASWskJkM26nzi,Status,singleSelect,,,
 Tasks,tblCqQJL1EMpI0LJx,fldWxtICt7KNocY5w,Priority,singleSelect,,,
