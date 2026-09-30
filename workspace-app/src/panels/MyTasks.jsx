@@ -1,7 +1,7 @@
 // The intern's task list. Cards grouped by urgency (blocked and
 // in-progress first), with the assignment details expandable and the
 // three actions Ava's doc asks for: update status, ask for help
-// (= Blocked), and submit work.
+// (= Need Help), and submit work.
 
 import { useEffect, useState } from 'react';
 import { apiFetch } from '../api.js';
@@ -9,15 +9,11 @@ import { apiFetch } from '../api.js';
 const STATUS_CHIP = {
   'Not Started': 'draft',
   'In Progress': 'submitted',
-  'Blocked / Need Help': 'returned',
+  'Need Help': 'returned',
   'Ready for Review': 'ready',
   Complete: 'approved',
 };
-const GROUP_ORDER = ['Blocked / Need Help', 'In Progress', 'Not Started', 'Ready for Review', 'Complete'];
-// "Blocked" read as punitive in testing — show a supportive label; the
-// stored status value is unchanged.
-const STATUS_LABEL = { 'Blocked / Need Help': 'Needs help' };
-const showStatus = (s) => STATUS_LABEL[s] || s;
+const GROUP_ORDER = ['Need Help', 'In Progress', 'Not Started', 'Ready for Review', 'Complete'];
 
 const isOverdue = (t) =>
   t.dueDate && t.status !== 'Complete' && t.dueDate < new Date().toISOString().slice(0, 10);
@@ -74,7 +70,7 @@ export default function MyTasks() {
 
       {grouped.map(([group, list]) => (
         <div key={group}>
-          <h2>{showStatus(group)}</h2>
+          <h2>{group}</h2>
           {list.map((t) => (
             <div className="card" key={t.id}>
               <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8, flexWrap: 'wrap' }}>
@@ -91,7 +87,7 @@ export default function MyTasks() {
                     {t.priority ? ` · ${t.priority} priority` : ''}
                   </div>
                 </div>
-                <span className={`chip ${STATUS_CHIP[t.status] || 'draft'}`}>{showStatus(t.status)}</span>
+                <span className={`chip ${STATUS_CHIP[t.status] || 'draft'}`}>{t.status}</span>
               </div>
 
               <button className="btn btn-ghost btn-sm" style={{ paddingLeft: 0 }} onClick={() => setOpen(open === t.id ? null : t.id)}>
@@ -133,9 +129,9 @@ export default function MyTasks() {
                           {t.status === 'Not Started' ? 'Start task' : 'Back to in progress'}
                         </button>
                       )}
-                      {t.status !== 'Blocked / Need Help' && (
+                      {t.status !== 'Need Help' && (
                         <button className="btn btn-outline btn-sm" disabled={busyId === t.id}
-                          onClick={() => patch(t.id, { action: 'status', status: 'Blocked / Need Help' }, 'Flagged — your coordinator will see this')}>
+                          onClick={() => patch(t.id, { action: 'status', status: 'Need Help' }, 'Flagged — your coordinator will see this')}>
                           I'm stuck / need help
                         </button>
                       )}

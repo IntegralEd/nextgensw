@@ -33,7 +33,7 @@ import {
   json,
 } from './_lib/workspace.mjs';
 
-const INTERN_STATUSES = ['Not Started', 'In Progress', 'Blocked / Need Help', 'Ready for Review', 'Complete'];
+const INTERN_STATUSES = ['Not Started', 'In Progress', 'Need Help', 'Ready for Review', 'Complete'];
 // Est_Hours is a single-select of productive chunks (Menlo/Joy Inc);
 // Est_Hours_Decimal is the derived number. The label is the source.
 export const EST_CHUNKS = ['15 Minutes', '30 Minutes', '1 Hour', '2 Hours', '4 Hours', '8 hours'];
@@ -273,32 +273,6 @@ export async function handler(event) {
       if (b.action === 'archive') {
         if (!isStaff) return json(403, origin, { error: 'archiving is staff only' });
         await airtableWrite(cfg, TABLES.TASKS, 'PATCH', [{ id: rec.id, fields: { Status: 'Archived' } }]);
-        return json(200, origin, { ok: true });
-      }
-
-      // Coordinator re-review after a partner already accepted: send a
-      // completed task back to review and note why (All Stakeholders).
-      if (b.action === 'reopen') {
-        if (!isStaff) return json(403, origin, { error: 'reopening is a coordinator/admin function' });
-        if (rec.fields?.['Status'] !== 'Complete') {
-          return json(409, origin, { error: 'only completed tasks can be reopened' });
-        }
-        const comment = String(b.comment || '').trim().slice(0, 2000);
-        await airtableWrite(cfg, TABLES.TASKS, 'PATCH', [
-          { id: rec.id, fields: { Status: 'Ready for Review', Review_Status: 'Awaiting Review' } },
-        ]);
-        if (comment) {
-          await airtableWrite(cfg, TABLES.MESSAGES, 'POST', [{
-            fields: {
-              Subject: 'Task reopened for review',
-              Message_Content: comment,
-              Author: [auth.uid],
-              Task: [rec.id],
-              Anchor_Record_ID: rec.id,
-              Visibility: 'All Stakeholders',
-            },
-          }]);
-        }
         return json(200, origin, { ok: true });
       }
 

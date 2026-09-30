@@ -75,7 +75,7 @@ export default function Home() {
       if (isStaff) {
         jobs.push(
           apiFetch('tasks?scope=all').then((r) => {
-            s.blocked = r.tasks.filter((t) => t.status === 'Blocked / Need Help').length;
+            s.blocked = r.tasks.filter((t) => t.status === 'Need Help').length;
             s.readyReview = r.tasks.filter((t) => t.status === 'Ready for Review').length;
           }).catch(() => {}),
           apiFetch('review-hours').then((r) => { s.hoursQueue = r.entries.length; }).catch(() => {})

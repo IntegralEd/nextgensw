@@ -9,28 +9,23 @@ import { apiFetch } from '../api.js';
 const STATUS_CHIP = {
   'Not Started': 'draft',
   'In Progress': 'submitted',
-  'Blocked / Need Help': 'returned',
+  'Need Help': 'returned',
   'Ready for Review': 'ready',
   Complete: 'approved',
 };
-const STATUS_ORDER = ['Not Started', 'In Progress', 'Blocked / Need Help', 'Ready for Review', 'Complete'];
+const STATUS_ORDER = ['Not Started', 'In Progress', 'Need Help', 'Ready for Review', 'Complete'];
 
 const todayISO = () => new Date().toISOString().slice(0, 10);
 const isOverdue = (t) => t.dueDate && t.status !== 'Complete' && t.dueDate < todayISO();
 
-// "Blocked" read as punitive in testing — show a supportive label; the
-// stored/filtered value is unchanged.
-const STATUS_LABEL = { 'Blocked / Need Help': 'Needs help' };
-const showStatus = (s) => STATUS_LABEL[s] || s;
-
-function FilterGroup({ label, options, selected, onToggle, display = (x) => x }) {
+function FilterGroup({ label, options, selected, onToggle }) {
   return (
     <div style={{ marginBottom: 8 }}>
       <label>{label}{selected.length ? ` (${selected.length})` : ''}</label>
       <div className="guide-list" style={{ marginBottom: 0 }}>
         {options.map((o) => (
           <button key={o} className={selected.includes(o) ? 'active' : ''} onClick={() => onToggle(o)}>
-            {display(o)}
+            {o}
           </button>
         ))}
       </div>
@@ -134,21 +129,6 @@ export default function AllTasks() {
     }
   }
 
-  // Coordinator re-review after a partner accepted the work.
-  async function reopen(id) {
-    const comment = window.prompt('Reopen this task for review. Add a note for the intern and partner (optional):', '');
-    if (comment === null) return; // cancelled
-    setBusyId(id);
-    try {
-      await apiFetch('tasks', { method: 'PATCH', body: JSON.stringify({ id, action: 'reopen', comment }) });
-      await load();
-      flash('Reopened for review');
-    } catch (e) {
-      flash(e.message, true);
-    } finally {
-      setBusyId(null);
-    }
-  }
 
   if (!tasks) return <div className="panel center muted">Loading all tasks…</div>;
 
@@ -161,7 +141,7 @@ export default function AllTasks() {
       </p>
 
       <div className="card">
-        <FilterGroup label="Status" options={options.statuses} selected={statusF} onToggle={toggle(statusF, setStatusF)} display={showStatus} />
+        <FilterGroup label="Status" options={options.statuses} selected={statusF} onToggle={toggle(statusF, setStatusF)} />
         <FilterGroup label="Assignee" options={options.assignees} selected={assigneeF} onToggle={toggle(assigneeF, setAssigneeF)} />
         <FilterGroup label="Requester" options={options.requesters} selected={requesterF} onToggle={toggle(requesterF, setRequesterF)} />
         <div className="guide-list" style={{ marginBottom: 0 }}>
@@ -197,18 +177,13 @@ export default function AllTasks() {
                   <td style={isOverdue(t) ? { color: 'var(--brick)', fontWeight: 700 } : undefined}>
                     {t.dueDate || '—'}
                   </td>
-                  <td><span className={`chip ${STATUS_CHIP[t.status] || 'draft'}`}>{showStatus(t.status)}</span></td>
+                  <td><span className={`chip ${STATUS_CHIP[t.status] || 'draft'}`}>{t.status}</span></td>
                   <td>{t.reviewStatus || '—'}</td>
-                  <td style={{ whiteSpace: 'nowrap' }}>
+                  <td>
                     {t.status === 'Complete' && (
-                      <>
-                        <button className="btn btn-outline btn-sm" disabled={busyId === t.id} onClick={() => reopen(t.id)}>
-                          Reopen
-                        </button>{' '}
-                        <button className="btn btn-ghost btn-sm" disabled={busyId === t.id} onClick={() => archive(t.id)}>
-                          Archive
-                        </button>
-                      </>
+                      <button className="btn btn-ghost btn-sm" disabled={busyId === t.id} onClick={() => archive(t.id)}>
+                        Archive
+                      </button>
                     )}
                   </td>
                 </tr>

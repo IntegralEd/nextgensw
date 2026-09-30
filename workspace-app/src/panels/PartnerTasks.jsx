@@ -8,7 +8,7 @@ import { apiFetch } from '../api.js';
 const STATUS_CHIP = {
   'Not Started': 'draft',
   'In Progress': 'submitted',
-  'Blocked / Need Help': 'returned',
+  'Need Help': 'returned',
   'Ready for Review': 'ready',
   Complete: 'approved',
 };
