@@ -133,7 +133,7 @@ export default function Home() {
             <button className="btn btn-secondary" onClick={() => (window.location.hash = isEmployer ? '#/assign-task' : '#/my-tasks')}>
               {isEmployer ? 'Request a task' : 'Update a task'}
             </button>
-            <button className="btn btn-outline" onClick={() => (window.location.hash = '#/inbox')}>Ask for help</button>
+            <button className="btn btn-outline" onClick={() => (window.location.hash = '#/inbox')}>Send a message</button>
           </div>
         </>
       )}
