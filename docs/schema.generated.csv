@@ -131,6 +131,7 @@ Tasks,tblCqQJL1EMpI0LJx,fldSDmotT49YHz54S,Time_Entries,multipleRecordLinks,check
 Tasks,tblCqQJL1EMpI0LJx,fldtTmCaURlT03JWs,Partner_Org,multipleRecordLinks,checked,tbl1RbO4XsWIo4OWP,Partner_Orgs
 Tasks,tblCqQJL1EMpI0LJx,fldTuEYqJT4nsmwhG,Est_Hours_Decimal,formula,,,
 Tasks,tblCqQJL1EMpI0LJx,fldUCg4R5O4guNRcF,Assigned_To,multipleRecordLinks,checked,tbldH5vECddqn4Tvv,Users
+Tasks,tblCqQJL1EMpI0LJx,fldVbc9GaByE7fz4g,Completed_At,dateTime,,,
 Tasks,tblCqQJL1EMpI0LJx,fldWASWskJkM26nzi,Status,singleSelect,,,
 Tasks,tblCqQJL1EMpI0LJx,fldWxtICt7KNocY5w,Priority,singleSelect,,,
 Tasks,tblCqQJL1EMpI0LJx,fldX3CxJt82uiZMoB,Created,formula,,,

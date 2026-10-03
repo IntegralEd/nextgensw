@@ -16,6 +16,7 @@ checked in CI against the live panel list, so it never drifts.
 - **My hours** — `#/my-hours` — interns & staff. Your entries & status.
 - **Review timesheets** — `#/review-hours` — staff. Approve / return.
 - **Pay periods** — `#/pay-periods` — staff. Weeks, CSV export, mark paid.
+- **Reports** — `#/reports` — staff. Weekly intern report (hours, tasks, attendance), export/print.
 
 ## Tasks
 

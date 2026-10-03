@@ -21,6 +21,7 @@ import AllTasks from './AllTasks.jsx';
 import Inbox from './Inbox.jsx';
 import Events from './Events.jsx';
 import CohortAdmin from './CohortAdmin.jsx';
+import Reports from './Reports.jsx';
 
 // Coordinator/Admin can log hours too (Rhonda logs her own hours per
 // Ava's requirements); Employers don't log time.
@@ -48,6 +49,7 @@ export const PANELS = {
   inbox: { component: Inbox, roles: ['*'], title: 'Inbox' },
   events: { component: Events, roles: ['*'], title: 'Events' },
   'cohort-admin': { component: CohortAdmin, roles: STAFF, title: 'Cohorts' },
+  reports: { component: Reports, roles: STAFF, title: 'Reports' },
 };
 
 export const DEFAULT_PANEL = 'home';
