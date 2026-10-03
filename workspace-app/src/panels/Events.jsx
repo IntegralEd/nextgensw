@@ -24,7 +24,7 @@ export default function Events() {
   const [open, setOpen] = useState(null); // event id
   const [threads, setThreads] = useState(null);
   const [creating, setCreating] = useState(false);
-  const [form, setForm] = useState({ name: '', type: 'Cohort Session', date: todayISO(), cohortId: '', locationFormat: 'In-person', location: '', agenda: '', materialsUrl: '' });
+  const [form, setForm] = useState({ name: '', type: 'Cohort Session', date: todayISO(), cohortId: '', locationFormat: 'In-person', location: '', agenda: '', materialsUrl: '', attendanceType: 'Required' });
   const [attend, setAttend] = useState([]);
   const [logHrs, setLogHrs] = useState('');
   const [post, setPost] = useState('');
@@ -120,6 +120,7 @@ export default function Events() {
         <h1>{ev.name}</h1>
         <p className="muted lead">
           {[ev.type, ev.date, ev.locationFormat, ev.location].filter(Boolean).join(' · ')}
+          {' '}<span className={`chip ${ev.attendanceType === 'Optional' ? 'draft' : 'returned'}`}>{ev.attendanceType}</span>
         </p>
         {ev.agenda && (
           <div className="card"><label>Agenda</label><div style={{ whiteSpace: 'pre-wrap' }}>{ev.agenda}</div></div>
@@ -187,6 +188,7 @@ export default function Events() {
       <strong>{e.name}</strong>
       <div className="muted" style={{ fontSize: '0.9rem' }}>
         {[e.type, e.date, e.locationFormat].filter(Boolean).join(' · ')}
+        {' '}<span className={`chip ${e.attendanceType === 'Optional' ? 'draft' : 'returned'}`}>{e.attendanceType}</span>
         {e.attendance.length ? ` · ${e.attendance.length} attended` : ''}
       </div>
     </div>
@@ -223,6 +225,12 @@ export default function Events() {
               <label>Format</label>
               <select value={form.locationFormat} onChange={(e) => setForm({ ...form, locationFormat: e.target.value })}>
                 <option>In-person</option><option>Virtual</option><option>Hybrid</option>
+              </select>
+            </div>
+            <div>
+              <label>Attendance</label>
+              <select value={form.attendanceType} onChange={(e) => setForm({ ...form, attendanceType: e.target.value })}>
+                <option>Required</option><option>Optional</option>
               </select>
             </div>
           </div>

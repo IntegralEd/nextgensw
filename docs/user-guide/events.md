@@ -18,7 +18,9 @@ Two things you can do on an event page:
 ## Running events (staff)
 
 **New event** creates a session: name, type (add new types as you
-need them), date, cohort, format/location, agenda, materials link.
+need them), date, cohort, format/location, **attendance** (Required or
+Optional — required events count toward the weekly report), agenda,
+materials link.
 After the session, open it and check off **Attendance** from the
 cohort roster, then save.
 
