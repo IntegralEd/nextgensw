@@ -32,6 +32,7 @@ function publicEvent(r, users) {
     id: r.id,
     name: f['Event_Name'] || '(untitled event)',
     type: f['Event_Type'] || null,
+    attendanceType: f['Attendance_Type'] || 'Required',
     date: f['Event_Date'] || null,
     startTime: f['Start_Time'] || null,
     endTime: f['End_Time'] || null,
@@ -110,6 +111,7 @@ export async function handler(event) {
       if (!name) return json(400, origin, { error: 'the event needs a name' });
       const fields = { Event_Name: name };
       if (b.type) fields.Event_Type = String(b.type).slice(0, 60);
+      if (['Required', 'Optional'].includes(b.attendanceType)) fields.Attendance_Type = b.attendanceType;
       if (b.date && /^\d{4}-\d{2}-\d{2}$/.test(b.date)) fields.Event_Date = b.date;
       if (b.cohortId && /^rec[A-Za-z0-9]{14}$/.test(b.cohortId)) fields.Cohort = [b.cohortId];
       if (['In-person', 'Virtual', 'Hybrid'].includes(b.locationFormat)) fields.Location_Format = b.locationFormat;
@@ -134,6 +136,7 @@ export async function handler(event) {
         const f = b.fields || {};
         const fields = {};
         if (f.name) fields.Event_Name = String(f.name).slice(0, 200);
+        if (['Required', 'Optional'].includes(f.attendanceType)) fields.Attendance_Type = f.attendanceType;
         if (f.agenda !== undefined) fields.Agenda = String(f.agenda).slice(0, 5000);
         if (f.materialsUrl !== undefined) fields.Materials_URL = String(f.materialsUrl).slice(0, 500);
         if (f.notes !== undefined) fields.Notes = String(f.notes).slice(0, 5000);
