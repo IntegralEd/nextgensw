@@ -1037,6 +1037,13 @@
           "linkedTableName": "Users"
         },
         {
+          "id": "fldVbc9GaByE7fz4g",
+          "name": "Completed_At",
+          "type": "dateTime",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
           "id": "fldWASWskJkM26nzi",
           "name": "Status",
           "type": "singleSelect",

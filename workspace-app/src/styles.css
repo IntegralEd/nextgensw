@@ -188,6 +188,15 @@ table.data th { color: var(--gray-500); font-weight: 600; font-size: 0.8rem; tex
 
 .actions { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
 
+/* ---------- Print (reports) ---------- */
+.print-only { display: none; }
+@media print {
+  .no-print, .toast { display: none !important; }
+  .print-only { display: block; }
+  .panel { max-width: none; padding: 0; }
+  table.data th, table.data td { font-size: 11pt; }
+}
+
 /* ---------- User guide panel ---------- */
 .guide-search {
   width: 100%;
