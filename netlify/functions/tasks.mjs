@@ -54,6 +54,7 @@ function publicTask(r, users) {
     status: f['Status'] || 'Not Started',
     reviewStatus: f['Review_Status'] || null,
     coordinatorReview: f['Coordinator_Review'] || 'New',
+    completedAt: f['Completed_At'] || null,
     priority: f['Priority'] || null,
     estHours: f['Est_Hours'] || null,
     estHoursDecimal: f['Est_Hours_Decimal'] ?? null,
@@ -227,7 +228,10 @@ export async function handler(event) {
       if (b.action === 'status') {
         if (!mine) return json(403, origin, { error: 'only the assigned intern updates task status' });
         if (!INTERN_STATUSES.includes(b.status)) return json(400, origin, { error: 'bad status' });
-        await airtableWrite(cfg, TABLES.TASKS, 'PATCH', [{ id: rec.id, fields: { Status: b.status } }]);
+        await airtableWrite(cfg, TABLES.TASKS, 'PATCH', [{ id: rec.id, fields: {
+          Status: b.status,
+          Completed_At: b.status === 'Complete' ? new Date().toISOString() : null,
+        } }]);
         return json(200, origin, { ok: true });
       }
 
@@ -265,10 +269,10 @@ export async function handler(event) {
         const comment = String(b.comment || '').trim().slice(0, 2000);
         let fields;
         if (b.decision === 'accept') {
-          fields = { Review_Status: 'Accepted', Status: 'Complete' };
+          fields = { Review_Status: 'Accepted', Status: 'Complete', Completed_At: new Date().toISOString() };
         } else if (b.decision === 'request-updates') {
           if (!comment) return json(400, origin, { error: 'tell the intern what to update' });
-          fields = { Review_Status: 'Updates Requested', Status: 'In Progress' };
+          fields = { Review_Status: 'Updates Requested', Status: 'In Progress', Completed_At: null };
         } else {
           return json(400, origin, { error: 'bad decision' });
         }
