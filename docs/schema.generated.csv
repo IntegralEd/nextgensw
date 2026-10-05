@@ -247,6 +247,7 @@ Events,tblWXcLQ8zOH3G3aj,fldn7iqs8784MreFf,Messages,multipleRecordLinks,checked,
 Events,tblWXcLQ8zOH3G3aj,fldQqZskfeQdtDi4P,Event_Type,singleSelect,,,
 Events,tblWXcLQ8zOH3G3aj,fldriyNWsT8G5tI5Z,Location,singleLineText,,,
 Events,tblWXcLQ8zOH3G3aj,fldslY9COzWELNU3p,Materials_Files,multipleAttachments,,,
+Events,tblWXcLQ8zOH3G3aj,fldTOKnRRCC4ER2WA,Attendance_Type,singleSelect,,,
 Cohorts,tblXsOJwoqoOSpYDT,fld0wWZ6iQlqRmMz0,End_Date,date,,,
 Cohorts,tblXsOJwoqoOSpYDT,fldAAnRxb2ckHNi6i,Announcements,multipleRecordLinks,checked,tblbGWPTH7sWqOIGR,Announcement
 Cohorts,tblXsOJwoqoOSpYDT,fldChVBQmPM80Xxje,Members,multipleRecordLinks,checked,tbldH5vECddqn4Tvv,Users

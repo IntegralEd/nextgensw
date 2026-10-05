@@ -1960,6 +1960,17 @@
           "type": "multipleAttachments",
           "linkedTableId": null,
           "linkedTableName": null
+        },
+        {
+          "id": "fldTOKnRRCC4ER2WA",
+          "name": "Attendance_Type",
+          "type": "singleSelect",
+          "linkedTableId": null,
+          "linkedTableName": null,
+          "choices": [
+            "Optional",
+            "Required"
+          ]
         }
       ]
     },
