@@ -74,17 +74,9 @@ async function callerContext(cfg, auth) {
     if (related) myTasks.set(t.id, { assignee });
   }
   const myEntries = new Set(entries.map((r) => r.id));
-  const myEvents = new Set(
-    events
-      .filter((e) => {
-        const f = e.fields || {};
-        return (
-          (f['Attendance'] || []).includes(auth.uid) ||
-          (f['Cohort'] || []).some((c) => cohortIds.has(c))
-        );
-      })
-      .map((e) => e.id)
-  );
+  // Events are program-wide (every workspace user sees every event,
+  // 2026-10-15), so every event's discussion is open to them too.
+  const myEvents = new Set(events.map((e) => e.id));
   return { isStaff, cohortIds, myTasks, myEntries, myEvents, lastChecked: me['Inbox_Last_Checked_At'] || null };
 }
 

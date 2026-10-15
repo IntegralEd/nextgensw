@@ -2,9 +2,12 @@
 
 ## Events (everyone)
 
-**Events** lists your program's sessions — Monday cohort meetings,
-field visits, trainings — upcoming first. Open one to see the agenda,
-the materials link, and who attended.
+**Events** lists the program's calendar — Monday cohort meetings,
+field visits, trainings, and events hosted by partner organizations —
+upcoming first. Every workspace user sees every event. Open one to see
+the agenda, the materials link, who's hosting, and who attended.
+The **Required** / **Optional** tag tells you whether it's part of the
+internship (required events count on the weekly report).
 
 Two things you can do on an event page:
 
@@ -12,17 +15,35 @@ Two things you can do on an event page:
   entry files under the right work category automatically and stays
   linked to the session.
 - **Discussion** — post prep questions, reflections, or follow-ups.
-  Event discussions are visible to the whole cohort (and staff);
+  Event discussions are visible to everyone in the workspace;
   replies happen in your Inbox.
 
 ## Running events (staff)
 
 **New event** creates a session: name, type (add new types as you
-need them), date, cohort, format/location, **attendance** (Required or
-Optional — required events count toward the weekly report), agenda,
-materials link.
+need them), date, cohort and/or partner org, format/location,
+**attendance** (Required or Optional — required events count toward
+the weekly report), agenda, materials link.
 After the session, open it and check off **Attendance** from the
-cohort roster, then save.
+cohort roster (or the host org's assigned interns), then save.
+On any event page you can flip the attendance setting with
+**make it required / optional** — handy for partner events.
+
+## Hosting events (partner organizations)
+
+Employers can schedule events too. **New event** on the Events page
+works the same way, with two differences:
+
+- The event is **hosted by your organization** (no cohort picker) and
+  defaults to **Optional** attendance. Choose Required only when the
+  event is part of the internship — required events count on the
+  interns' weekly report.
+- Program staff get a heads-up in their **Inbox** when you post one,
+  so they can review it or change the attendance setting.
+
+Your event shows on every intern's Events page right away. Afterwards,
+open it and check off **Attendance** from your organization's assigned
+interns. You can only edit events your organization hosts.
 
 ## Cohorts (staff)
 

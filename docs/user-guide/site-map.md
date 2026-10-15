@@ -27,7 +27,7 @@ checked in CI against the live panel list, so it never drifts.
 
 ## Events & cohorts
 
-- **Events** — `#/events` — everyone. Sessions, attendance, log hours.
+- **Events** — `#/events` — everyone. Program & partner events, attendance, log hours.
 - **Cohorts** — `#/cohort-admin` — staff. Roster & cohort-wide tasks.
 
 ## Help
