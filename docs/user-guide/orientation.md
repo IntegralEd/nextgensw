@@ -55,6 +55,28 @@ the current links directly with testers.
    exist): you should get a polite "Not available" screen, not an
    error.
 
+## What's new card — demo data (October 2026)
+
+Demo rows labeled **[Demo]** sit on the test accounts so every role's
+What's new card has something to show. Sign in as each test account
+and open any page:
+
+- **Intern** — timesheets needing attention, a "submit your hours"
+  reminder (expected hours are set to 10/week), a required event
+  tomorrow, new tasks, accepted work, hours approved for payroll, new
+  events, a coordinator comment.
+- **Employer** — work ready for review, a question posted on their
+  partner site tour, new events, new messages.
+- **Coordinator** — tasks marked Need Help, a flagged message, a
+  timesheet checklist (try **Mark reviewed**), a missed attendance
+  reminder, an intern under expected hours, an intern reply, employer
+  activity.
+- **Admins** see the coordinator items plus a pay week ready to
+  finalize.
+
+**Got it** really does clear the card for that account. To see it again,
+ask David to reset that account's What's new marker.
+
 ## Reporting issues
 
 Tell David: which magic link (which user), which page, what you

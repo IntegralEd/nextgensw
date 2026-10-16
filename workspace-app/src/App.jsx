@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { resolveAssertedEmail } from './identity.js';
 import { signIn } from './api.js';
 import { PANELS, DEFAULT_PANEL, panelForRole } from './panels/index.jsx';
+import WhatsNew from './components/WhatsNew.jsx';
 
 // Panel key = the hash path: /app/#/whoami → "whoami".
 // Query strings in the hash (#/panel?x=y) are stripped here and left
@@ -96,5 +97,10 @@ export default function App() {
   }
 
   const Component = panel.component;
-  return <Component />;
+  return (
+    <>
+      {panel.whatsNew !== false && <WhatsNew />}
+      <Component />
+    </>
+  );
 }

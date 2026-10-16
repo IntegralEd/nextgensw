@@ -4,6 +4,7 @@
 
 import { useEffect, useState } from 'react';
 import { apiFetch, currentUser } from '../api.js';
+import WhatsNew from '../components/WhatsNew.jsx';
 
 const STAFF = ['Coordinator', 'Admin', 'SuperAdmin', 'Super Admin'];
 const todayISO = () => new Date().toISOString().slice(0, 10);
@@ -91,6 +92,7 @@ export default function Home() {
   return (
     <div className="panel">
       <h1>Welcome, {firstName}</h1>
+      <WhatsNew emptyText="You're all caught up." />
 
       {!stats && <p className="muted">Checking what needs your attention…</p>}
 

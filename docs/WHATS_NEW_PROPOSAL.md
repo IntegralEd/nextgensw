@@ -81,15 +81,15 @@ card's.
 
 | Item | Shows when | Opens / action |
 |---|---|---|
-| **Interns need help** (brick) | Any task moved to Need Help since you last looked, plus the count still open. | All tasks |
+| **Tasks marked Need Help** (brick) | Any task moved to Need Help since you last looked, plus the count still open. | All tasks |
 | **Flagged for supervisor** (brick) | A message was sent with Flag for Supervisor. | The thread |
 | **Timesheets to review** (yellow) | Submitted entries still marked New for coordinator review. | **Checklist: tick entries, Mark reviewed.** Comments still happen on Review timesheets. |
 | **Replies to your comments** | An intern replied on a timesheet or task you commented on. | The thread |
 | **Attendance not taken** (reminder) | A Required event in the last 3 days has no attendance marked. | The event |
 | **Under expected hours** (reminder) | From Thursday until payroll review closes: interns whose submitted hours this week are under their expected weekly hours. | Reports |
 | **Partner review is slow** (reminder) | Work has waited on a partner for more than 3 days. A nudge to follow up. | All tasks |
-| **Employer activity** | Employers added tasks for interns or scheduled events since you last looked. One line with the count, drilling down to each task (who asked, for whom, due) or event (Required or Optional). Lets staff see what partners are asking of interns. | The task or event |
-| **New messages** | Same as interns. | Inbox |
+| **Employer activity** | Employers added tasks for interns or scheduled events since you last looked. This also covers new partner events, so there's no separate line for them. One line with the count, drilling down to each task (who asked, for whom, due) or event (Required or Optional). Lets staff see what partners are asking of interns. | The task or event |
+| **New messages** | Conversations you're part of, plus Staff Only threads. Staff can read every thread, but audit traffic has its own lines (flagged, intern replies). | Inbox |
 
 ### Admins (Admin, Super Admin)
 
