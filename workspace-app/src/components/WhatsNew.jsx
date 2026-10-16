@@ -39,7 +39,7 @@ function go(entry) {
   if (entry.hash) window.location.hash = entry.hash;
 }
 
-export default function WhatsNew({ emptyText = null }) {
+export default function WhatsNew({ emptyText = null, wide = false }) {
   const user = currentUser();
   const uid = user?.id;
   const [feed, setFeed] = useState(null); // { asOf, items }
@@ -89,6 +89,7 @@ export default function WhatsNew({ emptyText = null }) {
 
   const shown = showAll ? items : items.slice(0, SHOW_ITEMS);
   return (
+    <div className={`wn-wrap${wide ? ' wn-wide' : ''}`}>
     <section className="wn-card" aria-label="What's new">
       <div className="wn-head">
         <strong>What's new</strong>
@@ -106,7 +107,7 @@ export default function WhatsNew({ emptyText = null }) {
               onClick={() => (it.entries.length ? setOpen({ ...open, [it.id]: !open[it.id] }) : it.cta && go(it.cta))}
             >
               <span>{it.title}</span>
-              {it.entries.length > 0 && <span className="wn-caret" aria-hidden="true">{open[it.id] ? '▾' : '▸'}</span>}
+              {it.entries.length > 0 && <span className="wn-caret" aria-hidden="true">{open[it.id] ? '−' : '+'}</span>}
             </button>
             {it.detail && <div className="wn-detail muted">{it.detail}</div>}
             {open[it.id] && (
@@ -123,6 +124,7 @@ export default function WhatsNew({ emptyText = null }) {
         </button>
       )}
     </section>
+    </div>
   );
 }
 

@@ -225,9 +225,12 @@ table.data th { color: var(--gray-500); font-weight: 600; font-size: 0.8rem; tex
 .guide-body th, .guide-body td { border: 1px solid var(--gray-200); padding: 8px 12px; text-align: left; font-size: 0.95rem; }
 
 /* ---------- What's new card ---------- */
+/* The wrapper mirrors .panel's width and side padding so the card's
+   edges line up with the panel content below it. */
+.wn-wrap { max-width: 860px; margin: 0 auto; padding: 16px 16px 0; }
+.wn-wrap.wn-wide { max-width: 1000px; }
+.panel .wn-wrap { padding: 0; max-width: none; }
 .wn-card {
-  max-width: 860px;
-  margin: 16px auto 0;
   padding: 12px 16px;
   border: 1px solid var(--gray-200);
   border-radius: var(--radius);
@@ -235,6 +238,7 @@ table.data th { color: var(--gray-500); font-weight: 600; font-size: 0.8rem; tex
   background: var(--white);
 }
 .panel .wn-card { margin: 12px 0 4px; }
+.wn-wrap + .panel { padding-top: 16px; }
 .wn-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
 .wn-head-actions { display: flex; gap: 6px; }
 .wn-items { list-style: none; margin: 8px 0 0; padding: 0; }
@@ -247,7 +251,7 @@ table.data th { color: var(--gray-500); font-weight: 600; font-size: 0.8rem; tex
   background: none; border: none; padding: 0; cursor: pointer; text-align: left;
   font: inherit; font-weight: 600; color: var(--ink);
 }
-.wn-caret { color: var(--gray-500); }
+.wn-caret { color: var(--gray-500); font-size: 1.15rem; line-height: 1; min-width: 1em; text-align: center; }
 .wn-detail { font-size: 0.85rem; margin-top: 2px; }
 .wn-drill { margin-top: 6px; font-size: 0.9rem; }
 .wn-drill ul { margin: 0 0 6px; padding-left: 18px; }
@@ -262,4 +266,4 @@ table.data th { color: var(--gray-500); font-weight: 600; font-size: 0.8rem; tex
 .wn-more { font-size: 0.85rem; margin-bottom: 6px; }
 .wn-error { color: var(--brick); font-size: 0.85rem; }
 .wn-empty { margin: 4px 0 0; }
-@media print { .wn-card { display: none; } }
+@media print { .wn-wrap { display: none; } }

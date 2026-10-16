@@ -99,7 +99,7 @@ export default function App() {
   const Component = panel.component;
   return (
     <>
-      {panel.whatsNew !== false && <WhatsNew />}
+      {panel.whatsNew !== false && <WhatsNew wide={panel.wide} />}
       <Component />
     </>
   );
