@@ -10,6 +10,7 @@ import { apiFetch, currentUser } from '../api.js';
 
 const STAFF = ['Coordinator', 'Admin', 'SuperAdmin', 'Super Admin'];
 const todayISO = () => new Date().toISOString().slice(0, 10);
+const hashParam = (k) => new URLSearchParams(window.location.hash.split('?')[1] || '').get(k);
 
 // Event type → the work category hours get logged under.
 const TYPE_TO_CATEGORY = {
@@ -41,6 +42,23 @@ export default function Events() {
 
   const load = () => apiFetch('events').then(setData).catch((e) => flash(e.message, true));
   useEffect(() => { load(); }, []);
+  // Deep link from the What's new card: #/events?open=recX (once).
+  const [deepLinked, setDeepLinked] = useState(false);
+  useEffect(() => {
+    if (deepLinked || !data) return;
+    const e = data.events.find((x) => x.id === hashParam('open'));
+    setDeepLinked(true);
+    if (e) openEvent(e);
+  }, [data]);
+  // …and later clicks on the card while already on this page.
+  useEffect(() => {
+    const onHash = () => {
+      const e = data?.events.find((x) => x.id === hashParam('open'));
+      if (e) openEvent(e);
+    };
+    window.addEventListener('hashchange', onHash);
+    return () => window.removeEventListener('hashchange', onHash);
+  }, [data]);
   // Employers host for their own org; preselect it once the meta lands.
   useEffect(() => {
     if (isEmployer && data?.orgs?.length && !form.orgId) setForm((f) => ({ ...f, orgId: data.orgs[0].id }));

@@ -118,6 +118,7 @@ Tasks,tblCqQJL1EMpI0LJx,fldBQA9whz8lQIIOo,Messages,multipleRecordLinks,checked,t
 Tasks,tblCqQJL1EMpI0LJx,fldEJo3rg0SSUJJFf,Ask_If_Stuck,multipleRecordLinks,checked,tbldH5vECddqn4Tvv,Users
 Tasks,tblCqQJL1EMpI0LJx,fldEveAGmltbWjtmW,Last_Modified,formula,,,
 Tasks,tblCqQJL1EMpI0LJx,fldfuSIcbOo8yJpXj,Due_Date,date,,,
+Tasks,tblCqQJL1EMpI0LJx,fldfw8eAnOdrc7yAF,Status_Changed_At,formula,,,
 Tasks,tblCqQJL1EMpI0LJx,fldGzaKcumJLTMlkI,Skill_Area,multipleRecordLinks,checked,tblfvMuMfvncJWBO5,Skill_Areas
 Tasks,tblCqQJL1EMpI0LJx,fldhF0y4gXNAfbqAJ,Start_Date,date,,,
 Tasks,tblCqQJL1EMpI0LJx,fldhHmnsxjfW7JYE3,Description,richText,,,
@@ -128,6 +129,7 @@ Tasks,tblCqQJL1EMpI0LJx,fldNELGUiuhJE0bqj,Cohort,multipleRecordLinks,checked,tbl
 Tasks,tblCqQJL1EMpI0LJx,fldpa7QkxuUPPvacY,Est_Hours,singleSelect,,,
 Tasks,tblCqQJL1EMpI0LJx,fldpZSDOjxUnFLAzn,Done_Looks_Like,richText,,,
 Tasks,tblCqQJL1EMpI0LJx,fldSDmotT49YHz54S,Time_Entries,multipleRecordLinks,checked,tblAFI7T1B0FXs4yr,Time_Entries
+Tasks,tblCqQJL1EMpI0LJx,fldTHTIfQGWdg3uYS,Review_Changed_At,formula,,,
 Tasks,tblCqQJL1EMpI0LJx,fldtTmCaURlT03JWs,Partner_Org,multipleRecordLinks,checked,tbl1RbO4XsWIo4OWP,Partner_Orgs
 Tasks,tblCqQJL1EMpI0LJx,fldTuEYqJT4nsmwhG,Est_Hours_Decimal,formula,,,
 Tasks,tblCqQJL1EMpI0LJx,fldUCg4R5O4guNRcF,Assigned_To,multipleRecordLinks,checked,tbldH5vECddqn4Tvv,Users
@@ -160,6 +162,7 @@ Users,tbldH5vECddqn4Tvv,fldchJqPo1fHFrc3u,Weekly_Expected_Hours,number,,,
 Users,tbldH5vECddqn4Tvv,flddOYHnS6RvBxivC,Visit_Count,rollup,,,
 Users,tbldH5vECddqn4Tvv,flde7MOGLMElMcwZa,Latest_Visit,rollup,,,
 Users,tbldH5vECddqn4Tvv,fldeS6kgNpaYDpEk2,Magic Link,url,,,
+Users,tbldH5vECddqn4Tvv,fldfpvozahmvvQ86X,Whats_New_Dismissed,multilineText,,,
 Users,tbldH5vECddqn4Tvv,fldG6rEz1ZxOpNGQu,Time_Entries,multipleRecordLinks,checked,tblAFI7T1B0FXs4yr,Time_Entries
 Users,tbldH5vECddqn4Tvv,fldgtkIybjUQfd4rs,Cohorts_Coordinating,multipleRecordLinks,checked,tblXsOJwoqoOSpYDT,Cohorts
 Users,tbldH5vECddqn4Tvv,fldHiymtj7tVgqkBR,Inbox_Last_Checked_At,dateTime,,,
@@ -170,6 +173,7 @@ Users,tbldH5vECddqn4Tvv,fldJqU4koDp1Pi6UO,Full Name (from Added_by),multipleLook
 Users,tbldH5vECddqn4Tvv,fldJZUG3IEVrxaqA4,Latest_Softr_Visit,dateTime,,,
 Users,tbldH5vECddqn4Tvv,fldl8IOaSVLn7H7zp,Skill_Areas_Added,multipleRecordLinks,checked,tblfvMuMfvncJWBO5,Skill_Areas
 Users,tbldH5vECddqn4Tvv,fldN7AJCFZJJjQdT0,Primary_Contact_For,multipleRecordLinks,checked,tbl1RbO4XsWIo4OWP,Partner_Orgs
+Users,tbldH5vECddqn4Tvv,fldNkSc7eekuD6KRy,Whats_New_Seen_At,dateTime,,,
 Users,tbldH5vECddqn4Tvv,fldR9bvd4odgSdkZs,Tasks_Created,multipleRecordLinks,checked,tblCqQJL1EMpI0LJx,Tasks
 Users,tbldH5vECddqn4Tvv,fldRQ16NWBYiJqXUI,Events_Attended,multipleRecordLinks,checked,tblWXcLQ8zOH3G3aj,Events
 Users,tbldH5vECddqn4Tvv,fldsBr7AFH6GShGti,Preferred_Contact,singleSelect,,,

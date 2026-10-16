@@ -5,6 +5,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { apiFetch, currentUser } from '../api.js';
+import { invalidateWhatsNew } from '../components/WhatsNew.jsx';
 
 function Dot() {
   return <span style={{
@@ -27,8 +28,19 @@ export default function Inbox() {
   const me = currentUser();
 
   const load = () =>
-    apiFetch('messages?mark=1').then(setData).catch((e) => flash(e.message, true));
-  useEffect(() => { load(); }, []);
+    apiFetch('messages?mark=1').then((d) => { invalidateWhatsNew(); setData(d); }).catch((e) => flash(e.message, true));
+  useEffect(() => {
+    load();
+    // Deep link from the What's new card: #/inbox?thread=recX
+    const want = new URLSearchParams(window.location.hash.split('?')[1] || '').get('thread');
+    if (want) openOne(want);
+    const onHash = () => {
+      const t = new URLSearchParams(window.location.hash.split('?')[1] || '').get('thread');
+      if (t) openOne(t);
+    };
+    window.addEventListener('hashchange', onHash);
+    return () => window.removeEventListener('hashchange', onHash);
+  }, []);
 
   function flash(text, error = false) {
     setToast({ text, error });

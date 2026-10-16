@@ -30,77 +30,7 @@ import {
   corsHeaders,
   json,
 } from './_lib/workspace.mjs';
-
-async function scanAll(cfg, table, params = {}) {
-  const out = [];
-  let offset;
-  let pages = 0;
-  do {
-    const qs = new URLSearchParams({ pageSize: '100', ...params });
-    if (offset) qs.set('offset', offset);
-    const res = await fetch(
-      `https://api.airtable.com/v0/${cfg.baseId}/${encodeURIComponent(table)}?${qs}`,
-      { headers: { Authorization: `Bearer ${cfg.pat}` } }
-    );
-    if (!res.ok) throw new Error(`${table}: ${res.status}`);
-    const data = await res.json();
-    out.push(...(data.records || []));
-    offset = data.offset;
-    pages += 1;
-  } while (offset && pages < 30);
-  return out;
-}
-
-// Everything the caller relates to, for visibility decisions.
-async function callerContext(cfg, auth) {
-  const isStaff = STAFF_ROLES.includes(auth.role);
-  const [userRec, tasks, entries, events] = await Promise.all([
-    airtableGet(cfg, TABLES.USERS, { filterByFormula: `RECORD_ID() = '${auth.uid}'`, maxRecords: '1' }),
-    isStaff ? [] : scanAll(cfg, TABLES.TASKS),
-    isStaff ? [] : scanAll(cfg, TABLES.TIME_ENTRIES, { filterByFormula: `{Intern_Record_ID} = '${auth.uid}'` }),
-    isStaff ? [] : scanAll(cfg, TABLES.EVENTS),
-  ]);
-  const me = userRec.records?.[0]?.fields || {};
-  const cohortIds = new Set(me['Cohorts'] || []);
-  const orgIds = me['Partner_Org'] || [];
-  const myTasks = new Map(); // id -> { assignee: bool }
-  for (const t of tasks) {
-    const f = t.fields || {};
-    const assignee = (f['Assigned_To'] || []).includes(auth.uid);
-    const related =
-      assignee ||
-      (f['Assigned_By'] || []).includes(auth.uid) ||
-      (auth.role === 'Employer' && (f['Partner_Org'] || []).some((o) => orgIds.includes(o)));
-    if (related) myTasks.set(t.id, { assignee });
-  }
-  const myEntries = new Set(entries.map((r) => r.id));
-  // Events are program-wide (every workspace user sees every event,
-  // 2026-10-15), so every event's discussion is open to them too.
-  const myEvents = new Set(events.map((e) => e.id));
-  return { isStaff, cohortIds, myTasks, myEntries, myEvents, lastChecked: me['Inbox_Last_Checked_At'] || null };
-}
-
-function rootVisible(f, auth, ctx) {
-  if (ctx.isStaff) return true; // audit
-  if ((f['Author'] || []).includes(auth.uid)) return true;
-  if ((f['Participants'] || []).includes(auth.uid)) return true;
-  const vis = f['Visibility'] || 'All Stakeholders';
-  if (vis === 'Staff Only' || vis === 'Participants Only') return false;
-  const [taskId] = f['Task'] || [];
-  if (taskId) {
-    const rel = ctx.myTasks.get(taskId);
-    if (!rel) return false;
-    if (vis === 'Program + Intern') return rel.assignee; // employer excluded
-    return true;
-  }
-  const [entryId] = f['Time_Entry'] || [];
-  if (entryId) return ctx.myEntries.has(entryId); // owner (staff already returned)
-  const [eventId] = f['Event'] || [];
-  if (eventId) return ctx.myEvents.has(eventId);
-  const [cohortId] = f['Cohort'] || [];
-  if (cohortId) return ctx.cohortIds.has(cohortId);
-  return false;
-}
+import { scanAll, callerContext, rootVisible } from './_lib/visibility.mjs';
 
 async function anchorLabels(cfg, roots, users) {
   const need = { task: new Set(), event: new Set(), cohort: new Set(), entry: new Set() };

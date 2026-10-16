@@ -5,6 +5,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { apiFetch } from '../api.js';
+import { invalidateWhatsNew } from '../components/WhatsNew.jsx';
 
 const hrs = (m) => (m / 60).toFixed(m % 60 === 0 ? 0 : 2);
 const REVIEW_CHIP = { New: 'draft', 'Open Comment': 'returned', Approved: 'approved' };
@@ -47,6 +48,7 @@ export default function ReviewHours() {
     setBusy(true);
     try {
       await apiFetch('review-hours', { method: 'PATCH', body: JSON.stringify(payload) });
+      invalidateWhatsNew();
       setCommenting(null); setComment(''); setSelected(new Set());
       await load();
       flash(okMsg);

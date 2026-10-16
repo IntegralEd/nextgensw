@@ -938,6 +938,13 @@
           "linkedTableName": null
         },
         {
+          "id": "fldfw8eAnOdrc7yAF",
+          "name": "Status_Changed_At",
+          "type": "formula",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
           "id": "fldGzaKcumJLTMlkI",
           "name": "Skill_Area",
           "type": "multipleRecordLinks",
@@ -1014,6 +1021,13 @@
           "type": "multipleRecordLinks",
           "linkedTableId": "tblAFI7T1B0FXs4yr",
           "linkedTableName": "Time_Entries"
+        },
+        {
+          "id": "fldTHTIfQGWdg3uYS",
+          "name": "Review_Changed_At",
+          "type": "formula",
+          "linkedTableId": null,
+          "linkedTableName": null
         },
         {
           "id": "fldtTmCaURlT03JWs",
@@ -1280,6 +1294,13 @@
           "linkedTableName": null
         },
         {
+          "id": "fldfpvozahmvvQ86X",
+          "name": "Whats_New_Dismissed",
+          "type": "multilineText",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
           "id": "fldG6rEz1ZxOpNGQu",
           "name": "Time_Entries",
           "type": "multipleRecordLinks",
@@ -1348,6 +1369,13 @@
           "type": "multipleRecordLinks",
           "linkedTableId": "tbl1RbO4XsWIo4OWP",
           "linkedTableName": "Partner_Orgs"
+        },
+        {
+          "id": "fldNkSc7eekuD6KRy",
+          "name": "Whats_New_Seen_At",
+          "type": "dateTime",
+          "linkedTableId": null,
+          "linkedTableName": null
         },
         {
           "id": "fldR9bvd4odgSdkZs",

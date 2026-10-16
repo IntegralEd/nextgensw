@@ -3,7 +3,9 @@
 // then on, adding or changing screens is an entry here plus a deploy.
 //
 // roles: which User_Role values may open the panel. '*' = any
-// signed-in user. The API enforces data access regardless — this
+// signed-in user. whatsNew: false keeps the What's new card off that
+// page (print/reference pages, compact widgets). wide: the panel is
+// 1000px rather than 860px, so the card widens to match. The API enforces data access regardless — this
 // gate just keeps people out of screens that would 403 anyway.
 
 import Home from './Home.jsx';
@@ -29,27 +31,27 @@ const TIME_LOGGERS = ['Intern', 'Coordinator', 'Admin', 'SuperAdmin', 'Super Adm
 const STAFF = ['Coordinator', 'Admin', 'SuperAdmin', 'Super Admin'];
 
 export const PANELS = {
-  home: { component: Home, roles: ['*'], title: 'Home' },
-  whoami: { component: WhoAmI, roles: ['*'], title: 'Who am I' },
-  'user-guide': { component: UserGuide, roles: ['*'], title: 'User guide' },
+  home: { component: Home, roles: ['*'], title: 'Home', whatsNew: false /* renders its own, with the caught-up line */ },
+  whoami: { component: WhoAmI, roles: ['*'], title: 'Who am I', whatsNew: false },
+  'user-guide': { component: UserGuide, roles: ['*'], title: 'User guide', whatsNew: false },
   // The testing/orientation guide (test accounts, QA steps) is staff-
   // only — its own slug, gated to admins in Softr and here.
-  'testing-guide': { component: () => <UserGuide only="orientation" />, roles: ['Admin', 'SuperAdmin', 'Super Admin'], title: 'Testing guide' },
+  'testing-guide': { component: () => <UserGuide only="orientation" />, roles: ['Admin', 'SuperAdmin', 'Super Admin'], title: 'Testing guide', whatsNew: false },
   'log-hours': { component: LogHours, roles: TIME_LOGGERS, title: 'Log hours' },
-  'stopwatch': { component: Stopwatch, roles: TIME_LOGGERS, title: 'Stopwatch' },
+  'stopwatch': { component: Stopwatch, roles: TIME_LOGGERS, title: 'Stopwatch', whatsNew: false },
   'my-hours': { component: MyHours, roles: TIME_LOGGERS, title: 'My hours' },
-  'review-hours': { component: ReviewHours, roles: STAFF, title: 'Review hours' },
+  'review-hours': { component: ReviewHours, roles: STAFF, title: 'Review hours', wide: true },
   'pay-periods': { component: PayPeriods, roles: STAFF, title: 'Pay periods' },
   'my-tasks': { component: MyTasks, roles: TIME_LOGGERS, title: 'My tasks' },
   // Task requests are open to every workspace role (2026-08-31):
   // teammates, intern → team, employer → intern all valid.
   'assign-task': { component: AssignTask, roles: ['*'], title: 'Request a task' },
   'partner-tasks': { component: PartnerTasks, roles: ['*'], title: 'Tasks you requested' },
-  'all-tasks': { component: AllTasks, roles: STAFF, title: 'All tasks' },
+  'all-tasks': { component: AllTasks, roles: STAFF, title: 'All tasks', wide: true },
   inbox: { component: Inbox, roles: ['*'], title: 'Inbox' },
   events: { component: Events, roles: ['*'], title: 'Events' },
   'cohort-admin': { component: CohortAdmin, roles: STAFF, title: 'Cohorts' },
-  reports: { component: Reports, roles: STAFF, title: 'Reports' },
+  reports: { component: Reports, roles: STAFF, title: 'Reports', whatsNew: false },
 };
 
 export const DEFAULT_PANEL = 'home';
