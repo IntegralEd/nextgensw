@@ -1,7 +1,9 @@
-// Program events. Everyone sees their events; opening one shows the
-// agenda, materials, attendance (staff can mark it), a quick "log my
-// hours for this session" action, and the event's message board.
-// Staff get a create form.
+// Program events. Everyone sees every event; opening one shows the
+// agenda, materials, attendance (staff and the hosting partner org can
+// mark it), a quick "log my hours for this session" action, and the
+// event's message board. Staff and employers get a create form: staff
+// events attach to a cohort, employer events are hosted by their org
+// and default to Optional attendance.
 
 import { useEffect, useState } from 'react';
 import { apiFetch, currentUser } from '../api.js';
@@ -19,12 +21,18 @@ const TYPE_TO_CATEGORY = {
 export default function Events() {
   const user = currentUser();
   const isStaff = STAFF.includes(user?.role);
-  const canLogHours = user?.role !== 'Employer';
-  const [data, setData] = useState(null); // { events, cohorts?, eventTypes? }
+  const isEmployer = user?.role === 'Employer';
+  const canCreate = isStaff || isEmployer;
+  const canLogHours = !isEmployer;
+  const [data, setData] = useState(null); // { events, cohorts?, orgs?, eventTypes? }
   const [open, setOpen] = useState(null); // event id
   const [threads, setThreads] = useState(null);
   const [creating, setCreating] = useState(false);
-  const [form, setForm] = useState({ name: '', type: 'Cohort Session', date: todayISO(), cohortId: '', locationFormat: 'In-person', location: '', agenda: '', materialsUrl: '', attendanceType: 'Required' });
+  const [form, setForm] = useState({
+    name: '', date: todayISO(), cohortId: '', orgId: '', locationFormat: 'In-person', location: '', agenda: '', materialsUrl: '',
+    type: isEmployer ? 'Partner Event' : 'Cohort Session',
+    attendanceType: isEmployer ? 'Optional' : 'Required',
+  });
   const [attend, setAttend] = useState([]);
   const [logHrs, setLogHrs] = useState('');
   const [post, setPost] = useState('');
@@ -33,6 +41,10 @@ export default function Events() {
 
   const load = () => apiFetch('events').then(setData).catch((e) => flash(e.message, true));
   useEffect(() => { load(); }, []);
+  // Employers host for their own org; preselect it once the meta lands.
+  useEffect(() => {
+    if (isEmployer && data?.orgs?.length && !form.orgId) setForm((f) => ({ ...f, orgId: data.orgs[0].id }));
+  }, [data]);
 
   function flash(text, error = false) {
     setToast({ text, error });
@@ -70,6 +82,16 @@ export default function Events() {
       await apiFetch('events', { method: 'PATCH', body: JSON.stringify({ id: ev.id, action: 'attendance', userIds: attend }) });
       await load();
       flash('Attendance saved ✓');
+    } catch (e) { flash(e.message, true); } finally { setBusy(false); }
+  }
+
+  async function toggleAttendanceType() {
+    const attendanceType = ev.attendanceType === 'Optional' ? 'Required' : 'Optional';
+    setBusy(true);
+    try {
+      await apiFetch('events', { method: 'PATCH', body: JSON.stringify({ id: ev.id, action: 'update', fields: { attendanceType } }) });
+      await load();
+      flash(`Attendance is now ${attendanceType.toLowerCase()} ✓`);
     } catch (e) { flash(e.message, true); } finally { setBusy(false); }
   }
 
@@ -112,8 +134,11 @@ export default function Events() {
 
   // ---------- detail ----------
   if (ev) {
-    const cohort = data.cohorts?.find((c) => ev.cohortIds.includes(c.id)) ||
-      (ev.cohortIds.length ? { id: ev.cohortIds[0] } : null);
+    // Who can be checked off: the cohort roster, else the host org's
+    // assigned interns, else whoever is already marked.
+    const cohort = data.cohorts?.find((c) => ev.cohortIds.includes(c.id));
+    const org = data.orgs?.find((o) => ev.partnerOrgIds.includes(o.id));
+    const people = cohort?.members || org?.members || [];
     return (
       <div className="panel">
         <button className="btn btn-ghost btn-sm" style={{ paddingLeft: 0 }} onClick={() => setOpen(null)}>← All events</button>
@@ -121,7 +146,16 @@ export default function Events() {
         <p className="muted lead">
           {[ev.type, ev.date, ev.locationFormat, ev.location].filter(Boolean).join(' · ')}
           {' '}<span className={`chip ${ev.attendanceType === 'Optional' ? 'draft' : 'returned'}`}>{ev.attendanceType}</span>
+          {ev.hostOrgs.length > 0 && <> · Hosted by {ev.hostOrgs.join(', ')}</>}
         </p>
+        {ev.canEdit && (
+          <p className="muted" style={{ fontSize: '0.85rem', marginTop: -4 }}>
+            Attendance is {ev.attendanceType.toLowerCase()} —{' '}
+            <button className="btn btn-ghost btn-sm" style={{ padding: 0 }} disabled={busy} onClick={toggleAttendanceType}>
+              make it {ev.attendanceType === 'Optional' ? 'required' : 'optional'}
+            </button>
+          </p>
+        )}
         {ev.agenda && (
           <div className="card"><label>Agenda</label><div style={{ whiteSpace: 'pre-wrap' }}>{ev.agenda}</div></div>
         )}
@@ -143,10 +177,10 @@ export default function Events() {
 
         <div className="card">
           <label>Attendance {ev.attendance.length ? `(${ev.attendance.length})` : ''}</label>
-          {isStaff ? (
+          {ev.canEdit ? (
             <>
               <AttendancePicker
-                cohort={cohort}
+                people={people}
                 current={attend}
                 onToggle={(id) => setAttend(attend.includes(id) ? attend.filter((x) => x !== id) : [...attend, id])}
               />
@@ -160,7 +194,7 @@ export default function Events() {
         </div>
 
         <h2>Discussion</h2>
-        <label>Start a topic (visible to the cohort)</label>
+        <label>Start a topic (visible to everyone in the workspace)</label>
         <textarea rows={2} value={post} onChange={(e) => setPost(e.target.value)} placeholder="Prep questions, reflections, follow-ups…" />
         <div className="actions"><button className="btn btn-primary btn-sm" disabled={busy || !post.trim()} onClick={startThread}>Post</button></div>
         {threads === null && <p className="muted">Loading discussion…</p>}
@@ -189,6 +223,7 @@ export default function Events() {
       <div className="muted" style={{ fontSize: '0.9rem' }}>
         {[e.type, e.date, e.locationFormat].filter(Boolean).join(' · ')}
         {' '}<span className={`chip ${e.attendanceType === 'Optional' ? 'draft' : 'returned'}`}>{e.attendanceType}</span>
+        {e.hostOrgs.length ? ` · ${e.hostOrgs.join(', ')}` : ''}
         {e.attendance.length ? ` · ${e.attendance.length} attended` : ''}
       </div>
     </div>
@@ -198,7 +233,7 @@ export default function Events() {
     <div className="panel">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
         <h1>Events</h1>
-        {isStaff && <button className="btn btn-primary btn-sm" onClick={() => setCreating(!creating)}>{creating ? 'Cancel' : 'New event'}</button>}
+        {canCreate && <button className="btn btn-primary btn-sm" onClick={() => setCreating(!creating)}>{creating ? 'Cancel' : 'New event'}</button>}
       </div>
 
       {creating && (
@@ -214,13 +249,24 @@ export default function Events() {
               </datalist>
             </div>
             <div><label>Date</label><input type="date" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} /></div>
-            <div>
-              <label>Cohort</label>
-              <select value={form.cohortId} onChange={(e) => setForm({ ...form, cohortId: e.target.value })}>
-                <option value="">None</option>
-                {(data.cohorts || []).map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
-              </select>
-            </div>
+            {isStaff && (
+              <div>
+                <label>Cohort</label>
+                <select value={form.cohortId} onChange={(e) => setForm({ ...form, cohortId: e.target.value })}>
+                  <option value="">None</option>
+                  {(data.cohorts || []).map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+                </select>
+              </div>
+            )}
+            {(data.orgs || []).length > 0 && (
+              <div>
+                <label>{isEmployer ? 'Hosted by' : 'Partner org'}</label>
+                <select value={form.orgId} onChange={(e) => setForm({ ...form, orgId: e.target.value })}>
+                  {isStaff && <option value="">None</option>}
+                  {data.orgs.map((o) => <option key={o.id} value={o.id}>{o.name}</option>)}
+                </select>
+              </div>
+            )}
             <div>
               <label>Format</label>
               <select value={form.locationFormat} onChange={(e) => setForm({ ...form, locationFormat: e.target.value })}>
@@ -230,7 +276,7 @@ export default function Events() {
             <div>
               <label>Attendance</label>
               <select value={form.attendanceType} onChange={(e) => setForm({ ...form, attendanceType: e.target.value })}>
-                <option>Required</option><option>Optional</option>
+                {isEmployer ? <><option>Optional</option><option>Required</option></> : <><option>Required</option><option>Optional</option></>}
               </select>
             </div>
           </div>
@@ -240,6 +286,12 @@ export default function Events() {
           <textarea rows={3} value={form.agenda} onChange={(e) => setForm({ ...form, agenda: e.target.value })} />
           <label style={{ marginTop: 10 }}>Materials link</label>
           <input type="url" value={form.materialsUrl} onChange={(e) => setForm({ ...form, materialsUrl: e.target.value })} />
+          {isEmployer && (
+            <p className="muted" style={{ fontSize: '0.85rem' }}>
+              Your event shows on every intern's Events page and program staff get a heads-up in their inbox.
+              Required events count toward the weekly attendance report, so leave Optional unless it's part of the internship.
+            </p>
+          )}
           <div className="actions"><button className="btn btn-primary" disabled={busy} onClick={createEvent}>Create event</button></div>
         </div>
       )}
@@ -248,25 +300,17 @@ export default function Events() {
       {upcoming.map((e) => <Row e={e} key={e.id} />)}
       {past.length > 0 && <h2>Past</h2>}
       {past.map((e) => <Row e={e} key={e.id} />)}
-      {data.events.length === 0 && <p className="muted">No events yet{isStaff ? ' — create the first one.' : '.'}</p>}
+      {data.events.length === 0 && <p className="muted">No events yet{canCreate ? ' — create the first one.' : '.'}</p>}
 
       {toast && <div className={`toast${toast.error ? ' error' : ''}`}>{toast.text}</div>}
     </div>
   );
 }
 
-// Staff attendance picker: the cohort roster as toggle chips (falls
-// back to current attendees when the event has no cohort).
-function AttendancePicker({ cohort, current, onToggle }) {
-  const [people, setPeople] = useState(null);
-  useEffect(() => {
-    apiFetch('cohorts').then((r) => {
-      const c = cohort ? r.cohorts.find((x) => x.id === cohort.id) : null;
-      setPeople(c ? c.members : []);
-    }).catch(() => setPeople([]));
-  }, [cohort?.id]);
-  if (people === null) return <p className="muted">Loading roster…</p>;
-  if (!people.length) return <p className="muted">Link a cohort to this event to get a roster to check off.</p>;
+// Attendance picker: the roster (cohort members or the host org's
+// assigned interns, resolved by the caller) as toggle chips.
+function AttendancePicker({ people, current, onToggle }) {
+  if (!people.length) return <p className="muted">No roster yet — link a cohort, or assign interns to the hosting organization, to get people to check off.</p>;
   return (
     <div className="guide-list">
       {people.map((p) => (

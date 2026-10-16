@@ -1951,7 +1951,8 @@
           "linkedTableId": null,
           "linkedTableName": null,
           "choices": [
-            "Cohort Session"
+            "Cohort Session",
+            "Partner Event"
           ]
         },
         {
