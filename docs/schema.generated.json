@@ -1413,6 +1413,13 @@
           "linkedTableName": null
         },
         {
+          "id": "fldPuD09Rstwyx4yU",
+          "name": "View_As_Started",
+          "type": "multipleRecordLinks",
+          "linkedTableId": "tblPFJ9uNxnq56GPq",
+          "linkedTableName": "View_As_Log"
+        },
+        {
           "id": "fldR9bvd4odgSdkZs",
           "name": "Tasks_Created",
           "type": "multipleRecordLinks",
@@ -1507,6 +1514,13 @@
           "type": "multipleRecordLinks",
           "linkedTableId": "tbllRFgUQ8oFjYieR",
           "linkedTableName": "Tickets"
+        },
+        {
+          "id": "fldXFH0aaRo9uTS9Y",
+          "name": "View_As_Viewed_By",
+          "type": "multipleRecordLinks",
+          "linkedTableId": "tblPFJ9uNxnq56GPq",
+          "linkedTableName": "View_As_Log"
         }
       ]
     },
@@ -1700,6 +1714,48 @@
           "type": "multipleRecordLinks",
           "linkedTableId": "tbldH5vECddqn4Tvv",
           "linkedTableName": "Users"
+        }
+      ]
+    },
+    {
+      "id": "tblPFJ9uNxnq56GPq",
+      "name": "View_As_Log",
+      "primaryFieldId": "fldUrEhakyG0V9oot",
+      "fields": [
+        {
+          "id": "flddte9XR6vfMKc5H",
+          "name": "Started_At",
+          "type": "dateTime",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldmIesUCmdf5IIi0",
+          "name": "Viewed",
+          "type": "multipleRecordLinks",
+          "linkedTableId": "tbldH5vECddqn4Tvv",
+          "linkedTableName": "Users"
+        },
+        {
+          "id": "fldns2cb80beWEcfP",
+          "name": "Viewer",
+          "type": "multipleRecordLinks",
+          "linkedTableId": "tbldH5vECddqn4Tvv",
+          "linkedTableName": "Users"
+        },
+        {
+          "id": "fldOHOFwdK7Nws7HX",
+          "name": "Panel",
+          "type": "singleLineText",
+          "linkedTableId": null,
+          "linkedTableName": null
+        },
+        {
+          "id": "fldUrEhakyG0V9oot",
+          "name": "Session",
+          "type": "singleLineText",
+          "linkedTableId": null,
+          "linkedTableName": null
         }
       ]
     },

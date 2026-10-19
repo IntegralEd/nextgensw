@@ -179,6 +179,7 @@ Users,tbldH5vECddqn4Tvv,fldl8IOaSVLn7H7zp,Skill_Areas_Added,multipleRecordLinks,
 Users,tbldH5vECddqn4Tvv,fldN7AJCFZJJjQdT0,Primary_Contact_For,multipleRecordLinks,checked,tbl1RbO4XsWIo4OWP,Partner_Orgs
 Users,tbldH5vECddqn4Tvv,fldNkSc7eekuD6KRy,Whats_New_Seen_At,dateTime,,,
 Users,tbldH5vECddqn4Tvv,fldoJjbOnOOentSiL,Is_Test,checkbox,,,
+Users,tbldH5vECddqn4Tvv,fldPuD09Rstwyx4yU,View_As_Started,multipleRecordLinks,checked,tblPFJ9uNxnq56GPq,View_As_Log
 Users,tbldH5vECddqn4Tvv,fldR9bvd4odgSdkZs,Tasks_Created,multipleRecordLinks,checked,tblCqQJL1EMpI0LJx,Tasks
 Users,tbldH5vECddqn4Tvv,fldRQ16NWBYiJqXUI,Events_Attended,multipleRecordLinks,checked,tblWXcLQ8zOH3G3aj,Events
 Users,tbldH5vECddqn4Tvv,fldsBr7AFH6GShGti,Preferred_Contact,singleSelect,,,
@@ -192,6 +193,7 @@ Users,tbldH5vECddqn4Tvv,fldvwSHyqfovnWcNG,Email (from Added_by),multipleLookupVa
 Users,tbldH5vECddqn4Tvv,fldW9sfAaVdtbzBHp,Assigned_To_Partner_Org,multipleRecordLinks,checked,tbl1RbO4XsWIo4OWP,Partner_Orgs
 Users,tbldH5vECddqn4Tvv,fldwp8rm8doQuQkQ6,User_Org_Entry,singleLineText,,,
 Users,tbldH5vECddqn4Tvv,fldwYJM7cvgtPJZBk,Tickets,multipleRecordLinks,checked,tbllRFgUQ8oFjYieR,Tickets
+Users,tbldH5vECddqn4Tvv,fldXFH0aaRo9uTS9Y,View_As_Viewed_By,multipleRecordLinks,checked,tblPFJ9uNxnq56GPq,View_As_Log
 Skill_Areas,tblfvMuMfvncJWBO5,fld6MkETg8AviDQwo,Active,checkbox,,,
 Skill_Areas,tblfvMuMfvncJWBO5,fldbhtrMxuxfiuoAz,Created,formula,,,
 Skill_Areas,tblfvMuMfvncJWBO5,fldGypYqSybvwZQDy,Source,singleSelect,,,
@@ -216,6 +218,11 @@ Tickets,tbllRFgUQ8oFjYieR,fldvywINmnYTe1LVk,Message_ID,formula,,,
 Tickets,tbllRFgUQ8oFjYieR,fldy10fxlYCx6gyKy,Message_Summary,formula,,,
 Tickets,tbllRFgUQ8oFjYieR,fldy8lFseUVJ6mOWg,Message_Status,singleSelect,,,
 Tickets,tbllRFgUQ8oFjYieR,fldYK3jqW9QREI2kW,User,multipleRecordLinks,checked,tbldH5vECddqn4Tvv,Users
+View_As_Log,tblPFJ9uNxnq56GPq,flddte9XR6vfMKc5H,Started_At,dateTime,,,
+View_As_Log,tblPFJ9uNxnq56GPq,fldmIesUCmdf5IIi0,Viewed,multipleRecordLinks,checked,tbldH5vECddqn4Tvv,Users
+View_As_Log,tblPFJ9uNxnq56GPq,fldns2cb80beWEcfP,Viewer,multipleRecordLinks,checked,tbldH5vECddqn4Tvv,Users
+View_As_Log,tblPFJ9uNxnq56GPq,fldOHOFwdK7Nws7HX,Panel,singleLineText,,,
+View_As_Log,tblPFJ9uNxnq56GPq,fldUrEhakyG0V9oot,Session,singleLineText,,,
 Pay_Period,tblSUypMwuYJonX5o,fld2Hqz7FmGpxzdue,Starting,date,,,
 Pay_Period,tblSUypMwuYJonX5o,fld7X3IHtHRJCtIVE,Label,singleLineText,,,
 Pay_Period,tblSUypMwuYJonX5o,fld9nzZBGLo4iR87R,Ending,date,,,
