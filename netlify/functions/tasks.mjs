@@ -20,6 +20,16 @@
 //                   'request-updates' → Updates Requested + In Progress,
 //                   comment required → Messages thread (All Stakeholders)
 //     'archive'                      staff only
+//     'edit'   {fields}              staff / requester / requesting org:
+//                                    name, description, doneLooksLike,
+//                                    dueDate, estHours, priority, links
+//     'delete'                       same people; removes the task and
+//                                    its discussion; refused when real
+//                                    hours are logged against it
+//
+// Test data (2026-10-19, _lib/testdata.mjs): tasks by or for test
+// accounts are stamped Is_Test and hidden from real users; pickers
+// keep real and test people apart.
 
 import {
   env,
@@ -31,7 +41,10 @@ import {
   requireAuth,
   corsHeaders,
   json,
+  airtableDelete,
 } from './_lib/workspace.mjs';
+import { showTest, dropTest, stampTest, isTestRow } from './_lib/testdata.mjs';
+import { deleteThreadsFor, linkedEntries } from './_lib/cascade.mjs';
 
 const INTERN_STATUSES = ['Not Started', 'In Progress', 'Need Help', 'Ready for Review', 'Complete'];
 // Est_Hours is a single-select of productive chunks (Menlo/Joy Inc);
@@ -65,7 +78,27 @@ function publicTask(r, users) {
     submittedWorkUrl: f['Submitted_Work_URL'] || null,
     skillAreaIds: f['Skill_Area'] || [],
     attachments: (f['Task_Attachment'] || []).map((a) => ({ url: a.url, name: a.filename })),
+    isTest: f['Is_Test'] === true,
   };
+}
+
+// Who may edit or delete a task: staff, the requester, or an employer
+// of the requesting org.
+function canManage(f, auth, isStaff, orgIds) {
+  if (isStaff) return true;
+  if ((f['Assigned_By'] || []).includes(auth.uid)) return true;
+  return auth.role === 'Employer' && (f['Partner_Org'] || []).some((o) => orgIds.includes(o));
+}
+
+// People a caller may assign to: real callers see real people; test
+// accounts see test people plus staff (to demo requests of the team);
+// staff with test data shown see everyone.
+function assignableFor(users, auth, show) {
+  return Object.entries(users)
+    .filter(([, u]) => ['Intern', 'Coordinator', 'Employer', 'Admin', 'SuperAdmin', 'Super Admin'].includes(u.role))
+    .filter(([, u]) => (auth.test ? u.isTest || STAFF_ROLES.includes(u.role) : show || !u.isTest))
+    .map(([id, u]) => ({ id, name: u.name || u.email, role: u.role, isTest: u.isTest }))
+    .sort((a, b) => a.name.localeCompare(b.name));
 }
 
 async function scanTasks(cfg, keep) {
@@ -116,6 +149,7 @@ export async function handler(event) {
   const auth = requireAuth(cfg, event);
   if (!auth) return json(401, origin, { error: 'sign in again' });
   const isStaff = STAFF_ROLES.includes(auth.role);
+  const show = showTest(auth, event);
 
   try {
     if (event.httpMethod === 'GET') {
@@ -123,8 +157,8 @@ export async function handler(event) {
       const users = await fetchUserMap(cfg);
 
       if (scope === 'mine') {
-        const recs = await scanTasks(cfg, (r) => (r.fields?.['Assigned_To'] || []).includes(auth.uid));
-        const tasks = recs.map((r) => publicTask(r, users));
+        const recs = dropTest(await scanTasks(cfg, (r) => (r.fields?.['Assigned_To'] || []).includes(auth.uid)), show);
+        const tasks = recs.map((r) => ({ ...publicTask(r, users), canEdit: canManage(r.fields || {}, auth, isStaff, []) }));
         // Attach the latest coordinator note to tasks flagged with an
         // open coordinator comment, so the intern sees it.
         const open = tasks.filter((t) => t.coordinatorReview === 'Open Comment').slice(0, 20);
@@ -149,26 +183,23 @@ export async function handler(event) {
         // employers see their org's tasks plus ones they requested;
         // everyone else sees the tasks they requested.
         const orgIds = auth.role === 'Employer' ? await callerOrgIds(cfg, auth.uid) : [];
-        const recs = await scanTasks(cfg, (r) => {
+        const recs = dropTest(await scanTasks(cfg, (r) => {
           if (isStaff) return true;
           const f = r.fields || {};
           return (
             (f['Assigned_By'] || []).includes(auth.uid) ||
             (auth.role === 'Employer' && (f['Partner_Org'] || []).some((o) => orgIds.includes(o)))
           );
-        });
+        }), show);
         // Task requests are open to anyone → anyone in the workspace
         // is assignable (teammates, intern→team, employer→intern).
-        const assignable = Object.entries(users)
-          .filter(([, u]) => ['Intern', 'Coordinator', 'Employer', 'Admin', 'SuperAdmin', 'Super Admin'].includes(u.role))
-          .map(([id, u]) => ({ id, name: u.name || u.email, role: u.role }))
-          .sort((a, b) => a.name.localeCompare(b.name));
+        const assignable = assignableFor(users, auth, show);
         const skills = await airtableGet(cfg, TABLES.SKILL_AREAS, {
           filterByFormula: `{Active} = TRUE()`, pageSize: '100',
           'sort[0][field]': 'Skill_Name', 'sort[0][direction]': 'asc',
         });
         return json(200, origin, {
-          tasks: recs.map((r) => publicTask(r, users)),
+          tasks: recs.map((r) => ({ ...publicTask(r, users), canEdit: canManage(r.fields || {}, auth, isStaff, orgIds) })),
           interns: assignable,
           skillAreas: (skills.records || []).map((r) => ({ id: r.id, name: r.fields?.['Skill_Name'] || '' })),
         });
@@ -176,8 +207,8 @@ export async function handler(event) {
 
       if (scope === 'all') {
         if (!isStaff) return json(403, origin, { error: 'the all-tasks view is staff only' });
-        const recs = await scanTasks(cfg, null);
-        return json(200, origin, { tasks: recs.map((r) => publicTask(r, users)) });
+        const recs = dropTest(await scanTasks(cfg, null), show);
+        return json(200, origin, { tasks: recs.map((r) => ({ ...publicTask(r, users), canEdit: true })) });
       }
 
       return json(400, origin, { error: 'unknown scope' });
@@ -197,6 +228,9 @@ export async function handler(event) {
       if (!assignee || !['Intern', 'Coordinator', 'Employer', 'Admin', 'SuperAdmin', 'Super Admin'].includes(assignee.role)) {
         return json(400, origin, { error: 'that person isn\'t an active workspace user' });
       }
+      if (!assignableFor(allUsers, auth, show).some((u) => u.id === internId)) {
+        return json(400, origin, { error: auth.test ? 'test accounts can only request tasks of test accounts or staff' : 'that is a test account' });
+      }
       const orgIds = auth.role === 'Employer' ? await callerOrgIds(cfg, auth.uid) : [];
 
       const fields = {
@@ -215,6 +249,7 @@ export async function handler(event) {
       if (b.links) fields.Links = String(b.links).slice(0, 500);
       if (/^rec[A-Za-z0-9]{14}$/.test(String(b.skillAreaId || ''))) fields.Skill_Area = [b.skillAreaId];
 
+      Object.assign(fields, stampTest(auth.test, assignee.isTest));
       const res = await airtableWrite(cfg, TABLES.TASKS, 'POST', [{ fields }]);
       return json(201, origin, { task: publicTask(res.records[0], allUsers) });
     }
@@ -222,7 +257,8 @@ export async function handler(event) {
     if (event.httpMethod === 'PATCH') {
       const b = JSON.parse(event.body || '{}');
       const rec = await getTask(cfg, b.id);
-      if (!rec) return json(404, origin, { error: 'task not found' });
+      if (!rec || (!show && isTestRow(rec))) return json(404, origin, { error: 'task not found' });
+      const testStamp = stampTest(isTestRow(rec));
       const mine = (rec.fields?.['Assigned_To'] || []).includes(auth.uid);
 
       if (b.action === 'status') {
@@ -249,6 +285,7 @@ export async function handler(event) {
               Task: [rec.id],
               Anchor_Record_ID: rec.id,
               Visibility: 'All Stakeholders',
+              ...testStamp,
             },
           }]);
         }
@@ -286,9 +323,46 @@ export async function handler(event) {
               Task: [rec.id],
               Anchor_Record_ID: rec.id,
               Visibility: 'All Stakeholders',
+              ...testStamp,
             },
           }]);
         }
+        return json(200, origin, { ok: true });
+      }
+
+      if (b.action === 'edit' || b.action === 'delete') {
+        const orgIds = auth.role === 'Employer' ? await callerOrgIds(cfg, auth.uid) : [];
+        if (!canManage(rec.fields || {}, auth, isStaff, orgIds)) {
+          return json(403, origin, { error: 'only staff or whoever requested this task can change it' });
+        }
+        if (b.action === 'delete') {
+          const { real, test } = await linkedEntries(cfg, rec.fields?.['Time_Entries'] || []);
+          if (real.length) {
+            return json(409, origin, { error: `${real.length} timesheet ${real.length === 1 ? 'entry is' : 'entries are'} logged against this task, so it can't be deleted. Archive it instead.` });
+          }
+          const threads = await deleteThreadsFor(cfg, [rec.id]);
+          if (test.length) await airtableDelete(cfg, TABLES.TIME_ENTRIES, test.map((r) => r.id));
+          await airtableDelete(cfg, TABLES.TASKS, [rec.id]);
+          return json(200, origin, { ok: true, deleted: { task: 1, messages: threads, testEntries: test.length } });
+        }
+        const f = b.fields || {};
+        const fields = {};
+        if (f.name !== undefined) {
+          const name = String(f.name).trim().slice(0, 200);
+          if (!name) return json(400, origin, { error: 'the task needs a title' });
+          fields.Task_Name = name;
+        }
+        if (f.description !== undefined) fields.Description = String(f.description).slice(0, 5000);
+        if (f.doneLooksLike !== undefined) fields.Done_Looks_Like = String(f.doneLooksLike).slice(0, 5000);
+        if (f.dueDate !== undefined) {
+          if (f.dueDate && !/^\d{4}-\d{2}-\d{2}$/.test(f.dueDate)) return json(400, origin, { error: 'bad due date' });
+          fields.Due_Date = f.dueDate || null;
+        }
+        if (f.estHours !== undefined) fields.Est_Hours = EST_CHUNKS.includes(f.estHours) ? f.estHours : null;
+        if (f.priority !== undefined) fields.Priority = ['Low', 'Medium', 'High'].includes(f.priority) ? f.priority : null;
+        if (f.links !== undefined) fields.Links = String(f.links).slice(0, 500) || null;
+        if (!Object.keys(fields).length) return json(400, origin, { error: 'nothing to update' });
+        await airtableWrite(cfg, TABLES.TASKS, 'PATCH', [{ id: rec.id, fields }]);
         return json(200, origin, { ok: true });
       }
 
@@ -319,6 +393,7 @@ export async function handler(event) {
             Task: [rec.id],
             Anchor_Record_ID: rec.id,
             Visibility: 'Program + Intern',
+            ...testStamp,
           },
         }]);
         return json(200, origin, { ok: true });

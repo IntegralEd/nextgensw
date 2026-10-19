@@ -3,8 +3,9 @@
 // exports honor whatever filters are active. XLSX loads on demand so
 // the SheetJS bundle never weighs down intern phones.
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, Fragment } from 'react';
 import { apiFetch } from '../api.js';
+import TaskEditor from '../components/TaskEditor.jsx';
 
 const STATUS_CHIP = {
   'Not Started': 'draft',
@@ -41,6 +42,7 @@ export default function AllTasks() {
   const [coordF, setCoordF] = useState([]);
   const [overdueOnly, setOverdueOnly] = useState(false);
   const [busyId, setBusyId] = useState(null);
+  const [editing, setEditing] = useState(null); // task id
   const [toast, setToast] = useState(null);
 
   const load = () =>
@@ -192,8 +194,9 @@ export default function AllTasks() {
             </thead>
             <tbody>
               {list.map((t) => (
-                <tr key={t.id}>
-                  <td>{t.name}</td>
+                <Fragment key={t.id}>
+                <tr>
+                  <td>{t.name}{t.isTest && <> <span className="chip test">Test</span></>}</td>
                   <td>{t.assignedTo || '—'}</td>
                   <td>{t.assignedBy || '—'}</td>
                   <td style={isOverdue(t) ? { color: 'var(--brick)', fontWeight: 700 } : undefined}>
@@ -209,11 +212,18 @@ export default function AllTasks() {
                   <td style={{ whiteSpace: 'nowrap' }}>
                     <button className="btn btn-secondary btn-sm" disabled={busyId === t.id} onClick={() => coordReview(t.id)}>Reviewed</button>{' '}
                     <button className="btn btn-outline btn-sm" disabled={busyId === t.id} onClick={() => coordComment(t.id)}>💬</button>{' '}
+                    <button className="btn btn-ghost btn-sm" disabled={busyId === t.id} onClick={() => setEditing(editing === t.id ? null : t.id)}>Edit</button>
                     {t.status === 'Complete' && (
                       <button className="btn btn-ghost btn-sm" disabled={busyId === t.id} onClick={() => archive(t.id)}>Archive</button>
                     )}
                   </td>
                 </tr>
+                {editing === t.id && (
+                  <tr><td colSpan={8} style={{ padding: 0 }}>
+                    <TaskEditor task={t} flash={flash} onCancel={() => setEditing(null)} onDone={() => { setEditing(null); load(); }} />
+                  </td></tr>
+                )}
+                </Fragment>
               ))}
             </tbody>
           </table>

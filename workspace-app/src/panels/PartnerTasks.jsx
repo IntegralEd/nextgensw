@@ -4,6 +4,7 @@
 
 import { useEffect, useState } from 'react';
 import { apiFetch } from '../api.js';
+import TaskEditor from '../components/TaskEditor.jsx';
 
 const STATUS_CHIP = {
   'Not Started': 'draft',
@@ -18,6 +19,7 @@ export default function PartnerTasks() {
   const [reviewing, setReviewing] = useState(null);
   const [comment, setComment] = useState('');
   const [busyId, setBusyId] = useState(null);
+  const [editing, setEditing] = useState(null); // task id
   const [toast, setToast] = useState(null);
 
   const load = () =>
@@ -56,7 +58,7 @@ export default function PartnerTasks() {
     <div className="card" key={t.id}>
       <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8, flexWrap: 'wrap' }}>
         <div>
-          <strong>{t.name}</strong>
+          <strong>{t.name}</strong>{t.isTest && <> <span className="chip test">Test</span></>}
           <div className="muted" style={{ fontSize: '0.9rem', marginTop: 2 }}>
             {t.assignedTo}{t.dueDate ? ` · due ${t.dueDate}` : ''}
           </div>
@@ -67,8 +69,16 @@ export default function PartnerTasks() {
             <a key={k} href={a.url} target="_blank" rel="noreferrer" style={{ display: 'block', fontSize: '0.9rem' }}>📎 {a.name}</a>
           ))}
         </div>
-        <span className={`chip ${STATUS_CHIP[t.status] || 'draft'}`}>{t.status}</span>
+        <div style={{ display: 'flex', gap: 6, alignItems: 'flex-start' }}>
+          {t.canEdit && editing !== t.id && (
+            <button className="btn btn-ghost btn-sm" onClick={() => setEditing(t.id)}>Edit</button>
+          )}
+          <span className={`chip ${STATUS_CHIP[t.status] || 'draft'}`}>{t.status}</span>
+        </div>
       </div>
+      {editing === t.id && (
+        <TaskEditor task={t} flash={flash} onCancel={() => setEditing(null)} onDone={() => { setEditing(null); load(); }} />
+      )}
       {reviewable && (
         <>
           <div className="actions">

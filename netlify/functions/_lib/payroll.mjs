@@ -17,7 +17,8 @@ export async function finalizePeriod(cfg, period, reviewedBy = null) {
   if (!start || !end) throw new Error('period has no start/end date');
 
   const data = await airtableGet(cfg, TABLES.TIME_ENTRIES, {
-    filterByFormula: `AND({Status} = 'Submitted', {Date_Worked} >= '${start}', {Date_Worked} <= '${end}')`,
+    // Test accounts' hours never reach payroll (_lib/testdata.mjs).
+    filterByFormula: `AND({Status} = 'Submitted', NOT({Is_Test}), {Date_Worked} >= '${start}', {Date_Worked} <= '${end}')`,
     pageSize: '100',
   });
   const now = new Date().toISOString();

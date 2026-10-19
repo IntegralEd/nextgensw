@@ -71,7 +71,7 @@ function publicPeriod(r) {
 // range — for the cycle view.
 async function payrollCounts(cfg, periods) {
   const data = await airtableGet(cfg, TABLES.TIME_ENTRIES, {
-    filterByFormula: `{Status} != 'Draft'`, pageSize: '100',
+    filterByFormula: `AND({Status} != 'Draft', NOT({Is_Test}))`, pageSize: '100',
   });
   const rows = (data.records || []).map((r) => ({ d: r.fields?.['Date_Worked'], s: r.fields?.['Status'] }));
   const counts = {};

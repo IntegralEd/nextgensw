@@ -3,7 +3,7 @@
 // Cards swap the panel in place via the hash — no Softr edits needed.
 
 import { useEffect, useState } from 'react';
-import { apiFetch, currentUser } from '../api.js';
+import { apiFetch, currentUser, getShowTest, setShowTest } from '../api.js';
 import WhatsNew from '../components/WhatsNew.jsx';
 
 const STAFF = ['Coordinator', 'Admin', 'SuperAdmin', 'Super Admin'];
@@ -143,8 +143,68 @@ export default function Home() {
             </button>
             <button className="btn btn-outline" onClick={() => (window.location.hash = '#/inbox')}>Send a message</button>
           </div>
+          {isStaff && <TestDataCard />}
         </>
       )}
     </div>
+  );
+}
+
+// Staff: the test sandbox at a glance. "Show test data" mixes test rows
+// into your views (payroll exports still leave them out); admins can
+// clear every test task, timesheet, event and message in one go — the
+// test accounts stay for the next demo.
+function TestDataCard() {
+  const [info, setInfo] = useState(null);
+  const [confirming, setConfirming] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [note, setNote] = useState(null);
+  const show = getShowTest();
+  const load = () => apiFetch('test-data').then(setInfo).catch(() => setInfo(null));
+  useEffect(() => { load(); }, []);
+  if (!info) return null;
+  const c = info.counts;
+  const total = c.tasks + c.timeEntries + c.events + c.messages;
+
+  async function clear() {
+    setBusy(true); setNote(null);
+    try {
+      const r = await apiFetch('test-data', { method: 'POST', body: JSON.stringify({ action: 'clear' }) });
+      const d = r.deleted;
+      setNote(`Cleared ${d.tasks} tasks, ${d.timeEntries} timesheet entries, ${d.events} events and ${d.messages} messages.`);
+      await load();
+    } catch (e) { setNote(`Couldn't clear: ${e.message}`); } finally { setBusy(false); setConfirming(false); }
+  }
+
+  return (
+    <>
+      <h2>Test accounts & demo data</h2>
+      <div className="card">
+        <p className="muted" style={{ marginTop: 0 }}>
+          Test accounts ({info.accounts.map((a) => a.role).join(', ') || 'none'}) work in a sandbox: real interns,
+          partners, reports and payroll never see what they do.
+          {' '}{total ? `Right now: ${c.tasks} tasks, ${c.timeEntries} timesheet entries, ${c.events} events, ${c.messages} messages.` : 'No test data right now.'}
+        </p>
+        <label style={{ display: 'flex', gap: 8, alignItems: 'center', fontWeight: 600 }}>
+          <input type="checkbox" style={{ width: 'auto' }} checked={show}
+            onChange={(e) => { setShowTest(e.target.checked); window.location.reload(); }} />
+          Show test data in my views
+        </label>
+        {info.canClear && total > 0 && (
+          <div className="actions">
+            {!confirming ? (
+              <button className="btn btn-outline btn-sm" onClick={() => setConfirming(true)}>Clear test data…</button>
+            ) : (
+              <>
+                <span className="muted" style={{ alignSelf: 'center', fontSize: '0.85rem' }}>Delete all {total} test rows? Real data is untouched.</span>
+                <button className="btn btn-primary btn-sm" disabled={busy} onClick={clear}>Yes, clear it</button>
+                <button className="btn btn-ghost btn-sm" disabled={busy} onClick={() => setConfirming(false)}>Cancel</button>
+              </>
+            )}
+          </div>
+        )}
+        {note && <p className="muted" style={{ marginBottom: 0 }}>{note}</p>}
+      </div>
+    </>
   );
 }

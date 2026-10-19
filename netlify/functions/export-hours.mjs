@@ -32,7 +32,9 @@ async function approvedInPeriod(cfg, periodId) {
   if (!period) return { period: null, records: [] };
   const s = period.fields?.['Starting'], e = period.fields?.['Ending'];
   const data = await airtableGet(cfg, TABLES.TIME_ENTRIES, {
-    filterByFormula: `AND({Status} = 'Approved', {Date_Worked} >= '${s}', {Date_Worked} <= '${e}')`,
+    // Payroll never includes test accounts' hours — even with "Show
+    // test data" on (_lib/testdata.mjs). Mark-paid uses this list too.
+    filterByFormula: `AND({Status} = 'Approved', NOT({Is_Test}), {Date_Worked} >= '${s}', {Date_Worked} <= '${e}')`,
     pageSize: '100',
     'sort[0][field]': 'Date_Worked',
     'sort[0][direction]': 'asc',

@@ -30,6 +30,7 @@ import {
   corsHeaders,
   json,
 } from './_lib/workspace.mjs';
+import { showTest, dropTest, stampTest, isTestRow } from './_lib/testdata.mjs';
 
 const ADMIN_ROLES = ['Admin', 'SuperAdmin', 'Super Admin'];
 
@@ -99,7 +100,7 @@ export async function handler(event) {
         }),
         fetchUserMap(cfg),
       ]);
-      const records = data.records || [];
+      const records = dropTest(data.records || [], showTest(auth, event));
       const commenters = await commenterRolesByEntry(cfg, records.map((r) => r.id), users);
       const entries = records.map((r) => {
         const f = r.fields || {};
@@ -145,6 +146,7 @@ export async function handler(event) {
       if (ids.length !== 1) return json(400, origin, { error: 'comment on one entry at a time' });
       const comment = String(body.comment || '').trim().slice(0, 2000);
       if (!comment) return json(400, origin, { error: 'write what should change or be clarified' });
+      const entry = await airtableGet(cfg, TABLES.TIME_ENTRIES, { filterByFormula: `RECORD_ID() = '${ids[0]}'`, maxRecords: '1' });
       await airtableWrite(cfg, TABLES.TIME_ENTRIES, 'PATCH', [
         { id: ids[0], fields: { Coordinator_Review: 'Open Comment' } },
       ]);
@@ -156,6 +158,7 @@ export async function handler(event) {
           Time_Entry: [ids[0]],
           Anchor_Record_ID: ids[0],
           Visibility: 'Program + Intern',
+          ...stampTest(isTestRow(entry.records?.[0])),
         },
       }]);
       return json(200, origin, { ok: true });

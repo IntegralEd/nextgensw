@@ -108,6 +108,7 @@ export function publicUser(record) {
     title: f['Title'] || null,
     cohortIds: f['Cohorts'] || [],
     partnerOrgIds: f['Partner_Org'] || [],
+    isTest: f['Is_Test'] === true,
   };
 }
 
@@ -121,6 +122,7 @@ export async function fetchUserMap(cfg) {
     qs.append('fields[]', 'Full Name');
     qs.append('fields[]', 'Email');
     qs.append('fields[]', 'User_Role');
+    qs.append('fields[]', 'Is_Test');
     if (offset) qs.set('offset', offset);
     const res = await fetch(
       `https://api.airtable.com/v0/${cfg.baseId}/${encodeURIComponent(TABLES.USERS)}?${qs}`,
@@ -133,11 +135,30 @@ export async function fetchUserMap(cfg) {
         name: (r.fields?.['Full Name'] || '').trim(),
         email: r.fields?.['Email'] || '',
         role: r.fields?.['User_Role'] || null,
+        isTest: r.fields?.['Is_Test'] === true,
       };
     }
     offset = data.offset;
   } while (offset);
   return map;
+}
+
+// Delete records by id (10 per request — Airtable's batch limit).
+// Deleted rows go to the base's trash, where an admin can restore them.
+export async function airtableDelete(cfg, table, ids) {
+  if (!cfg.patWrite) throw new Error('write PAT not configured');
+  let n = 0;
+  for (let i = 0; i < ids.length; i += 10) {
+    const qs = ids.slice(i, i + 10).map((id) => `records[]=${encodeURIComponent(id)}`).join('&');
+    const res = await fetch(`https://api.airtable.com/v0/${cfg.baseId}/${encodeURIComponent(table)}?${qs}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${cfg.patWrite}` },
+    });
+    const body = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(body?.error?.message || `${table} delete ${res.status}`);
+    n += (body.records || []).length;
+  }
+  return n;
 }
 
 // ---- session tokens ----------------------------------------------------
@@ -148,9 +169,10 @@ function sign(payload, secret) {
   return createHmac('sha256', secret).update(payload).digest('base64url');
 }
 
-export function issueToken(cfg, { email, role, userId }) {
+export function issueToken(cfg, { email, role, userId, test = false }) {
   const exp = Date.now() + TOKEN_TTL_MS;
-  const payload = b64u(JSON.stringify({ sub: email, role, uid: userId, exp }));
+  // `test` marks a test/QA account (Users.Is_Test) — see _lib/testdata.mjs.
+  const payload = b64u(JSON.stringify({ sub: email, role, uid: userId, exp, ...(test ? { test: true } : {}) }));
   return { token: `${payload}.${sign(payload, cfg.secret)}`, exp };
 }
 
@@ -192,7 +214,7 @@ export function corsHeaders(origin) {
   return {
     'Access-Control-Allow-Origin': allow,
     'Access-Control-Allow-Methods': 'GET, POST, PATCH, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Show-Test',
     Vary: 'Origin',
   };
 }

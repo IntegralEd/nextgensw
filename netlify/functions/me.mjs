@@ -57,6 +57,7 @@ export async function handler(event) {
       email: user.email,
       role: user.role,
       userId: user.id,
+      test: user.isTest,
     });
     return json(200, origin, { user, token, exp });
   } catch (err) {
