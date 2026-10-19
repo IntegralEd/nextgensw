@@ -145,7 +145,8 @@ export async function handler(event) {
         })
         .sort((a, b) => String(b.latestAt).localeCompare(String(a.latestAt)));
 
-      if (event.queryStringParameters?.mark === '1') {
+      // View as is read-only: don't mark the viewed person's inbox read.
+      if (event.queryStringParameters?.mark === '1' && !auth.ro) {
         await airtableWrite(cfg, TABLES.USERS, 'PATCH', [
           { id: auth.uid, fields: { Inbox_Last_Checked_At: new Date().toISOString() } },
         ]);

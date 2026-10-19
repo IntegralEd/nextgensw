@@ -3,10 +3,33 @@
 // third-party-cookie blocking inside the Softr iframe never matters
 // and nothing sensitive persists in the browser.
 
-let session = null; // { token, exp, user }
+let session = null; // { token, exp, user, seat? }
+let ownSession = null; // the admin's own session while viewing as someone
+const listeners = new Set();
+const notify = () => listeners.forEach((fn) => fn());
+export const onSessionChange = (fn) => { listeners.add(fn); return () => listeners.delete(fn); };
 
 export function currentUser() {
   return session?.user || null;
+}
+
+// ---- View as (read-only seat; netlify/functions/view-as.mjs) ----------
+// The seat's token carries the viewed user's identity and a read-only
+// flag the server enforces. It lives in memory only: a reload ends it.
+export function currentSeat() {
+  return session?.seat || null; // { viewer: {id, name}, user }
+}
+export async function startSeat(userId, panel) {
+  const r = await apiFetch('view-as', { method: 'POST', body: JSON.stringify({ userId, panel }) });
+  ownSession = ownSession || session;
+  session = { token: r.token, exp: r.exp, user: r.user, seat: { viewer: r.viewer } };
+  notify();
+  return r.user;
+}
+export function endSeat() {
+  if (ownSession) session = ownSession;
+  ownSession = null;
+  notify();
 }
 
 export async function signIn(assertedEmail) {
@@ -43,6 +66,13 @@ export function setShowTest(on) {
 
 export async function apiFetch(path, options = {}) {
   if (!session?.token) throw new Error('not signed in');
+  const method = String(options.method || 'GET').toUpperCase();
+  if (session.seat && method !== 'GET') {
+    // The server refuses it anyway; say why instead of "sign in again".
+    const err = new Error(`View as is read-only. Nothing was changed for ${session.user?.fullName || 'this person'}.`);
+    err.status = 403;
+    throw err;
+  }
   const res = await fetch(`/.netlify/functions/${path}`, {
     ...options,
     headers: {

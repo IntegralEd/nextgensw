@@ -37,6 +37,7 @@ export const TABLES = {
   EVENTS: 'Events',
   SKILL_AREAS: 'Skill_Areas',
   MESSAGES: 'Messages',
+  VIEW_AS_LOG: 'View_As_Log',
 };
 
 // Roles allowed into the workspace at all. Applicant/Inactive stay out.
@@ -169,10 +170,17 @@ function sign(payload, secret) {
   return createHmac('sha256', secret).update(payload).digest('base64url');
 }
 
-export function issueToken(cfg, { email, role, userId, test = false }) {
-  const exp = Date.now() + TOKEN_TTL_MS;
+// `seat` makes a View as token (view-as.mjs): the claims are the viewed
+// user's, plus `ro` (read-only) and who is looking; it lasts an hour.
+const SEAT_TTL_MS = 60 * 60 * 1000;
+export function issueToken(cfg, { email, role, userId, test = false, seat = null }) {
+  const exp = Date.now() + (seat ? SEAT_TTL_MS : TOKEN_TTL_MS);
   // `test` marks a test/QA account (Users.Is_Test) — see _lib/testdata.mjs.
-  const payload = b64u(JSON.stringify({ sub: email, role, uid: userId, exp, ...(test ? { test: true } : {}) }));
+  const payload = b64u(JSON.stringify({
+    sub: email, role, uid: userId, exp,
+    ...(test ? { test: true } : {}),
+    ...(seat ? { ro: true, viewer: seat.viewer, viewerName: seat.viewerName } : {}),
+  }));
   return { token: `${payload}.${sign(payload, cfg.secret)}`, exp };
 }
 
@@ -194,10 +202,16 @@ export function verifyToken(cfg, token) {
 }
 
 // For endpoints after /me: pull + verify the bearer token in one call.
+// A View as token is read-only everywhere: any request that could
+// change data is refused here, for every endpoint at once, so a new
+// endpoint can't forget the rule. (GETs that write as a side effect
+// must check `auth.ro` themselves — today only the inbox read marker.)
 export function requireAuth(cfg, event) {
   const header = event.headers.authorization || event.headers.Authorization || '';
   const token = header.startsWith('Bearer ') ? header.slice(7) : null;
-  return verifyToken(cfg, token);
+  const claims = verifyToken(cfg, token);
+  if (claims?.ro && !['GET', 'HEAD', 'OPTIONS'].includes(event.httpMethod)) return null;
+  return claims;
 }
 
 // ---- response helpers --------------------------------------------------

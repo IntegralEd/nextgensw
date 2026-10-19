@@ -3,7 +3,7 @@
 // Cards swap the panel in place via the hash — no Softr edits needed.
 
 import { useEffect, useState } from 'react';
-import { apiFetch, currentUser, getShowTest, setShowTest } from '../api.js';
+import { apiFetch, currentUser, currentSeat, getShowTest, setShowTest } from '../api.js';
 import WhatsNew from '../components/WhatsNew.jsx';
 
 const STAFF = ['Coordinator', 'Admin', 'SuperAdmin', 'Super Admin'];
@@ -37,6 +37,7 @@ export default function Home() {
   const user = currentUser();
   const isStaff = STAFF.includes(user?.role);
   const isEmployer = user?.role === 'Employer';
+  const isAdmin = ['Admin', 'SuperAdmin', 'Super Admin'].includes(user?.role);
   const [stats, setStats] = useState(null);
 
   useEffect(() => {
@@ -142,8 +143,11 @@ export default function Home() {
               {isStaff ? 'All tasks' : isEmployer ? 'Request a task' : 'Update a task'}
             </button>
             <button className="btn btn-outline" onClick={() => (window.location.hash = '#/inbox')}>Send a message</button>
+            {isAdmin && !currentSeat() && (
+              <button className="btn btn-outline" onClick={() => (window.location.hash = '#/view-as')}>View as…</button>
+            )}
           </div>
-          {isStaff && <TestDataCard />}
+          {isStaff && !currentSeat() && <TestDataCard />}
         </>
       )}
     </div>
