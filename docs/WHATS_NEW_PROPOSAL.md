@@ -142,8 +142,9 @@ marker.
 One PR with every role, since the workspace only has test accounts so
 far. Schema fields land first in the same branch so drift CI stays
 green. Tested headlessly against the live base as the test accounts.
-Demo rows are left on the @test.com accounts so testers see a full card
-for each role.
+Demo rows were left on the @test.com accounts so testers could see a
+full card for each role. They were deleted with the test accounts on
+2026-10-19, once real interns were added.
 
 ## Questions for the team (all answered: recommended option)
 
