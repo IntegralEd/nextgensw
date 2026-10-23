@@ -1,0 +1,21 @@
+name: Airtable paging
+
+# Offline regression test (scripts/test-paging.mjs): payroll, review and
+# hours endpoints must read every page of results, not just the first
+# 100 rows. Uses a fake Airtable; needs no secrets.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  paging:
+    name: Payroll reads every page
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm run test:paging
