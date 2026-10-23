@@ -16,27 +16,10 @@ import {
   requireAuth,
   corsHeaders,
   json,
+  airtableAll,
 } from './_lib/workspace.mjs';
 
-async function scanAll(cfg, table, params = {}) {
-  const out = [];
-  let offset;
-  let pages = 0;
-  do {
-    const qs = new URLSearchParams({ pageSize: '100', ...params });
-    if (offset) qs.set('offset', offset);
-    const res = await fetch(
-      `https://api.airtable.com/v0/${cfg.baseId}/${encodeURIComponent(table)}?${qs}`,
-      { headers: { Authorization: `Bearer ${cfg.pat}` } }
-    );
-    if (!res.ok) throw new Error(`${table}: ${res.status}`);
-    const data = await res.json();
-    out.push(...(data.records || []));
-    offset = data.offset;
-    pages += 1;
-  } while (offset && pages < 30);
-  return out;
-}
+const scanAll = (cfg, table, params = {}) => airtableAll(cfg, table, params);
 
 export async function handler(event) {
   const origin = event.headers.origin || event.headers.Origin || '';

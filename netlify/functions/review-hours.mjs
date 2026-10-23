@@ -24,6 +24,7 @@ import {
   TABLES,
   STAFF_ROLES,
   airtableGet,
+  airtableAll,
   airtableWrite,
   fetchUserMap,
   requireAuth,
@@ -48,11 +49,8 @@ async function commenterRolesByEntry(cfg, entryIds, users) {
   for (let i = 0; i < entryIds.length; i += 30) {
     const chunk = entryIds.slice(i, i + 30);
     const or = chunk.map((id) => `{Anchor_Record_ID} = '${id}'`).join(', ');
-    const msgs = await airtableGet(cfg, TABLES.MESSAGES, {
-      filterByFormula: `OR(${or})`,
-      pageSize: '100',
-    });
-    for (const m of msgs.records || []) {
+    const msgs = await airtableAll(cfg, TABLES.MESSAGES, { filterByFormula: `OR(${or})` });
+    for (const m of msgs) {
       const anchor = m.fields?.['Anchor_Record_ID'];
       if (!anchor) continue;
       const authorId = (m.fields?.['Author'] || [])[0];
@@ -91,15 +89,16 @@ export async function handler(event) {
   try {
     if (event.httpMethod === 'GET') {
       const [data, users] = await Promise.all([
-        airtableGet(cfg, TABLES.TIME_ENTRIES, {
+        // Every page: older entries used to fall off the review list
+        // once there were >100.
+        airtableAll(cfg, TABLES.TIME_ENTRIES, {
           filterByFormula: `{Status} != 'Draft'`,
-          pageSize: '100',
           'sort[0][field]': 'Date_Worked',
           'sort[0][direction]': 'desc',
         }),
         fetchUserMap(cfg),
       ]);
-      const records = data.records || [];
+      const records = data;
       const commenters = await commenterRolesByEntry(cfg, records.map((r) => r.id), users);
       const entries = records.map((r) => {
         const f = r.fields || {};
