@@ -32,13 +32,21 @@ top. Open the submitted link, then either **Accept work** or **Request
 updates…** with a specific note — the note goes straight to them. You
 can never review a task assigned to you, no matter your role.
 
+**Edit or delete a request.** On a task you requested, choose **Edit**
+to change the title, instructions, due date, estimated time or
+priority. **Delete task…** (inside Edit, then confirm) removes the task
+and its discussion. If hours are already logged against the task it
+can't be deleted, so archive it instead. Staff can edit or delete any
+task; partner organizations can edit their organization's requests.
+
 ## For the coordinator — All tasks
 
 Every task in the program. Filter by any mix of **status, assignee,
 requester, and coordinator review** (each is multi-select — click chips
 to toggle), plus an **Overdue only** switch. **Export CSV** or **Export
 XLSX** downloads exactly what the current filters show. Completed tasks
-can be archived to keep the view clean.
+can be archived to keep the view clean, and **Edit** on any row opens
+the same edit/delete form described above.
 
 **Coordinator review** is your own oversight track, separate from the
 partner's accept/request-updates. On any task you can **Mark reviewed**

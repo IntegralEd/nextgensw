@@ -28,6 +28,9 @@ After the session, open it and check off **Attendance** from the
 cohort roster (or the host org's assigned interns), then save.
 On any event page you can flip the attendance setting with
 **make it required / optional** — handy for partner events.
+**Edit event** changes any detail; inside it, **Delete event…** (then
+confirm) removes the event and its discussion. An event with hours
+logged against it can't be deleted, so edit it instead.
 
 ## Hosting events (partner organizations)
 
@@ -43,7 +46,8 @@ works the same way, with two differences:
 
 Your event shows on every intern's Events page right away. Afterwards,
 open it and check off **Attendance** from your organization's assigned
-interns. You can only edit events your organization hosts.
+interns. You can edit or delete events your organization hosts, but
+not other events.
 
 ## Cohorts (staff)
 

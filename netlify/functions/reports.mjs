@@ -18,6 +18,7 @@ import {
   json,
   airtableAll,
 } from './_lib/workspace.mjs';
+import { showTest, dropTest } from './_lib/testdata.mjs';
 
 const scanAll = (cfg, table, params = {}) => airtableAll(cfg, table, params);
 
@@ -46,7 +47,8 @@ export async function handler(event) {
     const start = period.fields?.['Starting'], end = period.fields?.['Ending'];
     const today = new Date().toISOString().slice(0, 10);
 
-    const [interns, entries, tasks, events] = await Promise.all([
+    const show = showTest(auth, event);
+    const [internsAll, entriesAll, tasksAll, eventsAll] = await Promise.all([
       scanAll(cfg, TABLES.USERS, { filterByFormula: `{User_Role} = 'Intern'` }),
       scanAll(cfg, TABLES.TIME_ENTRIES, {
         filterByFormula: `AND({Status} != 'Draft', {Date_Worked} >= '${start}', {Date_Worked} <= '${end}')`,
@@ -56,6 +58,9 @@ export async function handler(event) {
         filterByFormula: `AND({Attendance_Type} = 'Required', {Event_Date} >= '${start}', {Event_Date} <= '${end}')`,
       }),
     ]);
+    // Test accounts and their activity stay off the report unless staff
+    // switch on "Show test data".
+    const [interns, entries, tasks, events] = [internsAll, entriesAll, tasksAll, eventsAll].map((rs) => dropTest(rs, show));
 
     const rows = interns.map((u) => {
       const uid = u.id;

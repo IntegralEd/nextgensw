@@ -26,6 +26,7 @@ import {
   corsHeaders,
   json,
 } from './_lib/workspace.mjs';
+import { stampTest } from './_lib/testdata.mjs';
 
 export const WORK_CATEGORIES = [
   'Partner Task',
@@ -161,6 +162,7 @@ export async function handler(event) {
           Work_Category: e.category,
           Notes: String(e.notes || '').slice(0, 2000),
           Status: submit ? 'Submitted' : 'Draft',
+          ...stampTest(auth.test), // test accounts' hours never reach payroll
         };
         if (e.taskId) fields.Task = [String(e.taskId)];
         if (e.eventId) fields.Event = [String(e.eventId)];

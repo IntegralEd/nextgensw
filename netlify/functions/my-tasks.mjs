@@ -16,6 +16,7 @@ import {
   corsHeaders,
   json,
 } from './_lib/workspace.mjs';
+import { showTest, isTestRow } from './_lib/testdata.mjs';
 
 export async function handler(event) {
   const origin = event.headers.origin || event.headers.Origin || '';
@@ -30,6 +31,7 @@ export async function handler(event) {
   if (!auth) return json(401, origin, { error: 'sign in again' });
 
   try {
+    const show = showTest(auth, event);
     const mine = [];
     let offset;
     let pages = 0;
@@ -43,6 +45,7 @@ export async function handler(event) {
       const qs = new URLSearchParams(params);
       qs.append('fields[]', 'Status');
       qs.append('fields[]', 'Assigned_To');
+      qs.append('fields[]', 'Is_Test');
       qs.append('fields[]', 'Due_Date');
       if (offset) qs.set('offset', offset);
       const res = await fetch(
@@ -52,7 +55,7 @@ export async function handler(event) {
       if (!res.ok) throw new Error(`airtable tasks: ${res.status}`);
       const data = await res.json();
       for (const r of data.records || []) {
-        if ((r.fields?.['Assigned_To'] || []).includes(auth.uid)) {
+        if ((r.fields?.['Assigned_To'] || []).includes(auth.uid) && (show || !isTestRow(r))) {
           mine.push({
             id: r.id,
             name: r.fields['Task_Name'] || '(untitled task)',

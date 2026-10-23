@@ -26,6 +26,7 @@ import {
   corsHeaders,
   json,
 } from './_lib/workspace.mjs';
+import { showTest, dropTest, stampTest, isTestRow } from './_lib/testdata.mjs';
 
 function publicCohort(r, users) {
   const f = r.fields || {};
@@ -61,7 +62,8 @@ export async function handler(event) {
   try {
     const users = await fetchUserMap(cfg);
     const data = await airtableGet(cfg, TABLES.COHORTS, { pageSize: '100' });
-    const cohorts = data.records || [];
+    const show = showTest(auth, event);
+    const cohorts = dropTest(data.records || [], show);
 
     if (event.httpMethod === 'GET') {
       const visible = cohorts.filter(
@@ -70,7 +72,7 @@ export async function handler(event) {
       const out = { cohorts: visible.map((r) => publicCohort(r, users)) };
       if (isStaff) {
         out.people = Object.entries(users)
-          .filter(([, u]) => WORKSPACE_ROLES.includes(u.role))
+          .filter(([, u]) => WORKSPACE_ROLES.includes(u.role) && (show || !u.isTest))
           .map(([id, u]) => ({ id, name: u.name || u.email, role: u.role }))
           .sort((a, b) => a.name.localeCompare(b.name));
       }
@@ -134,7 +136,8 @@ export async function handler(event) {
       if (b.dueDate && /^\d{4}-\d{2}-\d{2}$/.test(b.dueDate)) base.Due_Date = b.dueDate;
       if (['Low', 'Medium', 'High'].includes(b.priority)) base.Priority = b.priority;
       if (['15 Minutes', '30 Minutes', '1 Hour', '2 Hours', '4 Hours', '8 hours'].includes(b.estHours)) base.Est_Hours = b.estHours;
-      const records = internMembers.map((id) => ({ fields: { ...base, Assigned_To: [id] } }));
+      // A test cohort's (or a test intern's) copy is test data.
+      const records = internMembers.map((id) => ({ fields: { ...base, Assigned_To: [id], ...stampTest(isTestRow(rec), users[id]?.isTest, auth.test) } }));
       for (let i = 0; i < records.length; i += 10) {
         await airtableWrite(cfg, TABLES.TASKS, 'POST', records.slice(i, i + 10));
       }

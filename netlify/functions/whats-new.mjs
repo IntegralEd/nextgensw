@@ -36,6 +36,7 @@ import {
   json,
 } from './_lib/workspace.mjs';
 import { scanAll, buildContext, rootVisible } from './_lib/visibility.mjs';
+import { dropTest, showTest } from './_lib/testdata.mjs';
 
 const ADMIN_ROLES = ['Admin', 'SuperAdmin', 'Super Admin'];
 const SUPER_ROLES = ['SuperAdmin', 'Super Admin'];
@@ -111,7 +112,7 @@ const daysBefore = (dateStr, n) => iso(new Date(new Date(`${dateStr}T12:00:00Z`)
 const inRange = (p, d) => d >= p.fields['Starting'] && d <= p.fields['Ending'];
 
 // ---------- the feed ----------
-async function buildFeed(cfg, auth, me, users, since, nowIso) {
+async function buildFeed(cfg, auth, me, users, since, nowIso, show = false) {
   const role = auth.role;
   const isStaff = STAFF_ROLES.includes(role);
   const isAdmin = ADMIN_ROLES.includes(role);
@@ -123,7 +124,7 @@ async function buildFeed(cfg, auth, me, users, since, nowIso) {
   const roleOf = (id) => users[id]?.role || null;
 
   const lookback35 = iso(new Date(Date.now() - 35 * DAY));
-  const [tasks, entries, events, periods, roots, recentMsgs] = await Promise.all([
+  const [tasksAll, entriesAll, eventsAll, periods, rootsAll, recentAll] = await Promise.all([
     scanAll(cfg, TABLES.TASKS, { filterByFormula: `{Status} != 'Archived'` }),
     isEmployer
       ? []
@@ -137,6 +138,8 @@ async function buildFeed(cfg, auth, me, users, since, nowIso) {
     scanAll(cfg, TABLES.MESSAGES, { filterByFormula: 'NOT({Is_Reply})' }),
     scanAll(cfg, TABLES.MESSAGES, { filterByFormula: `IS_AFTER({Created_Datetime}, '${since}')` }),
   ]);
+  // Test data stays off real users' cards (_lib/testdata.mjs).
+  const [tasks, entries, events, roots, recentMsgs] = [tasksAll, entriesAll, eventsAll, rootsAll, recentAll].map((rs) => dropTest(rs, show));
 
   const ctx = buildContext(auth, me, { tasks, entries, events });
   const rootById = new Map(roots.map((r) => [r.id, r]));
@@ -347,7 +350,7 @@ async function buildFeed(cfg, auth, me, users, since, nowIso) {
     }
 
     // Under expected hours — Thursday of the pay week through close.
-    const internIds = Object.keys(users).filter((id) => users[id].role === 'Intern');
+    const internIds = Object.keys(users).filter((id) => users[id].role === 'Intern' && (show || !users[id].isTest));
     let expected = null;
     for (const p of periods) {
       const f = p.fields || {};
@@ -543,7 +546,7 @@ export async function handler(event) {
 
     const users = await fetchUserMap(cfg);
     const dismissed = new Set(String(me['Whats_New_Dismissed'] || '').split(',').map((x) => x.trim()).filter(Boolean));
-    const items = (await buildFeed(cfg, auth, me, users, since, nowIso)).filter((it) => !(it.reminder && dismissed.has(it.id)));
+    const items = (await buildFeed(cfg, auth, me, users, since, nowIso, showTest(auth, event))).filter((it) => !(it.reminder && dismissed.has(it.id)));
     return json(200, origin, { asOf: nowIso, since, items });
   } catch (err) {
     return json(502, origin, { error: err.message });

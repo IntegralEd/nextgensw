@@ -72,8 +72,11 @@ function publicPeriod(r) {
 // dates it needs.
 async function payrollCounts(cfg, periods) {
   const first = periods.map((p) => p.fields?.['Starting']).filter(Boolean).sort()[0];
+  // Payroll counts never include test accounts' hours (_lib/testdata.mjs).
   const qs = {
-    filterByFormula: first ? `AND({Status} != 'Draft', NOT(IS_BEFORE({Date_Worked}, '${first}')))` : `{Status} != 'Draft'`,
+    filterByFormula: first
+      ? `AND({Status} != 'Draft', NOT({Is_Test}), NOT(IS_BEFORE({Date_Worked}, '${first}')))`
+      : `AND({Status} != 'Draft', NOT({Is_Test}))`,
     'fields[]': ['Date_Worked', 'Status'],
   };
   const recs = await airtableAll(cfg, TABLES.TIME_ENTRIES, qs);

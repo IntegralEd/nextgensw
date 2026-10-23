@@ -31,6 +31,7 @@ import {
   json,
 } from './_lib/workspace.mjs';
 import { scanAll, callerContext, rootVisible } from './_lib/visibility.mjs';
+import { showTest, dropTest, stampTest, isTestRow } from './_lib/testdata.mjs';
 
 async function anchorLabels(cfg, roots, users) {
   const need = { task: new Set(), event: new Set(), cohort: new Set(), entry: new Set() };
@@ -89,10 +90,11 @@ export async function handler(event) {
 
   try {
     const users = await fetchUserMap(cfg);
+    const show = showTest(auth, event);
 
     if (event.httpMethod === 'GET') {
       const ctx = await callerContext(cfg, auth);
-      const roots = (await scanAll(cfg, TABLES.MESSAGES, { filterByFormula: 'NOT({Is_Reply})' }))
+      const roots = dropTest(await scanAll(cfg, TABLES.MESSAGES, { filterByFormula: 'NOT({Is_Reply})' }), show)
         .filter((r) => rootVisible(r.fields || {}, auth, ctx));
 
       // ?anchor=recX → just the visible threads on one item (an event
@@ -151,6 +153,10 @@ export async function handler(event) {
 
       const people = Object.entries(users)
         .filter(([id, u]) => id !== auth.uid && WORKSPACE_ROLES.includes(u.role))
+        // Real people and test accounts don't message each other; test
+        // accounts can still reach staff (and staff showing test data
+        // can reach test accounts).
+        .filter(([, u]) => (auth.test ? u.isTest || STAFF_ROLES.includes(u.role) : show || !u.isTest))
         .map(([id, u]) => ({ id, name: u.name || u.email, role: u.role }))
         .sort((a, b) => a.name.localeCompare(b.name));
 
@@ -168,7 +174,7 @@ export async function handler(event) {
           filterByFormula: `RECORD_ID() = '${String(b.threadId)}'`, maxRecords: '1',
         });
         const root = rootData.records?.[0];
-        if (!root || !rootVisible(root.fields || {}, auth, ctx)) {
+        if (!root || (!show && isTestRow(root)) || !rootVisible(root.fields || {}, auth, ctx)) {
           return json(404, origin, { error: 'thread not found' });
         }
         const res = await airtableWrite(cfg, TABLES.MESSAGES, 'POST', [{
@@ -177,6 +183,7 @@ export async function handler(event) {
             Author: [auth.uid],
             Reply_to_Message: [root.id],
             Thread_Root_ID: root.id,
+            ...stampTest(isTestRow(root), auth.test),
           },
         }]);
         return json(201, origin, { message: publicMessage(res.records[0], users) });
@@ -231,6 +238,15 @@ export async function handler(event) {
         }
 
         if (b.flagForSupervisor === true) fields.Flag_For_Supervisor = true;
+        // Test if written by a test account, sent to one, or attached to
+        // a test item.
+        let anchorTest = false;
+        if (fields.Anchor_Record_ID) {
+          const table = fields.Task ? TABLES.TASKS : fields.Time_Entry ? TABLES.TIME_ENTRIES : fields.Event ? TABLES.EVENTS : TABLES.COHORTS;
+          const a = await airtableGet(cfg, table, { filterByFormula: `RECORD_ID() = '${fields.Anchor_Record_ID}'`, maxRecords: '1' });
+          anchorTest = isTestRow(a.records?.[0]);
+        }
+        Object.assign(fields, stampTest(auth.test, anchorTest, (fields.Participants || []).some((id) => users[id]?.isTest)));
         const res = await airtableWrite(cfg, TABLES.MESSAGES, 'POST', [{ fields }]);
         return json(201, origin, { message: publicMessage(res.records[0], users) });
       }

@@ -20,6 +20,12 @@
 //                        staff with a Staff-Only inbox message.
 //   PATCH { id, action:'update', fields }       (staff / host org)
 //   PATCH { id, action:'attendance', userIds }  (staff / host org)
+//   PATCH { id, action:'delete' }               (staff / host org) —
+//         removes the event and its discussion; refused when real
+//         hours are logged against it (test hours go with a test event)
+//
+// Test data (2026-10-19, _lib/testdata.mjs): events by or for test
+// accounts are stamped Is_Test and hidden from real users.
 
 import {
   env,
@@ -31,7 +37,10 @@ import {
   requireAuth,
   corsHeaders,
   json,
+  airtableDelete,
 } from './_lib/workspace.mjs';
+import { showTest, dropTest, stampTest, isTestRow } from './_lib/testdata.mjs';
+import { deleteThreadsFor, linkedEntries } from './_lib/cascade.mjs';
 
 const REC_ID = /^rec[A-Za-z0-9]{14}$/;
 const EMPLOYER_DEFAULT_TYPE = 'Partner Event';
@@ -59,6 +68,7 @@ function publicEvent(r, users, orgs, ctx) {
     attendance: (f['Attendance'] || []).map((id) => users[id]?.name || '?'),
     followUpTaskIds: f['Follow_Up_Tasks'] || [],
     hoursLogged: (f['Time_Entries'] || []).length,
+    isTest: f['Is_Test'] === true,
     canEdit: canEdit(f, ctx),
   };
 }
@@ -74,7 +84,7 @@ async function fetchOrgs(cfg) {
   const data = await airtableGet(cfg, TABLES.PARTNER_ORGS, { pageSize: '100' });
   const map = {};
   for (const r of data.records || []) {
-    map[r.id] = { name: r.fields?.['Name'] || '(org)', memberIds: r.fields?.['Assigned_Interns'] || [] };
+    map[r.id] = { name: r.fields?.['Name'] || '(org)', memberIds: r.fields?.['Assigned_Interns'] || [], isTest: r.fields?.['Is_Test'] === true };
   }
   return map;
 }
@@ -93,6 +103,7 @@ export async function handler(event) {
   if (!auth) return json(401, origin, { error: 'sign in again' });
   const isStaff = STAFF_ROLES.includes(auth.role);
   const isEmployer = auth.role === 'Employer';
+  const show = showTest(auth, event);
 
   try {
     const [users, orgs, meRec] = await Promise.all([
@@ -110,7 +121,7 @@ export async function handler(event) {
         'sort[0][field]': 'Event_Date',
         'sort[0][direction]': 'desc',
       });
-      const records = evData.records || [];
+      const records = dropTest(evData.records || [], show);
       const out = { events: records.map((r) => publicEvent(r, users, orgs, ctx)) };
 
       if (isStaff || isEmployer) {
@@ -119,12 +130,12 @@ export async function handler(event) {
         types.add(EMPLOYER_DEFAULT_TYPE);
         out.eventTypes = [...types].sort();
         // Orgs the caller may host for — with rosters for attendance.
-        const orgIds = isStaff ? Object.keys(orgs) : myOrgs;
+        const orgIds = isStaff ? Object.keys(orgs).filter((id) => show || !orgs[id].isTest) : myOrgs;
         out.orgs = orgIds.map((id) => ({ id, name: orgs[id].name, members: roster(orgs[id].memberIds, users) }));
       }
       if (isStaff) {
         const cohorts = await airtableGet(cfg, TABLES.COHORTS, { pageSize: '100' });
-        out.cohorts = (cohorts.records || []).map((c) => ({
+        out.cohorts = dropTest(cohorts.records || [], show).map((c) => ({
           id: c.id,
           name: c.fields?.['Name'] || '?',
           memberIds: c.fields?.['Members'] || [],
@@ -163,6 +174,13 @@ export async function handler(event) {
         if (!fields.Event_Type) fields.Event_Type = EMPLOYER_DEFAULT_TYPE;
       }
 
+      // Test if made by a test account or for a test cohort/org.
+      let cohortTest = false;
+      if (fields.Cohort) {
+        const c = await airtableGet(cfg, TABLES.COHORTS, { filterByFormula: `RECORD_ID() = '${fields.Cohort[0]}'`, maxRecords: '1' });
+        cohortTest = isTestRow(c.records?.[0]);
+      }
+      Object.assign(fields, stampTest(auth.test, cohortTest, (fields.Partner_Org || []).some((o) => orgs[o]?.isTest)));
       const res = await airtableWrite(cfg, TABLES.EVENTS, 'POST', [{ fields }]);
       const created = res.records[0];
 
@@ -180,6 +198,7 @@ export async function handler(event) {
               Event: [created.id],
               Anchor_Record_ID: created.id,
               Visibility: 'Staff Only',
+              ...stampTest(fields.Is_Test),
             },
           }]);
         } catch { /* the event exists; a missed ping is not worth a 5xx */ }
@@ -191,11 +210,21 @@ export async function handler(event) {
       const b = JSON.parse(event.body || '{}');
       if (!REC_ID.test(String(b.id))) return json(400, origin, { error: 'bad id' });
 
+      const cur = await airtableGet(cfg, TABLES.EVENTS, { filterByFormula: `RECORD_ID() = '${b.id}'`, maxRecords: '1' });
+      const curRec = cur.records?.[0];
+      if (!curRec || (!show && isTestRow(curRec))) return json(404, origin, { error: 'event not found' });
       // Employers may only touch their org's events.
-      if (!isStaff) {
-        const cur = await airtableGet(cfg, TABLES.EVENTS, { filterByFormula: `RECORD_ID() = '${b.id}'`, maxRecords: '1' });
-        const f = cur.records?.[0]?.fields;
-        if (!f || !canEdit(f, ctx)) return json(403, origin, { error: 'only the hosting organization or staff can change this event' });
+      if (!canEdit(curRec.fields || {}, ctx)) return json(403, origin, { error: 'only the hosting organization or staff can change this event' });
+
+      if (b.action === 'delete') {
+        const { real, test } = await linkedEntries(cfg, curRec.fields?.['Time_Entries'] || []);
+        if (real.length) {
+          return json(409, origin, { error: `${real.length} timesheet ${real.length === 1 ? 'entry is' : 'entries are'} logged against this event, so it can't be deleted. Edit it instead, or move those hours first.` });
+        }
+        const threads = await deleteThreadsFor(cfg, [b.id]);
+        if (test.length) await airtableDelete(cfg, TABLES.TIME_ENTRIES, test.map((r) => r.id));
+        await airtableDelete(cfg, TABLES.EVENTS, [b.id]);
+        return json(200, origin, { ok: true, deleted: { event: 1, messages: threads, testEntries: test.length } });
       }
 
       if (b.action === 'attendance') {
@@ -213,6 +242,9 @@ export async function handler(event) {
         if (f.materialsUrl !== undefined) fields.Materials_URL = String(f.materialsUrl).slice(0, 500);
         if (f.notes !== undefined) fields.Notes = String(f.notes).slice(0, 5000);
         if (f.date && /^\d{4}-\d{2}-\d{2}$/.test(f.date)) fields.Event_Date = f.date;
+        if (f.type) fields.Event_Type = String(f.type).slice(0, 60);
+        if (['In-person', 'Virtual', 'Hybrid'].includes(f.locationFormat)) fields.Location_Format = f.locationFormat;
+        if (f.location !== undefined) fields.Location = String(f.location).slice(0, 300);
         if (!Object.keys(fields).length) return json(400, origin, { error: 'nothing to update' });
         await airtableWrite(cfg, TABLES.EVENTS, 'PATCH', [{ id: b.id, fields }]);
         return json(200, origin, { ok: true });

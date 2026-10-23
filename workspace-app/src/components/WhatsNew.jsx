@@ -13,7 +13,7 @@
 // - Rendered inline (not position:fixed): auto-height sizes the iframe.
 
 import { useEffect, useState } from 'react';
-import { apiFetch, currentUser } from '../api.js';
+import { apiFetch, currentUser, getShowTest } from '../api.js';
 
 const CACHE_MS = 3 * 60 * 1000;
 const SHOW_ITEMS = 4;
@@ -24,7 +24,7 @@ const store = {
   set(k, v) { try { window.sessionStorage.setItem(k, JSON.stringify(v)); } catch { /* blocked: per-load */ } },
   del(k) { try { window.sessionStorage.removeItem(k); } catch { /* ignore */ } },
 };
-const cacheKey = (uid) => `ngsw.whatsNew.feed:${uid}`;
+const cacheKey = (uid) => `ngsw.whatsNew.feed:${uid}:${getShowTest() ? 'test' : 'real'}`;
 const laterKey = (uid) => `ngsw.whatsNew.later:${uid}`;
 
 // Panels that change data the feed reports call this so the card

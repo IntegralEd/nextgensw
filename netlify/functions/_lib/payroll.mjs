@@ -17,9 +17,10 @@ export async function finalizePeriod(cfg, period, reviewedBy = null) {
   if (!start || !end) throw new Error('period has no start/end date');
 
   // Every page: a week with >100 submitted entries must be approved in
-  // full, not just its first 100.
+  // full, not just its first 100. Test accounts' hours never reach
+  // payroll (_lib/testdata.mjs).
   const recs = await airtableAll(cfg, TABLES.TIME_ENTRIES, {
-    filterByFormula: `AND({Status} = 'Submitted', {Date_Worked} >= '${start}', {Date_Worked} <= '${end}')`,
+    filterByFormula: `AND({Status} = 'Submitted', NOT({Is_Test}), {Date_Worked} >= '${start}', {Date_Worked} <= '${end}')`,
   });
   const now = new Date().toISOString();
   const updates = recs.map((r) => {

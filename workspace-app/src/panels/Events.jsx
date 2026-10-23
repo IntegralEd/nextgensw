@@ -39,6 +39,7 @@ export default function Events() {
   const [post, setPost] = useState('');
   const [busy, setBusy] = useState(false);
   const [toast, setToast] = useState(null);
+  const [editingEv, setEditingEv] = useState(false);
 
   const load = () => apiFetch('events').then(setData).catch((e) => flash(e.message, true));
   useEffect(() => { load(); }, []);
@@ -159,13 +160,24 @@ export default function Events() {
     const people = cohort?.members || org?.members || [];
     return (
       <div className="panel">
-        <button className="btn btn-ghost btn-sm" style={{ paddingLeft: 0 }} onClick={() => setOpen(null)}>← All events</button>
-        <h1>{ev.name}</h1>
+        <button className="btn btn-ghost btn-sm" style={{ paddingLeft: 0 }} onClick={() => { setOpen(null); setEditingEv(false); }}>← All events</button>
+        <h1>{ev.name}{ev.isTest && <> <span className="chip test">Test</span></>}</h1>
         <p className="muted lead">
           {[ev.type, ev.date, ev.locationFormat, ev.location].filter(Boolean).join(' · ')}
           {' '}<span className={`chip ${ev.attendanceType === 'Optional' ? 'draft' : 'returned'}`}>{ev.attendanceType}</span>
           {ev.hostOrgs.length > 0 && <> · Hosted by {ev.hostOrgs.join(', ')}</>}
         </p>
+        {ev.canEdit && !editingEv && (
+          <div className="actions" style={{ marginTop: 0 }}>
+            <button className="btn btn-outline btn-sm" onClick={() => setEditingEv(true)}>Edit event</button>
+          </div>
+        )}
+        {ev.canEdit && editingEv && (
+          <EventEditor ev={ev} types={data.eventTypes || []} flash={flash}
+            onCancel={() => setEditingEv(false)}
+            onSaved={async () => { setEditingEv(false); await load(); }}
+            onDeleted={async () => { setEditingEv(false); setOpen(null); await load(); }} />
+        )}
         {ev.canEdit && (
           <p className="muted" style={{ fontSize: '0.85rem', marginTop: -4 }}>
             Attendance is {ev.attendanceType.toLowerCase()} —{' '}
@@ -237,7 +249,7 @@ export default function Events() {
   const past = data.events.filter((e) => e.date && e.date < todayISO());
   const Row = ({ e }) => (
     <div className="card" style={{ cursor: 'pointer' }} onClick={() => openEvent(e)}>
-      <strong>{e.name}</strong>
+      <strong>{e.name}</strong>{e.isTest && <> <span className="chip test">Test</span></>}
       <div className="muted" style={{ fontSize: '0.9rem' }}>
         {[e.type, e.date, e.locationFormat].filter(Boolean).join(' · ')}
         {' '}<span className={`chip ${e.attendanceType === 'Optional' ? 'draft' : 'returned'}`}>{e.attendanceType}</span>
@@ -321,6 +333,78 @@ export default function Events() {
       {data.events.length === 0 && <p className="muted">No events yet{canCreate ? ' — create the first one.' : '.'}</p>}
 
       {toast && <div className={`toast${toast.error ? ' error' : ''}`}>{toast.text}</div>}
+    </div>
+  );
+}
+
+// Edit / delete an event (staff or the hosting partner org; the server
+// re-checks). Delete takes the event's discussion with it and is
+// refused when real hours are logged against it.
+function EventEditor({ ev, types, flash, onCancel, onSaved, onDeleted }) {
+  const [f, setF] = useState({
+    name: ev.name || '', type: ev.type || '', date: ev.date || '', attendanceType: ev.attendanceType || 'Required',
+    locationFormat: ev.locationFormat || 'In-person', location: ev.location || '', agenda: ev.agenda || '', materialsUrl: ev.materialsUrl || '',
+  });
+  const [busy, setBusy] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const set = (k) => (e) => setF({ ...f, [k]: e.target.value });
+  async function save() {
+    if (!f.name.trim()) return flash('Give the event a name', true);
+    setBusy(true);
+    try {
+      await apiFetch('events', { method: 'PATCH', body: JSON.stringify({ id: ev.id, action: 'update', fields: f }) });
+      flash('Event updated ✓');
+      await onSaved();
+    } catch (e) { flash(e.message, true); } finally { setBusy(false); }
+  }
+  async function remove() {
+    setBusy(true);
+    try {
+      await apiFetch('events', { method: 'PATCH', body: JSON.stringify({ id: ev.id, action: 'delete' }) });
+      flash('Event deleted');
+      await onDeleted();
+    } catch (e) { flash(e.message, true); setConfirmDelete(false); } finally { setBusy(false); }
+  }
+  return (
+    <div className="card" style={{ background: 'var(--gray-50)' }}>
+      <label>Event name</label>
+      <input type="text" value={f.name} onChange={set('name')} />
+      <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 10 }}>
+        <div>
+          <label>Type</label>
+          <input type="text" list="event-types-edit" value={f.type} onChange={set('type')} />
+          <datalist id="event-types-edit">{types.map((t) => <option key={t} value={t} />)}</datalist>
+        </div>
+        <div><label>Date</label><input type="date" value={f.date} onChange={set('date')} /></div>
+        <div>
+          <label>Format</label>
+          <select value={f.locationFormat} onChange={set('locationFormat')}><option>In-person</option><option>Virtual</option><option>Hybrid</option></select>
+        </div>
+        <div>
+          <label>Attendance</label>
+          <select value={f.attendanceType} onChange={set('attendanceType')}><option>Required</option><option>Optional</option></select>
+        </div>
+      </div>
+      <label style={{ marginTop: 10 }}>Location / link</label>
+      <input type="text" value={f.location} onChange={set('location')} />
+      <label style={{ marginTop: 10 }}>Agenda</label>
+      <textarea rows={3} value={f.agenda} onChange={set('agenda')} />
+      <label style={{ marginTop: 10 }}>Materials link</label>
+      <input type="url" value={f.materialsUrl} onChange={set('materialsUrl')} />
+      <div className="actions">
+        <button className="btn btn-primary btn-sm" disabled={busy} onClick={save}>Save changes</button>
+        <button className="btn btn-ghost btn-sm" disabled={busy} onClick={onCancel}>Cancel</button>
+        <span style={{ flex: 1 }} />
+        {!confirmDelete ? (
+          <button className="btn btn-outline btn-sm" disabled={busy} onClick={() => setConfirmDelete(true)}>Delete event…</button>
+        ) : (
+          <>
+            <span className="muted" style={{ alignSelf: 'center', fontSize: '0.85rem' }}>Delete it and its discussion?</span>
+            <button className="btn btn-primary btn-sm" disabled={busy} onClick={remove}>Yes, delete</button>
+            <button className="btn btn-ghost btn-sm" disabled={busy} onClick={() => setConfirmDelete(false)}>Keep it</button>
+          </>
+        )}
+      </div>
     </div>
   );
 }
