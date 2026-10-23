@@ -5,7 +5,7 @@
 // action (pay-periods.mjs) and the daily auto-close cron
 // (payroll-autoclose.mjs), so both behave identically.
 
-import { TABLES, airtableGet, airtableWrite } from './workspace.mjs';
+import { TABLES, airtableAll, airtableWrite } from './workspace.mjs';
 
 // Approve every Submitted entry in the period's date range, link it to
 // the period, and mark the period finalized. `reviewedBy` is the admin's
@@ -16,13 +16,14 @@ export async function finalizePeriod(cfg, period, reviewedBy = null) {
   const start = f['Starting'], end = f['Ending'];
   if (!start || !end) throw new Error('period has no start/end date');
 
-  const data = await airtableGet(cfg, TABLES.TIME_ENTRIES, {
-    // Test accounts' hours never reach payroll (_lib/testdata.mjs).
+  // Every page: a week with >100 submitted entries must be approved in
+  // full, not just its first 100. Test accounts' hours never reach
+  // payroll (_lib/testdata.mjs).
+  const recs = await airtableAll(cfg, TABLES.TIME_ENTRIES, {
     filterByFormula: `AND({Status} = 'Submitted', NOT({Is_Test}), {Date_Worked} >= '${start}', {Date_Worked} <= '${end}')`,
-    pageSize: '100',
   });
   const now = new Date().toISOString();
-  const updates = (data.records || []).map((r) => {
+  const updates = recs.map((r) => {
     const ef = { Status: 'Approved', Reviewed_At: now };
     if (reviewedBy) ef.Reviewed_By = [reviewedBy];
     if (!(r.fields?.['Pay_Period'] || []).length) ef.Pay_Period = [period.id];

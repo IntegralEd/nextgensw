@@ -26,6 +26,7 @@ import {
   requireAuth,
   corsHeaders,
   json,
+  airtableAll,
 } from './_lib/workspace.mjs';
 import { finalizePeriod } from './_lib/payroll.mjs';
 
@@ -42,12 +43,10 @@ function label(startISO, endISO) {
 }
 
 async function allPeriods(cfg) {
-  const data = await airtableGet(cfg, TABLES.PAY_PERIOD, {
-    pageSize: '100',
+  return airtableAll(cfg, TABLES.PAY_PERIOD, {
     'sort[0][field]': 'Starting',
     'sort[0][direction]': 'asc',
   });
-  return data.records || [];
 }
 
 function publicPeriod(r) {
@@ -68,12 +67,20 @@ function publicPeriod(r) {
 }
 
 // Submitted (awaiting payroll) vs Approved counts per period, by date
-// range — for the cycle view.
+// range — for the cycle view. Reads every page (it used to stop at 100
+// entries, so newer weeks showed 0 to approve) and only the fields and
+// dates it needs.
 async function payrollCounts(cfg, periods) {
-  const data = await airtableGet(cfg, TABLES.TIME_ENTRIES, {
-    filterByFormula: `AND({Status} != 'Draft', NOT({Is_Test}))`, pageSize: '100',
-  });
-  const rows = (data.records || []).map((r) => ({ d: r.fields?.['Date_Worked'], s: r.fields?.['Status'] }));
+  const first = periods.map((p) => p.fields?.['Starting']).filter(Boolean).sort()[0];
+  // Payroll counts never include test accounts' hours (_lib/testdata.mjs).
+  const qs = {
+    filterByFormula: first
+      ? `AND({Status} != 'Draft', NOT({Is_Test}), NOT(IS_BEFORE({Date_Worked}, '${first}')))`
+      : `AND({Status} != 'Draft', NOT({Is_Test}))`,
+    'fields[]': ['Date_Worked', 'Status'],
+  };
+  const recs = await airtableAll(cfg, TABLES.TIME_ENTRIES, qs);
+  const rows = recs.map((r) => ({ d: r.fields?.['Date_Worked'], s: r.fields?.['Status'] }));
   const counts = {};
   for (const p of periods) {
     const f = p.fields || {};

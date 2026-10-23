@@ -15,6 +15,7 @@ import {
   TABLES,
   STAFF_ROLES,
   airtableGet,
+  airtableAll,
   airtableWrite,
   fetchUserMap,
   requireAuth,
@@ -31,15 +32,15 @@ async function approvedInPeriod(cfg, periodId) {
   ).records?.[0];
   if (!period) return { period: null, records: [] };
   const s = period.fields?.['Starting'], e = period.fields?.['Ending'];
-  const data = await airtableGet(cfg, TABLES.TIME_ENTRIES, {
-    // Payroll never includes test accounts' hours — even with "Show
-    // test data" on (_lib/testdata.mjs). Mark-paid uses this list too.
+  // Every page: the payroll export and Mark paid must cover the whole
+  // week, not its first 100 approved entries. Payroll never includes
+  // test accounts' hours, even with "Show test data" on (_lib/testdata.mjs).
+  const records = await airtableAll(cfg, TABLES.TIME_ENTRIES, {
     filterByFormula: `AND({Status} = 'Approved', NOT({Is_Test}), {Date_Worked} >= '${s}', {Date_Worked} <= '${e}')`,
-    pageSize: '100',
     'sort[0][field]': 'Date_Worked',
     'sort[0][direction]': 'asc',
   });
-  return { period, records: data.records || [] };
+  return { period, records };
 }
 
 export async function handler(event) {

@@ -22,4 +22,8 @@ jobs:
       - name: Check guides freshness
         env:
           GUIDES_DIFF_BASE: origin/${{ github.base_ref }}
+          # On pull_request the checkout is GitHub's synthetic merge
+          # commit, whose message is "Merge X into Y"; read the PR's own
+          # head commit so the "[skip guides]" escape hatch works.
+          GUIDES_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: node scripts/check-guides-freshness.mjs

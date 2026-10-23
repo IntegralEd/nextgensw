@@ -71,6 +71,38 @@ export async function airtableGet(cfg, table, params = {}) {
   return res.json();
 }
 
+// Every page of a query, in order. Airtable returns at most 100 rows per
+// request; a single airtableGet silently stops there, which broke the
+// pay-period counts once there were >100 entries (2026-10-23). Anything
+// that must see ALL matching rows (payroll, review queues, a person's
+// hours) uses this. It throws rather than truncating if a query runs
+// past MAX_PAGES, so a cap can never quietly drop payroll rows.
+const MAX_PAGES = 200; // 20,000 rows
+export async function airtableAll(cfg, table, params = {}) {
+  const out = [];
+  let offset;
+  let pages = 0;
+  do {
+    // An array value repeats the key (e.g. 'fields[]': ['A', 'B']).
+    const qs = new URLSearchParams({ pageSize: '100' });
+    for (const [k, v] of Object.entries(params)) {
+      for (const one of Array.isArray(v) ? v : [v]) qs.append(k, one);
+    }
+    if (offset) qs.set('offset', offset);
+    const res = await fetch(
+      `https://api.airtable.com/v0/${cfg.baseId}/${encodeURIComponent(table)}?${qs}`,
+      { headers: { Authorization: `Bearer ${cfg.pat}` } }
+    );
+    if (!res.ok) throw new Error(`airtable ${table}: ${res.status} ${(await res.text()).slice(0, 300)}`);
+    const data = await res.json();
+    out.push(...(data.records || []));
+    offset = data.offset;
+    pages += 1;
+    if (offset && pages >= MAX_PAGES) throw new Error(`${table}: more than ${MAX_PAGES * 100} rows; narrow the query`);
+  } while (offset);
+  return out;
+}
+
 // Mutations always ride the write PAT. `records` follows the Airtable
 // REST shape: POST [{fields}], PATCH [{id, fields}]. Callers are
 // responsible for having already authorized the change against the
