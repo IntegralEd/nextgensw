@@ -39,7 +39,11 @@ try {
   process.exit(0); // don't block on diff plumbing issues
 }
 
-const headMsg = sh('git log -1 --pretty=%B');
+// The PR's own head commit when the workflow provides it (on PRs, HEAD
+// is GitHub's merge commit, so its message never carries the marker).
+const headSha = /^[0-9a-f]{7,40}$/.test(process.env.GUIDES_HEAD_SHA || '') ? process.env.GUIDES_HEAD_SHA : 'HEAD';
+let headMsg = '';
+try { headMsg = sh(`git log -1 --pretty=%B ${headSha}`); } catch { headMsg = sh('git log -1 --pretty=%B'); }
 if (/\[skip guides\]/i.test(headMsg)) {
   console.log('check-guides-freshness: "[skip guides]" in HEAD commit — skipping.');
   process.exit(0);

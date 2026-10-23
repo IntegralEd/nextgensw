@@ -17,11 +17,13 @@ Messages,tbl0tzwKoiyHXYFRM,fldSlCMxKbqWLqoX2,Created_Datetime,createdTime,,,
 Messages,tbl0tzwKoiyHXYFRM,fldTEMAsJpUOOg5ri,Message_Content,richText,,,
 Messages,tbl0tzwKoiyHXYFRM,fldVWWUBmo9E5J578,Reply_Count,rollup,,,
 Messages,tbl0tzwKoiyHXYFRM,fldYammA5cRzdFDqJ,Is_Reply,formula,,,
+Messages,tbl0tzwKoiyHXYFRM,fldyqzlAyITueVMRO,Is_Test,checkbox,,,
 Messages,tbl0tzwKoiyHXYFRM,fldyvlz3sfTHH0lib,Attachment,multipleAttachments,,,
 Messages,tbl0tzwKoiyHXYFRM,fldzwmKK2FE5ybm2H,Reply_to_Message,multipleRecordLinks,checked,tbl0tzwKoiyHXYFRM,Messages
 Partner_Orgs,tbl1RbO4XsWIo4OWP,fld1JEZ1gjKCbRKQy,Name,singleLineText,,,
 Partner_Orgs,tbl1RbO4XsWIo4OWP,fld3qQPxIyLcKDSgT,Work_Format,singleSelect,,,
 Partner_Orgs,tbl1RbO4XsWIo4OWP,fldhnKWSP0PQnm4hx,Events,multipleRecordLinks,checked,tblWXcLQ8zOH3G3aj,Events
+Partner_Orgs,tbl1RbO4XsWIo4OWP,fldHWNrV3XYgggFGm,Is_Test,checkbox,,,
 Partner_Orgs,tbl1RbO4XsWIo4OWP,fldiAxCPH8K9WGmaR,Last_Modified,formula,,,
 Partner_Orgs,tbl1RbO4XsWIo4OWP,fldkCV1iq6Kecy72e,Time_Entries,multipleRecordLinks,checked,tblAFI7T1B0FXs4yr,Time_Entries
 Partner_Orgs,tbl1RbO4XsWIo4OWP,fldkJAE0ZyAQ6Et9N,Org_ID,formula,,,
@@ -91,6 +93,7 @@ Time_Entries,tblAFI7T1B0FXs4yr,fldRK2xo3icJa9nWE,Work_Category,singleSelect,,,
 Time_Entries,tblAFI7T1B0FXs4yr,fldroMC1ePJroJz5m,Event,multipleRecordLinks,checked,tblWXcLQ8zOH3G3aj,Events
 Time_Entries,tblAFI7T1B0FXs4yr,fldtjL7w5jDuTyLyK,Minutes,number,,,
 Time_Entries,tblAFI7T1B0FXs4yr,fldTX29crH8QcxawP,Reviewed_At,dateTime,,,
+Time_Entries,tblAFI7T1B0FXs4yr,fldwlk4REf2vDt7UV,Is_Test,checkbox,,,
 Announcement,tblbGWPTH7sWqOIGR,fld0xq7AwTfNsTbP5,Name,singleLineText,,,
 Announcement,tblbGWPTH7sWqOIGR,fld4pLeKZLMWftLrB,Visible,checkbox,,,
 Announcement,tblbGWPTH7sWqOIGR,fld5yBGh9PYnIjOUI,Cohort,multipleRecordLinks,checked,tblXsOJwoqoOSpYDT,Cohorts
@@ -124,6 +127,7 @@ Tasks,tblCqQJL1EMpI0LJx,fldhF0y4gXNAfbqAJ,Start_Date,date,,,
 Tasks,tblCqQJL1EMpI0LJx,fldhHmnsxjfW7JYE3,Description,richText,,,
 Tasks,tblCqQJL1EMpI0LJx,fldI1OwOMrnXUBHUT,Assigned_By,multipleRecordLinks,checked,tbldH5vECddqn4Tvv,Users
 Tasks,tblCqQJL1EMpI0LJx,fldiCAJeWaxmcbds4,Last_Reviewed,lastModifiedTime,,,
+Tasks,tblCqQJL1EMpI0LJx,fldkE232iqCnYhdWq,Is_Test,checkbox,,,
 Tasks,tblCqQJL1EMpI0LJx,fldkKfjHuxya9Z9yH,Task_Attachment,multipleAttachments,,,
 Tasks,tblCqQJL1EMpI0LJx,fldNELGUiuhJE0bqj,Cohort,multipleRecordLinks,checked,tblXsOJwoqoOSpYDT,Cohorts
 Tasks,tblCqQJL1EMpI0LJx,fldpa7QkxuUPPvacY,Est_Hours,singleSelect,,,
@@ -174,6 +178,8 @@ Users,tbldH5vECddqn4Tvv,fldJZUG3IEVrxaqA4,Latest_Softr_Visit,dateTime,,,
 Users,tbldH5vECddqn4Tvv,fldl8IOaSVLn7H7zp,Skill_Areas_Added,multipleRecordLinks,checked,tblfvMuMfvncJWBO5,Skill_Areas
 Users,tbldH5vECddqn4Tvv,fldN7AJCFZJJjQdT0,Primary_Contact_For,multipleRecordLinks,checked,tbl1RbO4XsWIo4OWP,Partner_Orgs
 Users,tbldH5vECddqn4Tvv,fldNkSc7eekuD6KRy,Whats_New_Seen_At,dateTime,,,
+Users,tbldH5vECddqn4Tvv,fldoJjbOnOOentSiL,Is_Test,checkbox,,,
+Users,tbldH5vECddqn4Tvv,fldPuD09Rstwyx4yU,View_As_Started,multipleRecordLinks,checked,tblPFJ9uNxnq56GPq,View_As_Log
 Users,tbldH5vECddqn4Tvv,fldR9bvd4odgSdkZs,Tasks_Created,multipleRecordLinks,checked,tblCqQJL1EMpI0LJx,Tasks
 Users,tbldH5vECddqn4Tvv,fldRQ16NWBYiJqXUI,Events_Attended,multipleRecordLinks,checked,tblWXcLQ8zOH3G3aj,Events
 Users,tbldH5vECddqn4Tvv,fldsBr7AFH6GShGti,Preferred_Contact,singleSelect,,,
@@ -187,6 +193,7 @@ Users,tbldH5vECddqn4Tvv,fldvwSHyqfovnWcNG,Email (from Added_by),multipleLookupVa
 Users,tbldH5vECddqn4Tvv,fldW9sfAaVdtbzBHp,Assigned_To_Partner_Org,multipleRecordLinks,checked,tbl1RbO4XsWIo4OWP,Partner_Orgs
 Users,tbldH5vECddqn4Tvv,fldwp8rm8doQuQkQ6,User_Org_Entry,singleLineText,,,
 Users,tbldH5vECddqn4Tvv,fldwYJM7cvgtPJZBk,Tickets,multipleRecordLinks,checked,tbllRFgUQ8oFjYieR,Tickets
+Users,tbldH5vECddqn4Tvv,fldXFH0aaRo9uTS9Y,View_As_Viewed_By,multipleRecordLinks,checked,tblPFJ9uNxnq56GPq,View_As_Log
 Skill_Areas,tblfvMuMfvncJWBO5,fld6MkETg8AviDQwo,Active,checkbox,,,
 Skill_Areas,tblfvMuMfvncJWBO5,fldbhtrMxuxfiuoAz,Created,formula,,,
 Skill_Areas,tblfvMuMfvncJWBO5,fldGypYqSybvwZQDy,Source,singleSelect,,,
@@ -211,6 +218,11 @@ Tickets,tbllRFgUQ8oFjYieR,fldvywINmnYTe1LVk,Message_ID,formula,,,
 Tickets,tbllRFgUQ8oFjYieR,fldy10fxlYCx6gyKy,Message_Summary,formula,,,
 Tickets,tbllRFgUQ8oFjYieR,fldy8lFseUVJ6mOWg,Message_Status,singleSelect,,,
 Tickets,tbllRFgUQ8oFjYieR,fldYK3jqW9QREI2kW,User,multipleRecordLinks,checked,tbldH5vECddqn4Tvv,Users
+View_As_Log,tblPFJ9uNxnq56GPq,flddte9XR6vfMKc5H,Started_At,dateTime,,,
+View_As_Log,tblPFJ9uNxnq56GPq,fldmIesUCmdf5IIi0,Viewed,multipleRecordLinks,checked,tbldH5vECddqn4Tvv,Users
+View_As_Log,tblPFJ9uNxnq56GPq,fldns2cb80beWEcfP,Viewer,multipleRecordLinks,checked,tbldH5vECddqn4Tvv,Users
+View_As_Log,tblPFJ9uNxnq56GPq,fldOHOFwdK7Nws7HX,Panel,singleLineText,,,
+View_As_Log,tblPFJ9uNxnq56GPq,fldUrEhakyG0V9oot,Session,singleLineText,,,
 Pay_Period,tblSUypMwuYJonX5o,fld2Hqz7FmGpxzdue,Starting,date,,,
 Pay_Period,tblSUypMwuYJonX5o,fld7X3IHtHRJCtIVE,Label,singleLineText,,,
 Pay_Period,tblSUypMwuYJonX5o,fld9nzZBGLo4iR87R,Ending,date,,,
@@ -248,6 +260,7 @@ Events,tblWXcLQ8zOH3G3aj,fldJ92diquDFJI1Ah,Partner_Org,multipleRecordLinks,check
 Events,tblWXcLQ8zOH3G3aj,fldkuNQN9OoobmIuR,Time_Entries,multipleRecordLinks,checked,tblAFI7T1B0FXs4yr,Time_Entries
 Events,tblWXcLQ8zOH3G3aj,fldLK9lOLTXQMBf7r,Start_Time,dateTime,,,
 Events,tblWXcLQ8zOH3G3aj,fldmkNpUTQgs1fPEQ,Attendance,multipleRecordLinks,checked,tbldH5vECddqn4Tvv,Users
+Events,tblWXcLQ8zOH3G3aj,fldmQ3UYlBKAR5cx2,Is_Test,checkbox,,,
 Events,tblWXcLQ8zOH3G3aj,fldn7iqs8784MreFf,Messages,multipleRecordLinks,checked,tbl0tzwKoiyHXYFRM,Messages
 Events,tblWXcLQ8zOH3G3aj,fldQqZskfeQdtDi4P,Event_Type,singleSelect,,,
 Events,tblWXcLQ8zOH3G3aj,fldriyNWsT8G5tI5Z,Location,singleLineText,,,
@@ -264,6 +277,7 @@ Cohorts,tblXsOJwoqoOSpYDT,fldm98k6xw9Vnofkn,Created,formula,,,
 Cohorts,tblXsOJwoqoOSpYDT,fldnGpgptJrZ6EI5m,Coordinator,multipleRecordLinks,checked,tbldH5vECddqn4Tvv,Users
 Cohorts,tblXsOJwoqoOSpYDT,fldTAKThOOAlWKfU9,Name,singleLineText,,,
 Cohorts,tblXsOJwoqoOSpYDT,fldtk0NQWItAov7Rw,Start_Date,date,,,
+Cohorts,tblXsOJwoqoOSpYDT,flduq593Ln1kgaEfA,Is_Test,checkbox,,,
 Cohorts,tblXsOJwoqoOSpYDT,fldX6VN1RddhcZiTK,Tasks,multipleRecordLinks,checked,tblCqQJL1EMpI0LJx,Tasks
 Schema_Registry,tblZeCbkIR8BkC3DN,fld1hOAt9Ohj46riq,Schema_AT_ID,formula,,,
 Schema_Registry,tblZeCbkIR8BkC3DN,fld7pvyD3Dm5IyXHR,Table_Name,singleLineText,,,
