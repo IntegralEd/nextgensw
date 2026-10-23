@@ -4,27 +4,11 @@
 // and the What's new card (whats-new.mjs) so the card can never show a
 // thread the inbox would hide. Staff read everything (the audit rule).
 
-import { TABLES, STAFF_ROLES, airtableGet } from './workspace.mjs';
+import { TABLES, STAFF_ROLES, airtableGet, airtableAll } from './workspace.mjs';
 
-export async function scanAll(cfg, table, params = {}) {
-  const out = [];
-  let offset;
-  let pages = 0;
-  do {
-    const qs = new URLSearchParams({ pageSize: '100', ...params });
-    if (offset) qs.set('offset', offset);
-    const res = await fetch(
-      `https://api.airtable.com/v0/${cfg.baseId}/${encodeURIComponent(table)}?${qs}`,
-      { headers: { Authorization: `Bearer ${cfg.pat}` } }
-    );
-    if (!res.ok) throw new Error(`${table}: ${res.status}`);
-    const data = await res.json();
-    out.push(...(data.records || []));
-    offset = data.offset;
-    pages += 1;
-  } while (offset && pages < 30);
-  return out;
-}
+// Kept as the name the inbox and What's new use; pages to the end
+// (it used to stop silently after 30 pages).
+export const scanAll = (cfg, table, params = {}) => airtableAll(cfg, table, params);
 
 // Everything the caller relates to, for visibility decisions.
 // buildContext is pure so callers that already loaded these tables

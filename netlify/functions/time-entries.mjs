@@ -20,6 +20,7 @@ import {
   env,
   TABLES,
   airtableGet,
+  airtableAll,
   airtableWrite,
   requireAuth,
   corsHeaders,
@@ -109,13 +110,13 @@ export async function handler(event) {
   try {
     if (event.httpMethod === 'GET') {
       const safeUid = auth.uid.replace(/'/g, '');
-      const data = await airtableGet(cfg, TABLES.TIME_ENTRIES, {
+      // Every page: an intern passes 100 entries within a few months.
+      const recs = await airtableAll(cfg, TABLES.TIME_ENTRIES, {
         filterByFormula: `{Intern_Record_ID} = '${safeUid}'`,
-        pageSize: '100',
         'sort[0][field]': 'Date_Worked',
         'sort[0][direction]': 'desc',
       });
-      const entries = (data.records || []).map(publicEntry);
+      const entries = recs.map(publicEntry);
 
       // Attach the latest coordinator note so the intern sees it — for
       // entries returned for clarification OR flagged with an open
@@ -126,14 +127,13 @@ export async function handler(event) {
         .slice(0, 20);
       if (returned.length) {
         const or = returned.map((e) => `{Anchor_Record_ID} = '${e.id}'`).join(', ');
-        const msgs = await airtableGet(cfg, TABLES.MESSAGES, {
+        const msgs = await airtableAll(cfg, TABLES.MESSAGES, {
           filterByFormula: `OR(${or})`,
-          pageSize: '100',
           'sort[0][field]': 'Created_Datetime',
           'sort[0][direction]': 'desc',
         });
         const noteByEntry = {};
-        for (const m of msgs.records || []) {
+        for (const m of msgs) {
           const anchor = m.fields?.['Anchor_Record_ID'];
           if (anchor && !noteByEntry[anchor]) noteByEntry[anchor] = m.fields?.['Message_Content'] || '';
         }
