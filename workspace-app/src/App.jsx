@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { resolveAssertedEmail } from './identity.js';
-import { signIn } from './api.js';
+import { signIn, currentUser, onSessionChange } from './api.js';
 import { PANELS, DEFAULT_PANEL, panelForRole } from './panels/index.jsx';
 import WhatsNew from './components/WhatsNew.jsx';
 import TestBar from './components/TestBar.jsx';
+import SeatBar from './components/SeatBar.jsx';
 
 // Panel key = the hash path: /app/#/whoami → "whoami".
 // Query strings in the hash (#/panel?x=y) are stripped here and left
@@ -17,6 +18,9 @@ function panelKeyFromHash() {
 export default function App() {
   const [state, setState] = useState({ phase: 'loading' });
   const [panelKey, setPanelKey] = useState(panelKeyFromHash());
+  // View as swaps the session (api.js); re-render when it does.
+  const [, setSessionTick] = useState(0);
+  useEffect(() => onSessionChange(() => setSessionTick((n) => n + 1)), []);
 
   useEffect(() => {
     const onHash = () => setPanelKey(panelKeyFromHash());
@@ -83,26 +87,33 @@ export default function App() {
     );
   }
 
-  const { panel, error } = panelForRole(panelKey, state.user.role);
+  // During View as, the viewed person's role decides what opens.
+  const user = currentUser() || state.user;
+  const { panel, error } = panelForRole(panelKey, user.role);
   if (error === 'unknown-panel') {
     return <Notice title="Page not found">There’s no workspace page at this address.</Notice>;
   }
   if (error === 'not-allowed') {
     return (
+      <>
+      <SeatBar />
       <Notice title={pageTitle}>
         Access denied. This page isn’t part of your role’s workspace — if you
         think it should be, check that you’re signed in with the right NextGen
         SW account.
       </Notice>
+      </>
     );
   }
 
   const Component = panel.component;
   return (
     <>
+      <SeatBar />
       <TestBar />
-      {panel.whatsNew !== false && <WhatsNew wide={panel.wide} />}
-      <Component />
+      {/* keyed by identity so a View as switch never shows stale data */}
+      {panel.whatsNew !== false && <WhatsNew key={`wn:${user.id}`} wide={panel.wide} />}
+      <Component key={`${user.id}:${panelKey}`} />
     </>
   );
 }

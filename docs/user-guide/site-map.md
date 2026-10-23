@@ -34,6 +34,8 @@ checked in CI against the live panel list, so it never drifts.
 
 - **User guide** — `#/user-guide` — everyone. These guides, searchable.
 - **Testing guide** — `#/testing-guide` — admins only. QA & test accounts.
+- **View as** — `#/view-as` — admins only. See the workspace as an
+  intern, partner or coordinator does, read-only. Also on Home.
 
 ## Diagnostics
 

@@ -42,6 +42,27 @@ Test data is hidden from staff views too, until you turn it on: on
 my views**. A yellow strip reminds you it's on, with a one-click **Hide
 test data**. The switch only affects your own browser.
 
+## View as: see exactly what someone sees
+
+To check what a real intern, partner or coordinator sees, with their
+real data, you don't need their login or a test account:
+
+1. On **Home**, choose **View as…** (or open the View as page).
+2. Pick the person and the page, then **View as**.
+3. A dark strip at the top names whose view it is and that it's
+   **read-only**. Browse any page they can open.
+4. **Exit View as** returns you to your own view. Reloading also ends it.
+
+Nothing you click saves anything as them: the server refuses every save,
+and opening their Inbox doesn't mark their messages read. Each session
+is recorded in the **View_As_Log** table (who, whom, when). View as
+works for interns, partners and coordinators (real or test), not for
+other admins.
+
+Use **View as** to check what someone sees, and the **test accounts**
+when a demo needs clicking through: submitting hours, approving work,
+posting an event.
+
 ## Cleaning up after a demo
 
 - **Delete one item:** open the event or task and choose **Edit**, then

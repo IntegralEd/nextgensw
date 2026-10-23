@@ -24,6 +24,7 @@ import Inbox from './Inbox.jsx';
 import Events from './Events.jsx';
 import CohortAdmin from './CohortAdmin.jsx';
 import Reports from './Reports.jsx';
+import ViewAs from './ViewAs.jsx';
 
 // Coordinator/Admin can log hours too (Rhonda logs her own hours per
 // Ava's requirements); Employers don't log time.
@@ -52,6 +53,8 @@ export const PANELS = {
   events: { component: Events, roles: ['*'], title: 'Events' },
   'cohort-admin': { component: CohortAdmin, roles: STAFF, title: 'Cohorts' },
   reports: { component: Reports, roles: STAFF, title: 'Reports', whatsNew: false },
+  // Admins see the workspace as someone else does, read-only (view-as.mjs).
+  'view-as': { component: ViewAs, roles: ['Admin', 'SuperAdmin', 'Super Admin'], title: 'View as', whatsNew: false },
 };
 
 export const DEFAULT_PANEL = 'home';
